@@ -4,8 +4,8 @@
 
 #include <neo/config.hpp>
 
-#include <neo/math/bit_ceil.hpp>
-#include <neo/math/ilog2.hpp>
+#include <neo/bit/bit_ceil.hpp>
+#include <neo/bit/bit_log2.hpp>
 #include <neo/math/ipow.hpp>
 
 #include <cstddef>
@@ -27,7 +27,7 @@ template<std::integral Int>
 [[nodiscard]] constexpr auto next_order(Int size) noexcept -> order
 {
     auto const usize = static_cast<std::make_unsigned_t<Int>>(size);
-    return static_cast<order>(ilog2(bit_ceil(usize)));
+    return static_cast<order>(bit_log2(bit_ceil(usize)));
 }
 
 }  // namespace neo::fft

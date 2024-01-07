@@ -15,56 +15,6 @@
 
 namespace neo {
 
-namespace detail {
-
-NEO_ALWAYS_INLINE auto moveldup_ps_sse2(__m128 a) noexcept -> __m128
-{
-    auto const x = _mm_shuffle_ps(a, a, _MM_SHUFFLE(0, 0, 2, 2));
-    return _mm_shuffle_ps(x, x, _MM_SHUFFLE(0, 0, 2, 2));
-}
-
-NEO_ALWAYS_INLINE auto movehdup_ps_sse2(__m128 a) noexcept -> __m128
-{
-    auto const x = _mm_shuffle_ps(a, a, _MM_SHUFFLE(1, 1, 3, 3));
-    return _mm_shuffle_ps(x, x, _MM_SHUFFLE(1, 1, 3, 3));
-}
-
-NEO_ALWAYS_INLINE auto addsub_sse2(__m128 lhs, __m128 rhs) noexcept -> __m128
-{
-    auto const mask = _mm_setr_ps(-1.0F, 1.0F, -1.0F, 1.0F);
-    return _mm_add_ps(_mm_mul_ps(rhs, mask), lhs);
-}
-
-NEO_ALWAYS_INLINE auto cmul_sse2(__m128 lhs, __m128 rhs) noexcept -> __m128
-{
-    auto const cccc = _mm_mul_ps(lhs, moveldup_ps_sse2(rhs));
-    auto const baba = _mm_shuffle_ps(lhs, lhs, 0xB1);
-    auto const dddd = _mm_mul_ps(baba, movehdup_ps_sse2(rhs));
-    return addsub_sse2(cccc, dddd);
-}
-
-}  // namespace detail
-
-NEO_ALWAYS_INLINE auto cadd(__m128 lhs, __m128 rhs) noexcept -> __m128 { return _mm_add_ps(lhs, rhs); }
-
-NEO_ALWAYS_INLINE auto csub(__m128 lhs, __m128 rhs) noexcept -> __m128 { return _mm_sub_ps(lhs, rhs); }
-
-NEO_ALWAYS_INLINE auto cmul(__m128 lhs, __m128 rhs) noexcept -> __m128
-{
-#if defined(NEO_HAS_SIMD_SSE3)
-    auto const cccc = _mm_mul_ps(lhs, _mm_moveldup_ps(rhs));
-    auto const baba = _mm_shuffle_ps(lhs, lhs, 0xB1);
-    auto const dddd = _mm_mul_ps(baba, _mm_movehdup_ps(rhs));
-    return _mm_addsub_ps(cccc, dddd);
-#else
-    return detail::cmul_sse2(lhs, rhs);
-#endif
-}
-
-NEO_ALWAYS_INLINE auto cadd(__m128d lhs, __m128d rhs) noexcept -> __m128d { return _mm_add_pd(lhs, rhs); }
-
-NEO_ALWAYS_INLINE auto csub(__m128d lhs, __m128d rhs) noexcept -> __m128d { return _mm_sub_pd(lhs, rhs); }
-
 struct alignas(16) float32x4
 {
     using value_type    = float;

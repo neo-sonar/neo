@@ -4,11 +4,11 @@
 
 #include "dsp/AudioBuffer.hpp"
 
+#include <neo/bit/bit_ceil.hpp>
 #include <neo/convolution/normalize_impulse.hpp>
 #include <neo/convolution/uniform_partition.hpp>
 #include <neo/fft/rfftfreq.hpp>
 #include <neo/math/a_weighting.hpp>
-#include <neo/math/bit_ceil.hpp>
 #include <neo/unit/decibel.hpp>
 
 namespace neo {

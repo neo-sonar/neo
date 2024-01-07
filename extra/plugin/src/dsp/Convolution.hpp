@@ -73,7 +73,7 @@ struct Convolution
         auto audioFile = load(_formatManager, file);
         jassertquiet(audioFile.buffer.getNumChannels() == 2);
 
-        if (audioFile.sampleRate != 0.0) {
+        if (audioFile.sampleRate > 0.0) {
             _impulse = std::move(audioFile);
         }
 

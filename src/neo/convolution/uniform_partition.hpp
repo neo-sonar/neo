@@ -16,9 +16,9 @@ template<in_matrix InMat>
     return fft::stft(
         impulse_response,
         {
-            .frame_length   = static_cast<int>(block_size),
-            .transform_size = static_cast<int>(block_size * 2UL),
-            .overlap_length = 0,
+            .frame_size     = block_size,
+            .transform_size = block_size * 2UL,
+            .overlap_size   = 0,
             .window         = rectangular_window<Float>{},
         }
     );

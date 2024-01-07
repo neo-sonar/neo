@@ -6,6 +6,7 @@
 
 #include <neo/algorithm/scale.hpp>
 #include <neo/container/mdspan.hpp>
+#include <neo/math/abs.hpp>
 #include <neo/math/float_equality.hpp>
 #include <neo/type_traits/value_type_t.hpp>
 
@@ -28,7 +29,7 @@ template<in_object InObj>
         }
 
         for (decltype(obj.extent(0)) i{0}; i < obj.extent(0); ++i) {
-            abs_max = std::max(abs_max, std::abs(obj[i]));
+            abs_max = std::max(abs_max, math::abs(obj[i]));
         }
 
     } else {
@@ -38,7 +39,7 @@ template<in_object InObj>
 
         for (decltype(obj.extent(0)) i{0}; i < obj.extent(0); ++i) {
             for (decltype(obj.extent(1)) j{0}; j < obj.extent(1); ++j) {
-                abs_max = std::max(abs_max, std::abs(obj(i, j)));
+                abs_max = std::max(abs_max, math::abs(obj(i, j)));
             }
         }
     }
@@ -47,7 +48,7 @@ template<in_object InObj>
         return Float(1);
     }
 
-    return Float(1) / std::abs(abs_max);
+    return Float(1) / math::abs(abs_max);
 }
 
 // normalized_sample = sample / max(abs(buffer))

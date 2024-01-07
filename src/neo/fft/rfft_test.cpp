@@ -173,7 +173,7 @@ TEMPLATE_TEST_CASE("neo/fft: experimental::fft", "", float, double)
         auto const expected = std::array<Float, 8>{10, 0, -2, 2, -2, 0, -2, -2};
 
         auto x    = input;
-        auto plan = neo::fft::experimental::fallback_fft_plan<Float>{neo::ilog2(input.size() / 2)};
+        auto plan = neo::fft::experimental::fallback_fft_plan<Float>{neo::bit_log2(input.size() / 2)};
         plan(stdex::mdspan{x.data(), stdex::extents{x.size()}}, neo::fft::direction::forward);
 
         for (auto i{0U}; i < expected.size(); ++i) {

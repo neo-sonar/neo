@@ -6,6 +6,7 @@
 #include <neo/container/mdspan.hpp>
 #include <neo/fft/fft.hpp>
 #include <neo/fft/order.hpp>
+#include <neo/math/conj.hpp>
 
 namespace neo::fft {
 
@@ -43,8 +44,7 @@ struct fallback_rfft_plan
 
         // Fill upper half with conjugate
         for (auto i{coeffs}; i < _size; ++i) {
-            using std::conj;
-            buf[i] = conj(buf[_size - i]);
+            buf[i] = math::conj(buf[_size - i]);
         }
 
         _fft(buf, direction::backward);

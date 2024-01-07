@@ -483,7 +483,7 @@ static auto test_simd_fixed_point()
     }
 }
 
-#if defined(NEO_HAS_SIMD_SSE2)
+#if defined(NEO_HAS_ISA_SSE2)
 
 TEMPLATE_TEST_CASE("neo/fixed_point: batch", "", neo::q7x16, neo::q15x8)
 {
@@ -494,7 +494,7 @@ TEMPLATE_TEST_CASE("neo/fixed_point: batch", "", neo::q7x16, neo::q15x8)
 
 #endif
 
-#if defined(NEO_HAS_SIMD_AVX2)
+#if defined(NEO_HAS_ISA_AVX2)
 
 TEMPLATE_TEST_CASE("neo/fixed_point: batch", "", neo::q7x32, neo::q15x16)
 {
@@ -505,7 +505,7 @@ TEMPLATE_TEST_CASE("neo/fixed_point: batch", "", neo::q7x32, neo::q15x16)
 
 #endif
 
-#if defined(NEO_HAS_SIMD_AVX512BW)
+#if defined(NEO_HAS_ISA_AVX512BW)
 
 TEMPLATE_TEST_CASE("neo/fixed_point: batch", "", neo::q7x64, neo::q15x32)
 {

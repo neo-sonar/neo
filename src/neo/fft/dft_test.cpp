@@ -60,7 +60,7 @@ auto test_dft_plan()
             CAPTURE(i);
 
             auto const n     = static_cast<double>(size);
-            auto const scale = neo::ilog2(size) * 4;
+            auto const scale = neo::bit_log2(size) * 4;
             REQUIRE(x[i].real() == Catch::Approx(sig[i].real() * n).scale(scale));
             REQUIRE(x[i].imag() == Catch::Approx(sig[i].imag() * n).scale(scale));
         }

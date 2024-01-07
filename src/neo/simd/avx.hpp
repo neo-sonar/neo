@@ -12,23 +12,7 @@
 
 namespace neo {
 
-NEO_ALWAYS_INLINE auto cadd(__m256 a, __m256 b) noexcept -> __m256 { return _mm256_add_ps(a, b); }
-
-NEO_ALWAYS_INLINE auto csub(__m256 a, __m256 b) noexcept -> __m256 { return _mm256_sub_ps(a, b); }
-
-NEO_ALWAYS_INLINE auto cmul(__m256 a, __m256 b) noexcept -> __m256
-{
-    auto const cccc = _mm256_mul_ps(a, _mm256_moveldup_ps(b));
-    auto const baba = _mm256_shuffle_ps(a, a, 0xB1);
-    auto const dddd = _mm256_mul_ps(baba, _mm256_movehdup_ps(b));
-    return _mm256_addsub_ps(cccc, dddd);
-}
-
-NEO_ALWAYS_INLINE auto cadd(__m256d a, __m256d b) noexcept -> __m256d { return _mm256_add_pd(a, b); }
-
-NEO_ALWAYS_INLINE auto csub(__m256d a, __m256d b) noexcept -> __m256d { return _mm256_sub_pd(a, b); }
-
-#if defined(NEO_HAS_BUILTIN_FLOAT16) and defined(NEO_HAS_SIMD_F16C)
+#if defined(NEO_HAS_BUILTIN_FLOAT16) and defined(NEO_HAS_ISA_F16C)
 struct alignas(16) float16x8
 {
     using value_type    = _Float16;

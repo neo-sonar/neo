@@ -4,9 +4,9 @@
 
 #include <neo/config.hpp>
 
+#include <neo/bit/bit_log2.hpp>
 #include <neo/complex/complex.hpp>
 #include <neo/container/mdspan.hpp>
-#include <neo/math/ilog2.hpp>
 #include <neo/math/ipow.hpp>
 
 #include <utility>
@@ -22,7 +22,7 @@ struct c2c_dit2_v1
     auto operator()(Vec x, auto const& twiddles) const noexcept -> void
     {
         auto const size  = x.size();
-        auto const order = static_cast<std::int32_t>(ilog2(size));
+        auto const order = static_cast<std::int32_t>(bit_log2(size));
 
         {
             // stage 0
@@ -125,7 +125,7 @@ struct c2c_dit2_v3
     auto operator()(Vec x, auto const& twiddles) const noexcept -> void
     {
         auto const size  = x.size();
-        auto const order = ilog2(size);
+        auto const order = bit_log2(size);
 
         {
             // stage 0

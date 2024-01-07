@@ -13,7 +13,7 @@ template<typename Scalar, inout_object InOutObj>
 constexpr auto scale(Scalar alpha, InOutObj obj) -> void
 {
 #if defined(NEO_HAS_CBLAS)
-    if constexpr (InOutObj::rank() == 1 and has_default_accessor<InOutObj>) {
+    if constexpr (always_vectorizable<InOutObj>) {
         auto const n      = obj.extent(0);
         auto const stride = obj.stride(0);
         auto* const ptr   = obj.data_handle();

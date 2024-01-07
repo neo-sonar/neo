@@ -2,7 +2,7 @@
 
 #pragma once
 
-#include <neo/math/bit_cast.hpp>
+#include <neo/bit/bit_cast.hpp>
 
 #include <cstdint>
 

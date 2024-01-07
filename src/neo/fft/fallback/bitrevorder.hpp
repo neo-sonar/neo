@@ -2,9 +2,10 @@
 
 #pragma once
 
+#include <neo/bit/bit_log2.hpp>
 #include <neo/complex/complex.hpp>
+#include <neo/complex/split_complex.hpp>
 #include <neo/container/mdspan.hpp>
-#include <neo/math/ilog2.hpp>
 
 #include <cstddef>
 #include <span>
@@ -18,7 +19,7 @@ struct bitrevorder_plan
     explicit bitrevorder_plan(std::size_t order) : _table{make(std::size_t(1) << order)} {}
 
     template<inout_vector Vec>
-        requires complex<typename Vec::value_type>
+        requires complex<value_type_t<Vec>>
     auto operator()(Vec x) -> void
     {
         for (auto i{0U}; i < _table.size(); ++i) {
@@ -29,7 +30,7 @@ struct bitrevorder_plan
     }
 
     template<inout_vector Vec>
-        requires std::floating_point<typename Vec::value_type>
+        requires std::floating_point<value_type_t<Vec>>
     auto operator()(Vec x) -> void
     {
         for (auto i{0U}; i < _table.size(); ++i) {
@@ -46,10 +47,23 @@ struct bitrevorder_plan
         }
     }
 
+    template<inout_vector Vec>
+        requires std::floating_point<value_type_t<Vec>>
+    auto operator()(split_complex<Vec> x) -> void
+    {
+        for (auto i{0U}; i < _table.size(); ++i) {
+            auto const other_idx = _table[i];
+            if (i < other_idx) {
+                std::swap(x.real[i], x.real[other_idx]);
+                std::swap(x.imag[i], x.imag[other_idx]);
+            }
+        }
+    }
+
 private:
     [[nodiscard]] static auto make(std::size_t size) -> std::vector<std::uint32_t>
     {
-        auto const order = ilog2(size);
+        auto const order = bit_log2(size);
         auto table       = std::vector<std::uint32_t>(size, 0);
         for (auto i{0U}; i < size; ++i) {
             for (auto j{0U}; j < order; ++j) {

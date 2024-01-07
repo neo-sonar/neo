@@ -345,7 +345,7 @@ private:
     std::vector<FixedPoint> _out;
 };
 
-#if defined(NEO_HAS_BUILTIN_FLOAT16) and defined(NEO_HAS_SIMD_F16C)
+#if defined(NEO_HAS_BUILTIN_FLOAT16) and defined(NEO_HAS_ISA_F16C)
 template<std::size_t Size>
 struct float16_mul_bench
 {
@@ -393,10 +393,10 @@ auto main() -> int
     timeit("mul(q7):     ", 1, n, fixed_point_mul<neo::q7, n>{});
     timeit("mul(q15):    ", 2, n, fixed_point_mul<neo::q15, n>{});
     timeit("mul(fxp_14): ", 2, n, fixed_point_mul<neo::fixed_point<int16_t, 14>, n>{});
-#if defined(NEO_HAS_BUILTIN_FLOAT16) and defined(NEO_HAS_SIMD_F16C)
+#if defined(NEO_HAS_BUILTIN_FLOAT16) and defined(NEO_HAS_ISA_F16C)
     timeit("mul(f16f32): ", 2, n, float16_mul_bench<n>{});
 #endif
-#if defined(NEO_HAS_SIMD_F16C) or defined(NEO_HAS_SIMD_NEON)
+#if defined(NEO_HAS_ISA_F16C) or defined(NEO_HAS_ISA_NEON)
     // timeit("mul(_Float16): ", 2, n, float_mul<_Float16, n>{});
 #endif
 
@@ -409,7 +409,7 @@ auto main() -> int
     // timeit("cmul(complex<cf8>):         ", 2, n, cfloat_mul<neo::complex64, neo::scalar_complex<int8_t>, n>{});
     // timeit("cmul(complex<cf16>):        ", 4, n, cfloat_mul<neo::complex64, neo::scalar_complex<int16_t>, n>{});
 
-#if defined(NEO_HAS_SIMD_F16C) or defined(NEO_HAS_SIMD_NEON)
+#if defined(NEO_HAS_ISA_F16C) or defined(NEO_HAS_ISA_NEON)
     // timeit("cmul(complex32):            ", 4, n, float_mul<neo::scalar_complex<_Float16>, n>{});
 #endif
 
@@ -423,39 +423,39 @@ auto main() -> int
     // timeit("cmulp(q15):      ", 4, n, cmulp<neo::q15, n>{});
     // timeit("cmulp(fxp_14):   ", 4, n, cmulp<neo::fixed_point<int16_t, 14>, n>{});
 
-#if defined(NEO_HAS_SIMD_F16C) or defined(NEO_HAS_SIMD_NEON)
+#if defined(NEO_HAS_ISA_F16C) or defined(NEO_HAS_ISA_NEON)
     // timeit("cmulp(_Float16): ", 4, n, cmulp<_Float16, n>{});
 #endif
     timeit("cmulp(float):    ", 8, n, cmulp<float, n>{});
     timeit("cmulp(double):   ", 16, n, cmulp<double, n>{});
     std::puts("\n");
 
-#if defined(NEO_HAS_SIMD_SSE41)
+#if defined(NEO_HAS_ISA_SSE41)
     timeit("cmulp_batch_fixed_point(q7x16):  ", 2, n, cmulp_batch_fixed_point<neo::q7x16, n>{});
     timeit("cmulp_batch_fixed_point(q15x8):  ", 4, n, cmulp_batch_fixed_point<neo::q15x8, n>{});
 
 #endif
 
-#if defined(NEO_HAS_SIMD_AVX2)
+#if defined(NEO_HAS_ISA_AVX2)
     timeit("cmulp_batch_fixed_point(q15x16): ", 4, n, cmulp_batch_fixed_point<neo::q15x16, n>{});
 #endif
 
-#if defined(NEO_HAS_SIMD_AVX512BW)
+#if defined(NEO_HAS_ISA_AVX512BW)
     timeit("cmulp_batch_fixed_point(q15x32): ", 4, n, cmulp_batch_fixed_point<neo::q15x32, n>{});
 #endif
     std::puts("\n");
 
-#if defined(NEO_HAS_SIMD_SSE2)
+#if defined(NEO_HAS_ISA_SSE2)
     timeit("cmulp_batch_float(float32x4): ", 8, n, cmulp_batch_float<neo::float32x4, n>{});
     timeit("cmulp_batch_float(float64x2): ", 16, n, cmulp_batch_float<neo::float64x2, n>{});
 #endif
 
-#if defined(NEO_HAS_SIMD_AVX)
+#if defined(NEO_HAS_ISA_AVX)
     timeit("cmulp_batch_float(float32x8): ", 8, n, cmulp_batch_float<neo::float32x8, n>{});
     timeit("cmulp_batch_float(float64x4): ", 16, n, cmulp_batch_float<neo::float64x4, n>{});
 #endif
 
-#if defined(NEO_HAS_SIMD_AVX512F)
+#if defined(NEO_HAS_ISA_AVX512F)
     timeit("cmulp_batch_float(float32x16): ", 8, n, cmulp_batch_float<neo::float32x16, n>{});
     timeit("cmulp_batch_float(float64x8): ", 16, n, cmulp_batch_float<neo::float64x8, n>{});
 #endif

@@ -6,9 +6,10 @@ namespace neo::fft {
 
 enum struct norm
 {
+    none,
     backward,
-    ortho,
     forward,
+    ortho,
 };
 
 }  // namespace neo::fft

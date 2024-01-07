@@ -53,10 +53,7 @@ struct dense_split_fdl
     {
         auto real = stdex::submdspan(_fdl.to_mdspan(), 0, index, stdex::full_extent);
         auto imag = stdex::submdspan(_fdl.to_mdspan(), 1, index, stdex::full_extent);
-        for (auto i{0}; i < static_cast<int>(input.extent(0)); ++i) {
-            real[i] = static_cast<Float>(input[i].real());
-            imag[i] = static_cast<Float>(input[i].imag());
-        }
+        copy(input, split_complex{real, imag});
     }
 
 private:

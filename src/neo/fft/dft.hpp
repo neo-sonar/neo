@@ -8,6 +8,7 @@
 #include <neo/container/mdspan.hpp>
 #include <neo/fft/direction.hpp>
 #include <neo/fft/fallback/fallback_dft_plan.hpp>
+#include <neo/math/polar.hpp>
 #include <neo/type_traits/value_type_t.hpp>
 
 #if defined(NEO_HAS_INTEL_IPP)
@@ -45,7 +46,7 @@ auto dft(InVec in, OutVec out, direction dir = direction::forward) -> void
         auto tmp = Complex{};
         for (std::size_t n = 0; n < size; ++n) {
             auto const input = in(n);
-            auto const w     = std::polar(Float(1), sign * two_pi * Float(n) * Float(k) / Float(size));
+            auto const w     = math::polar(Float(1), sign * two_pi * Float(n) * Float(k) / Float(size));
             tmp += input * w;
         }
         out(k) = tmp;

@@ -156,4 +156,8 @@ inline constexpr auto has_layout_right = (std::same_as<typename Objs::layout_typ
 template<typename... Objs>
 inline constexpr auto has_layout_left_or_right = has_layout_left<Objs...> or has_layout_right<Objs...>;
 
+template<typename... Objs>
+concept always_vectorizable
+    = (in_vector<Objs> and ...) and has_default_accessor<Objs...> and has_layout_left_or_right<Objs...>;
+
 }  // namespace neo

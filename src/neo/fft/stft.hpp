@@ -6,6 +6,7 @@
 #include <neo/algorithm/fill.hpp>
 #include <neo/algorithm/multiply.hpp>
 #include <neo/algorithm/scale.hpp>
+#include <neo/complex/complex.hpp>
 #include <neo/container/mdspan.hpp>
 #include <neo/fft/rfft.hpp>
 #include <neo/math/idiv.hpp>
@@ -17,9 +18,10 @@ namespace neo::fft {
 
 namespace detail {
 
-[[nodiscard]] constexpr auto num_sftf_frames(int signal_len, int frame_len, int overlap_len) noexcept
+[[nodiscard]] constexpr auto
+num_sftf_frames(std::size_t signal_size, std::size_t frame_size, std::size_t overlap_size) noexcept
 {
-    return 1 + idiv(signal_len - frame_len + overlap_len, frame_len - overlap_len);
+    return idiv(signal_size - frame_size + overlap_size, frame_size - overlap_size) + 1;
 }
 
 }  // namespace detail
@@ -27,20 +29,20 @@ namespace detail {
 template<std::floating_point Float>
 struct stft_options
 {
-    int frame_length{};
-    int transform_size{};
-    int overlap_length{};
-    std::function<Float(int, int)> window{hann_window<Float>{}};
+    std::size_t frame_size{};
+    std::size_t transform_size{};
+    std::size_t overlap_size{};
+    std::function<Float(std::size_t, std::size_t)> window{hann_window<Float>{}};
 };
 
-template<std::floating_point Float>
+template<std::floating_point Float, complex Complex = std::complex<Float>>
 struct stft_plan
 {
-    explicit stft_plan(int transform_size)
+    explicit stft_plan(std::size_t transform_size)
         : stft_plan({
-            .frame_length   = transform_size,
+            .frame_size     = transform_size,
             .transform_size = transform_size,
-            .overlap_length = transform_size / 2,
+            .overlap_size   = transform_size / 2,
         })
     {}
 
@@ -50,28 +52,29 @@ struct stft_plan
     }
 
     template<in_matrix InMat>
+        requires std::convertible_to<value_type_t<InMat>, Float>
     [[nodiscard]] auto operator()(InMat x)
     {
-        auto const frame_len = _options.frame_length;
-        auto const overlap   = _options.overlap_length;
+        auto const frame_len = _options.frame_size;
+        auto const overlap   = _options.overlap_size;
 
-        auto const num_channels = x.extent(0);
-        auto const signal_len   = static_cast<int>(x.extent(1));
+        auto const num_channels = static_cast<std::size_t>(x.extent(0));
+        auto const signal_len   = static_cast<std::size_t>(x.extent(1));
 
         auto const num_bins   = _rfft.size() / 2UL + 1UL;
-        auto const num_frames = static_cast<std::size_t>(detail::num_sftf_frames(signal_len, frame_len, overlap));
+        auto const num_frames = detail::num_sftf_frames(signal_len, frame_len, overlap);
 
         auto const in  = _input.to_mdspan();
         auto const out = _output.to_mdspan();
 
-        auto result = stdex::mdarray<std::complex<Float>, stdex::dextents<size_t, 3>>{
+        auto result = stdex::mdarray<Complex, stdex::dextents<std::size_t, 3>>{
             num_channels,
             num_frames,
             num_bins,
         };
 
-        for (auto ch_idx{0}; std::cmp_less(ch_idx, num_channels); ++ch_idx) {
-            for (auto frame_idx{0}; std::cmp_less(frame_idx, num_frames); ++frame_idx) {
+        for (auto ch_idx = std::size_t(0); ch_idx < num_channels; ++ch_idx) {
+            for (auto frame_idx = std::size_t(0); frame_idx < num_frames; ++frame_idx) {
                 auto const sample_idx  = frame_idx * frame_len - frame_idx * overlap;
                 auto const num_samples = std::min(signal_len - sample_idx, frame_len);
 
@@ -98,7 +101,7 @@ private:
 
     rfft_plan<Float> _rfft{next_order(_options.transform_size)};
     stdex::mdarray<Float, stdex::dextents<std::size_t, 1>> _input{_rfft.size()};
-    stdex::mdarray<std::complex<Float>, stdex::dextents<std::size_t, 1>> _output{_rfft.size()};
+    stdex::mdarray<Complex, stdex::dextents<std::size_t, 1>> _output{_rfft.size()};
 
     stdex::mdarray<Float, stdex::dextents<std::size_t, 1>> _window{_rfft.size()};
 };
@@ -111,7 +114,7 @@ template<in_matrix InMat>
 }
 
 template<in_matrix InMat>
-[[nodiscard]] auto stft(InMat x, int window_size)
+[[nodiscard]] auto stft(InMat x, std::size_t window_size)
 {
     auto plan = stft_plan<typename InMat::value_type>{window_size};
     return plan(x);

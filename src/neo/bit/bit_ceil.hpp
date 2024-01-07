@@ -16,8 +16,15 @@ template<std::unsigned_integral UInt>
     x |= (x >> 1);
     x |= (x >> 2);
     x |= (x >> 4);
-    x |= (x >> 8);
-    x |= (x >> 16);
+    if constexpr (sizeof(UInt) > 1) {
+        x |= (x >> 8);
+    }
+    if constexpr (sizeof(UInt) > 2) {
+        x |= (x >> 16);
+    }
+    if constexpr (sizeof(UInt) > 4) {
+        x |= (x >> 32);
+    }
     return x + 1;
 }
 

@@ -12,9 +12,7 @@
 #include <neo/container/mdspan.hpp>
 #include <neo/convolution/mode.hpp>
 #include <neo/fft/rfft.hpp>
-#include <neo/math/bit_ceil.hpp>
 #include <neo/math/idiv.hpp>
-#include <neo/math/ilog2.hpp>
 
 #include <cassert>
 #include <functional>

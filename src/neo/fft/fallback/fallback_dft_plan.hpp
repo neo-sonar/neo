@@ -8,8 +8,8 @@
 #include <neo/complex/complex.hpp>
 #include <neo/container/mdspan.hpp>
 #include <neo/fft/fft.hpp>
-#include <neo/math/bit_ceil.hpp>
-#include <neo/math/ilog2.hpp>
+#include <neo/math/conj.hpp>
+#include <neo/math/polar.hpp>
 
 #include <complex>
 #include <concepts>
@@ -37,8 +37,8 @@ struct fallback_dft_plan
         for (std::size_t i{0}; i < size; ++i) {
             auto const j = static_cast<Float>((i * i) % (size * 2));
 
-            wf[i] = std::polar(Float(1), j * coef_forward);
-            wb[i] = std::polar(Float(1), j * coef_backward);
+            wf[i] = math::polar(Float(1), j * coef_forward);
+            wb[i] = math::polar(Float(1), j * coef_backward);
         }
     }
 
@@ -60,7 +60,7 @@ struct fallback_dft_plan
         b[0] = w[0];
         for (std::size_t i{1}; i < size(); ++i) {
             auto const m = b.extent(0);
-            auto const c = std::conj(w[i]);
+            auto const c = math::conj(w[i]);
 
             b[i]     = c;
             b[m - i] = c;

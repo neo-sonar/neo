@@ -9,12 +9,18 @@
 #include "dsp/DenseConvolution.hpp"
 #include "dsp/Spectrum.hpp"
 
-#include <neo/algorithm/normalize_peak.hpp>
-#include <neo/algorithm/root_mean_squared_error.hpp>
-#include <neo/fft/rfftfreq.hpp>
-#include <neo/fft/stft.hpp>
-#include <neo/math/a_weighting.hpp>
-#include <neo/unit/decibel.hpp>
+#include <neo/algorithm.hpp>
+#include <neo/bit.hpp>
+#include <neo/complex.hpp>
+#include <neo/config.hpp>
+#include <neo/container.hpp>
+#include <neo/convolution.hpp>
+#include <neo/fft.hpp>
+#include <neo/fixed_point.hpp>
+#include <neo/math.hpp>
+#include <neo/simd.hpp>
+#include <neo/type_traits.hpp>
+#include <neo/unit.hpp>
 
 #include <juce_dsp/juce_dsp.h>
 
@@ -237,7 +243,7 @@ auto BenchmarkTab::selectSignalFile() -> void
 
 auto BenchmarkTab::loadSignalFile(juce::File const& file) -> void
 {
-    if (_spec.sampleRate == 0.0) {
+    if (_spec.sampleRate <= 0.0) {
         return;
     }
     if (not file.existsAsFile()) {
@@ -461,11 +467,11 @@ auto BenchmarkTab::runConvolverTests() -> void {}
 
 auto BenchmarkTab::runSparseQualityTests() -> void
 {
-    auto const stftSize    = static_cast<int>(_stftWindowSize.getValue());
+    auto const stftSize    = static_cast<std::size_t>(static_cast<int>(_stftWindowSize.getValue()));
     auto const stftOptions = neo::fft::stft_options<double>{
-        .frame_length   = stftSize,
+        .frame_size     = stftSize,
         .transform_size = stftSize * 2,
-        .overlap_length = stftSize / 2,
+        .overlap_size   = stftSize / 2,
     };
     auto stftPlan = neo::fft::stft_plan<double>{stftOptions};
 

@@ -20,9 +20,9 @@ TEMPLATE_TEST_CASE("neo/fft: stft", "", float, double)
     auto const signal        = stdex::mdarray<Float, stdex::dextents<std::size_t, 2>>{1, signal_length};
 
     auto const no_overlap_options = neo::fft::stft_options<Float>{
-        .frame_length   = 256,
+        .frame_size     = 256,
         .transform_size = 256,
-        .overlap_length = 0,
+        .overlap_size   = 0,
     };
 
     auto no_overlap = neo::fft::stft(signal.to_mdspan(), no_overlap_options);

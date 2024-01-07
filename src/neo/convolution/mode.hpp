@@ -4,6 +4,8 @@
 
 #include <neo/config.hpp>
 
+#include <neo/type_traits/always_false.hpp>
+
 namespace neo::convolution {
 
 enum struct mode

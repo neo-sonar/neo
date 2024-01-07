@@ -10,8 +10,6 @@
 #include <neo/complex.hpp>
 #include <neo/container/mdspan.hpp>
 #include <neo/fft.hpp>
-#include <neo/math/bit_ceil.hpp>
-#include <neo/math/ilog2.hpp>
 
 #include <cassert>
 #include <functional>

@@ -36,6 +36,10 @@ struct intel_mkl_fft_plan
     intel_mkl_fft_plan(intel_mkl_fft_plan&& other)                    = default;
     auto operator=(intel_mkl_fft_plan&& other) -> intel_mkl_fft_plan& = default;
 
+    [[nodiscard]] static constexpr auto max_order() noexcept -> fft::order { return fft::order{27}; }
+
+    [[nodiscard]] static constexpr auto max_size() noexcept -> size_type { return fft::size(max_order()); }
+
     [[nodiscard]] auto order() const noexcept -> fft::order { return _order; }
 
     [[nodiscard]] auto size() const noexcept -> size_type { return fft::size(order()); }
@@ -54,7 +58,7 @@ struct intel_mkl_fft_plan
             }
         };
 
-        if constexpr (has_layout_left_or_right<InOutVec> and has_default_accessor<InOutVec>) {
+        if constexpr (always_vectorizable<InOutVec>) {
             perform(x.data_handle());
         } else {
             copy(x, _buffer.to_mdspan());
@@ -73,6 +77,10 @@ private:
 
     [[nodiscard]] static auto make(fft::order order)
     {
+        if (order > max_order()) {
+            throw std::runtime_error{"mkl: unsupported order '" + std::to_string(int(order)) + "'"};
+        }
+
         auto* handle = DFTI_DESCRIPTOR_HANDLE{};
         DftiCreateDescriptor(
             &handle,
@@ -87,7 +95,7 @@ private:
     }
 
     fft::order _order;
-    std::unique_ptr<handle_t> _handle{nullptr};
+    std::unique_ptr<handle_t> _handle;
     stdex::mdarray<Complex, stdex::dextents<size_t, 1>> _buffer{size()};
 };
 

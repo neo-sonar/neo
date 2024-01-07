@@ -20,9 +20,10 @@ target_sources(neosonar-neo-tests
         "${CMAKE_SOURCE_DIR}/src/neo/algorithm/standard_deviation_test.cpp"
         "${CMAKE_SOURCE_DIR}/src/neo/algorithm/variance_test.cpp"
 
+        "${CMAKE_SOURCE_DIR}/src/neo/bit/bit_ceil_test.cpp"
+        "${CMAKE_SOURCE_DIR}/src/neo/bit/bit_log2_test.cpp"
+
         "${CMAKE_SOURCE_DIR}/src/neo/complex/complex_test.cpp"
-        "${CMAKE_SOURCE_DIR}/src/neo/complex/interleave_complex_test.cpp"
-        "${CMAKE_SOURCE_DIR}/src/neo/complex/parallel_complex_test.cpp"
         "${CMAKE_SOURCE_DIR}/src/neo/complex/scalar_complex_test.cpp"
         "${CMAKE_SOURCE_DIR}/src/neo/complex/split_complex_test.cpp"
 
@@ -50,9 +51,10 @@ target_sources(neosonar-neo-tests
         "${CMAKE_SOURCE_DIR}/src/neo/fixed_point/fixed_point_test.cpp"
 
         "${CMAKE_SOURCE_DIR}/src/neo/math/a_weighting_test.cpp"
-        "${CMAKE_SOURCE_DIR}/src/neo/math/bit_ceil_test.cpp"
-        "${CMAKE_SOURCE_DIR}/src/neo/math/ilog2_test.cpp"
+        "${CMAKE_SOURCE_DIR}/src/neo/math/abs_test.cpp"
+        "${CMAKE_SOURCE_DIR}/src/neo/math/imag_test.cpp"
         "${CMAKE_SOURCE_DIR}/src/neo/math/ipow_test.cpp"
+        "${CMAKE_SOURCE_DIR}/src/neo/math/real_test.cpp"
         "${CMAKE_SOURCE_DIR}/src/neo/math/windowing_test.cpp"
 
         "${CMAKE_SOURCE_DIR}/src/neo/simd_test.cpp"

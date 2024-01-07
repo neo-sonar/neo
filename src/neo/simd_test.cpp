@@ -33,18 +33,22 @@ static auto test()
     test(std::multiplies{}, Float(1), Float(2), Float(2));
 }
 
-#if defined(NEO_HAS_BUILTIN_FLOAT16) and defined(NEO_HAS_SIMD_F16C)
+#if defined(NEO_HAS_ISA_SSE2)
+TEMPLATE_TEST_CASE("neo/simd: batch", "", neo::float32x, neo::float64x) { test<TestType>(); }
+#endif
+
+#if defined(NEO_HAS_BUILTIN_FLOAT16) and defined(NEO_HAS_ISA_F16C)
 TEMPLATE_TEST_CASE("neo/simd: batch", "", neo::float16x8, neo::float16x16) { test<TestType>(); }
 #endif
 
-#if defined(NEO_HAS_SIMD_SSE2)
+#if defined(NEO_HAS_ISA_SSE2)
 TEMPLATE_TEST_CASE("neo/simd: batch", "", neo::float32x4, neo::float64x2) { test<TestType>(); }
 #endif
 
-#if defined(NEO_HAS_SIMD_AVX)
+#if defined(NEO_HAS_ISA_AVX)
 TEMPLATE_TEST_CASE("neo/simd: batch", "", neo::float32x8, neo::float64x4) { test<TestType>(); }
 #endif
 
-#if defined(NEO_HAS_SIMD_AVX512F)
+#if defined(NEO_HAS_ISA_AVX512F)
 TEMPLATE_TEST_CASE("neo/simd: batch", "", neo::float32x16, neo::float64x8) { test<TestType>(); }
 #endif

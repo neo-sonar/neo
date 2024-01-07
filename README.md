@@ -6,7 +6,7 @@
 
 ## Documentation
 
-- [FFT](./doc/fft.md)
+- [FFT](./doc/transforms.md)
 - [SIMD](./doc/simd.md)
 - [Convolution](./doc/convolution.md)
 - [Python](./doc/python.md)

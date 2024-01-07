@@ -63,7 +63,7 @@ template<typename Complex, typename URNG = std::mt19937>
 }
 
 template<std::integral Int>
-[[nodiscard]] constexpr auto ilog2(Int x) -> Int
+[[nodiscard]] constexpr auto bit_log2(Int x) -> Int
 {
     auto result = Int{0};
     for (; x > Int(1); x >>= Int(1)) {
@@ -146,7 +146,7 @@ auto bitrevorder(std::span<ElementType> xre, std::span<ElementType> xim, IndexTa
 
 [[nodiscard]] inline auto make_bitrevorder_table(std::size_t size) -> std::vector<std::size_t>
 {
-    auto const order = ilog2(size);
+    auto const order = bit_log2(size);
     auto table       = std::vector<std::size_t>(size, 0);
     for (auto i{0U}; i < size; ++i) {
         for (auto j{0U}; j < order; ++j) {
@@ -412,7 +412,7 @@ auto main() -> int
     auto x = std::vector(N, std::complex<double>{0, 0});
     x[0]   = {1.0F, 0.0F};
 
-    auto plan = static_fft_plan<double, ilog2(N)>{};
+    auto plan = static_fft_plan<double, bit_log2(N)>{};
 
     plan(x, direction::forward);
     for (auto z : x)

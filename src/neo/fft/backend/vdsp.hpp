@@ -9,6 +9,7 @@
 #include <neo/container/mdspan.hpp>
 #include <neo/fft/direction.hpp>
 #include <neo/fft/order.hpp>
+#include <neo/type_traits/always_false.hpp>
 
 #include <Accelerate/Accelerate.h>
 
@@ -50,6 +51,10 @@ struct apple_vdsp_fft_plan
         return *this;
     }
 
+    [[nodiscard]] static constexpr auto max_order() noexcept -> fft::order { return fft::order{27}; }
+
+    [[nodiscard]] static constexpr auto max_size() noexcept -> size_type { return fft::size(max_order()); }
+
     [[nodiscard]] auto order() const noexcept -> fft::order;
     [[nodiscard]] auto size() const noexcept -> size_type;
 
@@ -69,6 +74,10 @@ template<typename Complex>
 apple_vdsp_fft_plan<Complex>::apple_vdsp_fft_plan(fft::order order)
     : _order{order}
     , _plan{[order] {
+    if (order > max_order()) {
+        throw std::runtime_error{"vdsp: unsupported order '" + std::to_string(int(order)) + "'"};
+    }
+
     if constexpr (std::same_as<real_type, float>) {
         return vDSP_create_fftsetup(static_cast<vDSP_Length>(order), 2);
     } else {
@@ -238,7 +247,7 @@ auto apple_vdsp_split_fft_plan<Float>::operator()(split_complex<InOutVec> x, dir
 
     auto const sign = dir == direction::forward ? kFFTDirection_Forward : kFFTDirection_Inverse;
 
-    if constexpr (has_default_accessor<InOutVec> and has_layout_left_or_right<InOutVec>) {
+    if constexpr (always_vectorizable<InOutVec>) {
         auto const split_x = split_complex{
             .realp = x.real.data_handle(),
             .imagp = x.imag.data_handle(),
@@ -270,7 +279,7 @@ auto apple_vdsp_split_fft_plan<Float>::operator()(
 
     auto const sign = dir == direction::forward ? kFFTDirection_Forward : kFFTDirection_Inverse;
 
-    if constexpr (has_default_accessor<InVec, OutVec> and has_layout_left_or_right<InVec, OutVec>) {
+    if constexpr (always_vectorizable<InVec, OutVec>) {
         auto const split_in  = split_complex{.realp = in.real.data_handle(), .imagp = in.imag.data_handle()};
         auto const split_out = split_complex{.realp = out.real.data_handle(), .imagp = out.imag.data_handle()};
 

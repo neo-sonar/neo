@@ -4,6 +4,7 @@
 
 #include <neo/complex.hpp>
 #include <neo/container/mdspan.hpp>
+#include <neo/math/conj.hpp>
 
 #include <concepts>
 
@@ -19,8 +20,7 @@ struct conjugate_view
 
     [[nodiscard]] constexpr auto operator[](std::integral auto index) const noexcept -> value_type
     {
-        using std::conj;
-        return conj(_twiddles[index]);
+        return neo::math::conj(_twiddles[index]);
     }
 
 private:

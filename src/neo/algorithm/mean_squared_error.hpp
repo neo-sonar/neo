@@ -6,6 +6,7 @@
 
 #include <neo/complex/complex.hpp>
 #include <neo/container/mdspan.hpp>
+#include <neo/math/abs.hpp>
 
 #include <cassert>
 #include <concepts>
@@ -21,8 +22,7 @@ template<in_object InObjL, in_object InObjR>
 
     auto abs_if_needed = [](auto val) {
         if constexpr (complex<Scalar>) {
-            using std::abs;
-            return abs(val);
+            return math::abs(val);
         } else {
             return val;
         }

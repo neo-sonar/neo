@@ -12,18 +12,14 @@
 
 #include <cstdlib>
 
-template<neo::complex Complex>
-using split_upola_convolver = neo::convolution::uniform_partitioned_convolver<
-    neo::convolution::overlap_add<Complex>,
-    neo::convolution::dense_split_fdl<typename Complex::value_type>,
-    neo::convolution::dense_split_filter<typename Complex::value_type>>;
+namespace conv = neo::convolution;
 
-#if defined(NEO_HAS_SIMD_F16C) or defined(NEO_HAS_SIMD_NEON)
+#if defined(NEO_HAS_BUILTIN_FLOAT16)
 template<neo::complex Complex>
-using split_upola_convolver_f16 = neo::convolution::uniform_partitioned_convolver<
-    neo::convolution::overlap_add<Complex>,
-    neo::convolution::dense_split_fdl<_Float16>,
-    neo::convolution::dense_split_filter<_Float16>>;
+using split_upola_convolver_f16 = conv::uniform_partitioned_convolver<
+    conv::overlap_add<Complex>,
+    conv::dense_split_fdl<_Float16>,
+    conv::dense_split_filter<_Float16>>;
 #endif
 
 template<typename Convolver>
@@ -32,9 +28,8 @@ convolve(neo::audio_buffer<float> const& signal, neo::audio_buffer<float> const&
     -> neo::audio_buffer<float>
 {
     auto impulse_copy = impulse;
-    neo::convolution::normalize_impulse(impulse_copy.to_mdspan());
-    auto const partitions
-        = neo::convolution::uniform_partition(impulse_copy.to_mdspan(), static_cast<size_t>(block_size));
+    conv::normalize_impulse(impulse_copy.to_mdspan());
+    auto const partitions = conv::uniform_partition(impulse_copy.to_mdspan(), static_cast<size_t>(block_size));
 
     auto output       = neo::audio_buffer<float>{signal.extent(0), signal.extent(1)};
     auto block_buffer = stdex::mdarray<float, stdex::dextents<size_t, 1>>(size_t(block_size));
@@ -103,9 +98,9 @@ auto main(int argc, char** argv) -> int
     );
 
     {
-        auto const start = std::chrono::system_clock::now();
-        auto output      = convolve<neo::convolution::upola_convolver<std::complex<float>>>(signal, filter, block_size);
-        auto const stop  = std::chrono::system_clock::now();
+        auto const start   = std::chrono::system_clock::now();
+        auto output        = convolve<conv::upola_convolver<std::complex<float>>>(signal, filter, block_size);
+        auto const stop    = std::chrono::system_clock::now();
         auto const runtime = std::chrono::duration_cast<std::chrono::duration<double>>(stop - start);
 
         neo::normalize_peak(output.to_mdspan());
@@ -119,7 +114,7 @@ auto main(int argc, char** argv) -> int
 
     {
         auto const start   = std::chrono::system_clock::now();
-        auto output        = convolve<split_upola_convolver<std::complex<float>>>(signal, filter, block_size);
+        auto output        = convolve<conv::split_upola_convolver<std::complex<float>>>(signal, filter, block_size);
         auto const stop    = std::chrono::system_clock::now();
         auto const runtime = std::chrono::duration_cast<std::chrono::duration<double>>(stop - start);
 
@@ -132,7 +127,7 @@ auto main(int argc, char** argv) -> int
         );
     }
 
-#if defined(NEO_HAS_SIMD_F16C) or defined(NEO_HAS_SIMD_NEON)
+#if defined(NEO_HAS_BUILTIN_FLOAT16)
     {
         auto const start   = std::chrono::system_clock::now();
         auto output        = convolve<split_upola_convolver_f16<std::complex<float>>>(signal, filter, block_size);

@@ -9,11 +9,13 @@
 #include <neo/container/mdspan.hpp>
 #include <neo/fft/direction.hpp>
 #include <neo/fft/order.hpp>
+#include <neo/type_traits/always_false.hpp>
 
 #include <ipp.h>
 
 #include <cassert>
 #include <memory>
+#include <stdexcept>
 
 namespace neo::fft {
 
@@ -25,16 +27,32 @@ struct ipp_free
 
 using ipp_buffer = std::unique_ptr<Ipp8u[], ipp_free>;
 
-auto ipp_check(auto status) -> void
+inline auto ipp_check(int status) -> void
 {
+    auto const error_msg = [](int ec) -> std::string {
+        using namespace std::string_view_literals;
+
+        constexpr auto const errors = std::array{
+            std::pair{ ippStsNullPtrErr,    "ipp: internal error"sv},
+            std::pair{ippStsFftOrderErr, "ipp: unsupported order"sv},
+            std::pair{ ippStsFftFlagErr, "ipp: unsupported flags"sv},
+        };
+
+        auto const found = std::ranges::find(errors, ec, &std::pair<int, std::string_view>::first);
+        if (found == std::ranges::end(errors)) {
+            return "ipp: unkown error" + std::to_string(ec);
+        }
+        return std::string{found->second};
+    };
+
     if (status != ippStsNoErr) {
-        assert(false);
+        throw std::runtime_error{error_msg(status)};
     }
 }
 
-template<typename Traits>
+template<typename Setup>
 [[nodiscard]] auto make_ipp_fft_handle(std::size_t order)
-    -> std::tuple<typename Traits::handle_type*, ipp_buffer, ipp_buffer>
+    -> std::tuple<typename Setup::handle_type*, ipp_buffer, ipp_buffer>
 {
     static constexpr auto flag = IPP_FFT_NODIV_BY_ANY;
     static constexpr auto hint = ippAlgHintNone;
@@ -42,19 +60,19 @@ template<typename Traits>
     int spec_size = 0;
     int init_size = 0;
     int work_size = 0;
-    ipp_check(Traits::get_size(static_cast<int>(order), flag, hint, &spec_size, &init_size, &work_size));
+    ipp_check(Setup::get_size(static_cast<int>(order), flag, hint, &spec_size, &init_size, &work_size));
 
-    auto* handle        = static_cast<typename Traits::handle_type*>(nullptr);
+    auto* handle        = static_cast<typename Setup::handle_type*>(nullptr);
     auto spec_buf       = ipp_buffer{::ippsMalloc_8u(spec_size)};
     auto const init_buf = ipp_buffer{::ippsMalloc_8u(init_size)};
-    ipp_check(Traits::init(&handle, static_cast<int>(order), flag, hint, spec_buf.get(), init_buf.get()));
+    ipp_check(Setup::init(&handle, static_cast<int>(order), flag, hint, spec_buf.get(), init_buf.get()));
 
     return {handle, std::move(spec_buf), ipp_buffer{::ippsMalloc_8u(work_size)}};
 }
 
-template<typename Traits>
+template<typename Setup>
 [[nodiscard]] auto make_ipp_dft_handle(std::size_t size)
-    -> std::tuple<typename Traits::handle_type*, ipp_buffer, ipp_buffer>
+    -> std::tuple<typename Setup::handle_type*, ipp_buffer, ipp_buffer>
 {
     static constexpr auto flag = IPP_FFT_NODIV_BY_ANY;
     static constexpr auto hint = ippAlgHintNone;
@@ -62,19 +80,19 @@ template<typename Traits>
     auto spec_size = 0;
     auto init_size = 0;
     auto work_size = 0;
-    ipp_check(Traits::get_size(static_cast<int>(size), flag, hint, &spec_size, &init_size, &work_size));
+    ipp_check(Setup::get_size(static_cast<int>(size), flag, hint, &spec_size, &init_size, &work_size));
 
     auto const init_buf = ipp_buffer{::ippsMalloc_8u(init_size)};
     auto spec_buf       = ipp_buffer{::ippsMalloc_8u(spec_size)};
-    auto* handle        = reinterpret_cast<typename Traits::handle_type*>(spec_buf.get());
-    ipp_check(Traits::init(static_cast<int>(size), flag, hint, handle, init_buf.get()));
+    auto* handle        = reinterpret_cast<typename Setup::handle_type*>(spec_buf.get());
+    ipp_check(Setup::init(static_cast<int>(size), flag, hint, handle, init_buf.get()));
 
     return {handle, std::move(spec_buf), ipp_buffer{::ippsMalloc_8u(work_size)}};
 }
 
-template<typename Traits>
+template<typename Setup>
 [[nodiscard]] auto make_ipp_dct_handle(std::size_t order)
-    -> std::tuple<typename Traits::handle_type*, ipp_buffer, ipp_buffer>
+    -> std::tuple<typename Setup::handle_type*, ipp_buffer, ipp_buffer>
 {
     static constexpr auto hint = ippAlgHintNone;
 
@@ -83,12 +101,12 @@ template<typename Traits>
     int spec_size = 0;
     int init_size = 0;
     int work_size = 0;
-    ipp_check(Traits::get_size(len, hint, &spec_size, &init_size, &work_size));
+    ipp_check(Setup::get_size(len, hint, &spec_size, &init_size, &work_size));
 
-    auto* handle        = static_cast<typename Traits::handle_type*>(nullptr);
+    auto* handle        = static_cast<typename Setup::handle_type*>(nullptr);
     auto spec_buf       = ipp_buffer{::ippsMalloc_8u(spec_size)};
     auto const init_buf = ipp_buffer{::ippsMalloc_8u(init_size)};
-    ipp_check(Traits::init(&handle, len, hint, spec_buf.get(), init_buf.get()));
+    ipp_check(Setup::init(&handle, len, hint, spec_buf.get(), init_buf.get()));
 
     return {handle, std::move(spec_buf), ipp_buffer{::ippsMalloc_8u(work_size)}};
 }
@@ -105,7 +123,8 @@ struct intel_ipp_fft_plan
 
     explicit intel_ipp_fft_plan(fft::order order) : _order{order}
     {
-        std::tie(_handle, _spec_buf, _work_buf) = detail::make_ipp_fft_handle<traits>(static_cast<size_type>(order));
+        std::tie(_handle, _spec_buf, _work_buf) = detail::make_ipp_fft_handle<setup>(static_cast<size_type>(order));
+        _buffer                                 = stdex::mdarray<Complex, stdex::dextents<size_t, 1>>{size()};
     }
 
     intel_ipp_fft_plan(intel_ipp_fft_plan const& other)                    = delete;
@@ -113,6 +132,10 @@ struct intel_ipp_fft_plan
 
     intel_ipp_fft_plan(intel_ipp_fft_plan&& other)                    = default;
     auto operator=(intel_ipp_fft_plan&& other) -> intel_ipp_fft_plan& = default;
+
+    [[nodiscard]] static constexpr auto max_order() noexcept -> fft::order { return setup::max_order; }
+
+    [[nodiscard]] static constexpr auto max_size() noexcept -> size_type { return fft::size(max_order()); }
 
     [[nodiscard]] auto order() const noexcept -> fft::order { return _order; }
 
@@ -123,14 +146,14 @@ struct intel_ipp_fft_plan
     {
         assert(std::cmp_equal(x.extent(0), size()));
 
-        auto transform = dir == direction::forward ? traits::forward_inplace : traits::backward_inplace;
+        auto transform = dir == direction::forward ? setup::forward_inplace : setup::backward_inplace;
 
-        if constexpr (has_layout_left_or_right<InOutVec> and has_default_accessor<InOutVec>) {
-            auto buffer = reinterpret_cast<typename traits::complex_type*>(x.data_handle());
+        if constexpr (always_vectorizable<InOutVec>) {
+            auto buffer = reinterpret_cast<typename setup::complex_type*>(x.data_handle());
             transform(buffer, _handle, _work_buf.get());
         } else {
             copy(x, _buffer.to_mdspan());
-            auto buffer = reinterpret_cast<typename traits::complex_type*>(_buffer.data());
+            auto buffer = reinterpret_cast<typename setup::complex_type*>(_buffer.data());
             transform(buffer, _handle, _work_buf.get());
             copy(_buffer.to_mdspan(), x);
         }
@@ -142,10 +165,10 @@ struct intel_ipp_fft_plan
         assert(std::cmp_equal(input.extent(0), size()));
         assert(std::cmp_equal(output.extent(0), size()));
 
-        if constexpr (has_default_accessor<InVec, OutVec> and has_layout_left_or_right<InVec, OutVec>) {
-            auto const* in = reinterpret_cast<typename traits::complex_type const*>(input.data_handle());
-            auto* out      = reinterpret_cast<typename traits::complex_type*>(output.data_handle());
-            auto transform = dir == direction::forward ? traits::forward_copy : traits::backward_copy;
+        if constexpr (always_vectorizable<InVec, OutVec>) {
+            auto const* in = reinterpret_cast<typename setup::complex_type const*>(input.data_handle());
+            auto* out      = reinterpret_cast<typename setup::complex_type*>(output.data_handle());
+            auto transform = dir == direction::forward ? setup::forward_copy : setup::backward_copy;
             transform(in, out, _handle, _work_buf.get());
             return;
         }
@@ -157,10 +180,11 @@ struct intel_ipp_fft_plan
     }
 
 private:
-    struct traits_f32
+    struct setup_f32
     {
         using complex_type                     = ::Ipp32fc;
         using handle_type                      = ::IppsFFTSpec_C_32fc;
+        static constexpr auto max_order        = fft::order{28};
         static constexpr auto get_size         = ::ippsFFTGetSize_C_32fc;
         static constexpr auto init             = ::ippsFFTInit_C_32fc;
         static constexpr auto forward_copy     = ::ippsFFTFwd_CToC_32fc;
@@ -169,10 +193,11 @@ private:
         static constexpr auto backward_inplace = ::ippsFFTInv_CToC_32fc_I;
     };
 
-    struct traits_f64
+    struct setup_f64
     {
         using complex_type                     = ::Ipp64fc;
         using handle_type                      = ::IppsFFTSpec_C_64fc;
+        static constexpr auto max_order        = fft::order{27};
         static constexpr auto get_size         = ::ippsFFTGetSize_C_64fc;
         static constexpr auto init             = ::ippsFFTInit_C_64fc;
         static constexpr auto forward_copy     = ::ippsFFTFwd_CToC_64fc;
@@ -181,11 +206,11 @@ private:
         static constexpr auto backward_inplace = ::ippsFFTInv_CToC_64fc_I;
     };
 
-    using traits = std::conditional_t<std::same_as<real_type, float>, traits_f32, traits_f64>;
+    using setup = std::conditional_t<std::same_as<real_type, float>, setup_f32, setup_f64>;
 
     fft::order _order;
-    stdex::mdarray<Complex, stdex::dextents<size_t, 1>> _buffer{size()};
-    typename traits::handle_type* _handle;
+    stdex::mdarray<Complex, stdex::dextents<size_t, 1>> _buffer{};
+    typename setup::handle_type* _handle;
     detail::ipp_buffer _spec_buf;
     detail::ipp_buffer _work_buf;
 };
@@ -199,7 +224,7 @@ struct intel_ipp_dft_plan
 
     explicit intel_ipp_dft_plan(size_type size) : _size{size}
     {
-        std::tie(_handle, _spec_buf, _work_buf) = detail::make_ipp_dft_handle<traits>(size);
+        std::tie(_handle, _spec_buf, _work_buf) = detail::make_ipp_dft_handle<setup>(size);
     }
 
     intel_ipp_dft_plan(intel_ipp_dft_plan const& other)                    = delete;
@@ -227,13 +252,13 @@ struct intel_ipp_dft_plan
         assert(std::cmp_equal(output.extent(0), size()));
 
         auto run = [this, dir](auto const* in_ptr, auto* out_ptr) {
-            auto const* in = reinterpret_cast<typename traits::complex_type const*>(in_ptr);
-            auto* out      = reinterpret_cast<typename traits::complex_type*>(out_ptr);
-            auto transform = dir == direction::forward ? traits::forward : traits::backward;
+            auto const* in = reinterpret_cast<typename setup::complex_type const*>(in_ptr);
+            auto* out      = reinterpret_cast<typename setup::complex_type*>(out_ptr);
+            auto transform = dir == direction::forward ? setup::forward : setup::backward;
             transform(in, out, _handle, _work_buf.get());
         };
 
-        if constexpr (has_default_accessor<InVec, OutVec> and has_layout_left_or_right<InVec, OutVec>) {
+        if constexpr (always_vectorizable<InVec, OutVec>) {
             run(input.data_handle(), output.data_handle());
         } else {
             copy(input, _tmp_in.to_mdspan());
@@ -243,7 +268,7 @@ struct intel_ipp_dft_plan
     }
 
 private:
-    struct traits_f32
+    struct setup_f32
     {
         using complex_type             = ::Ipp32fc;
         using handle_type              = ::IppsDFTSpec_C_32fc;
@@ -253,7 +278,7 @@ private:
         static constexpr auto backward = ::ippsDFTInv_CToC_32fc;
     };
 
-    struct traits_f64
+    struct setup_f64
     {
         using complex_type             = ::Ipp64fc;
         using handle_type              = ::IppsDFTSpec_C_64fc;
@@ -263,12 +288,12 @@ private:
         static constexpr auto backward = ::ippsDFTInv_CToC_64fc;
     };
 
-    using traits = std::conditional_t<std::same_as<typename Complex::value_type, float>, traits_f32, traits_f64>;
+    using setup = std::conditional_t<std::same_as<typename Complex::value_type, float>, setup_f32, setup_f64>;
 
     size_type _size;
     stdex::mdarray<Complex, stdex::dextents<size_t, 1>> _tmp_in{size()};
     stdex::mdarray<Complex, stdex::dextents<size_t, 1>> _tmp_out{size()};
-    typename traits::handle_type* _handle;
+    typename setup::handle_type* _handle;
     detail::ipp_buffer _spec_buf;
     detail::ipp_buffer _work_buf;
 };
@@ -282,7 +307,7 @@ struct intel_ipp_split_fft_plan
 
     explicit intel_ipp_split_fft_plan(fft::order order) : _order{order}
     {
-        std::tie(_handle, _spec_buf, _work_buf) = detail::make_ipp_fft_handle<traits>(static_cast<size_type>(order));
+        std::tie(_handle, _spec_buf, _work_buf) = detail::make_ipp_fft_handle<setup>(static_cast<size_type>(order));
     }
 
     intel_ipp_split_fft_plan(intel_ipp_split_fft_plan const& other)                    = delete;
@@ -301,9 +326,9 @@ struct intel_ipp_split_fft_plan
         assert(std::cmp_equal(x.real.extent(0), size()));
         assert(neo::detail::extents_equal(x.real, x.imag));
 
-        auto transform = dir == direction::forward ? traits::forward_inplace : traits::backward_inplace;
+        auto transform = dir == direction::forward ? setup::forward_inplace : setup::backward_inplace;
 
-        if constexpr (has_layout_left_or_right<InOutVec> and has_default_accessor<InOutVec>) {
+        if constexpr (always_vectorizable<InOutVec>) {
             transform(x.real.data_handle(), x.imag.data_handle(), _handle, _work_buf.get());
         } else {
             always_false<InOutVec>;
@@ -316,12 +341,9 @@ struct intel_ipp_split_fft_plan
         assert(std::cmp_equal(in.real.extent(0), size()));
         assert(neo::detail::extents_equal(in.real, in.imag, out.real, out.imag));
 
-        auto transform = dir == direction::forward ? traits::forward_copy : traits::backward_copy;
+        auto transform = dir == direction::forward ? setup::forward_copy : setup::backward_copy;
 
-        static constexpr auto in_traits  = has_layout_left_or_right<InVec> and has_default_accessor<InVec>;
-        static constexpr auto out_traits = has_layout_left_or_right<OutVec> and has_default_accessor<OutVec>;
-
-        if constexpr (in_traits and out_traits) {
+        if constexpr (always_vectorizable<InVec> and always_vectorizable<OutVec>) {
             transform(
                 in.real.data_handle(),
                 in.imag.data_handle(),
@@ -336,7 +358,7 @@ struct intel_ipp_split_fft_plan
     }
 
 private:
-    struct traits_f32
+    struct setup_f32
     {
         using handle_type                      = ::IppsFFTSpec_C_32f;
         static constexpr auto get_size         = ::ippsFFTGetSize_C_32f;
@@ -347,7 +369,7 @@ private:
         static constexpr auto backward_inplace = ::ippsFFTInv_CToC_32f_I;
     };
 
-    struct traits_f64
+    struct setup_f64
     {
         using handle_type                      = ::IppsFFTSpec_C_64f;
         static constexpr auto get_size         = ::ippsFFTGetSize_C_64f;
@@ -358,11 +380,11 @@ private:
         static constexpr auto backward_inplace = ::ippsFFTInv_CToC_64f_I;
     };
 
-    using traits = std::conditional_t<std::same_as<Float, float>, traits_f32, traits_f64>;
+    using setup = std::conditional_t<std::same_as<Float, float>, setup_f32, setup_f64>;
 
     fft::order _order;
     stdex::mdarray<Float, stdex::dextents<size_t, 2>> _buffer{2, size()};
-    typename traits::handle_type* _handle;
+    typename setup::handle_type* _handle;
     detail::ipp_buffer _spec_buf;
     detail::ipp_buffer _work_buf;
 };
@@ -377,7 +399,7 @@ struct intel_ipp_rfft_plan
 
     explicit intel_ipp_rfft_plan(fft::order order) : _order{order}
     {
-        std::tie(_handle, _spec_buf, _work_buf) = detail::make_ipp_fft_handle<traits>(static_cast<size_type>(order));
+        std::tie(_handle, _spec_buf, _work_buf) = detail::make_ipp_fft_handle<setup>(static_cast<size_type>(order));
     }
 
     intel_ipp_rfft_plan(intel_ipp_rfft_plan const& other)                    = delete;
@@ -395,17 +417,14 @@ struct intel_ipp_rfft_plan
     {
         assert(std::cmp_equal(in.extent(0), size()));
 
-        constexpr auto const in_vectorizable  = has_layout_left_or_right<InVec> and has_default_accessor<InVec>;
-        constexpr auto const out_vectorizable = has_layout_left_or_right<OutVec> and has_default_accessor<OutVec>;
-
-        if constexpr (in_vectorizable and out_vectorizable and (sizeof(complex_type) == sizeof(Float) * 2)) {
+        if constexpr (always_vectorizable<InVec> and always_vectorizable<OutVec> and (sizeof(complex_type) == sizeof(Float) * 2)) {
             auto* const out_ptr = reinterpret_cast<Float*>(out.data_handle());
-            traits::forward_copy(in.data_handle(), out_ptr, _handle, _work_buf.get());
+            setup::forward_copy(in.data_handle(), out_ptr, _handle, _work_buf.get());
         } else {
             auto buf = _buffer.to_mdspan();
             copy(in, stdex::submdspan(buf, std::tuple{0, size()}));
 
-            traits::forward_inplace(_buffer.data(), _handle, _work_buf.get());
+            setup::forward_inplace(_buffer.data(), _handle, _work_buf.get());
 
             auto const coeffs = size() / 2 + 1;
             for (auto i{0U}; i < coeffs; ++i) {
@@ -417,12 +436,9 @@ struct intel_ipp_rfft_plan
     template<in_vector_of<complex_type> InVec, out_vector_of<Float> OutVec>
     auto operator()(InVec in, OutVec out) noexcept -> void
     {
-        constexpr auto const in_vectorizable  = has_layout_left_or_right<InVec> and has_default_accessor<InVec>;
-        constexpr auto const out_vectorizable = has_layout_left_or_right<OutVec> and has_default_accessor<OutVec>;
-
-        if constexpr (in_vectorizable and out_vectorizable and (sizeof(complex_type) == sizeof(Float) * 2)) {
+        if constexpr (always_vectorizable<InVec> and always_vectorizable<OutVec> and (sizeof(complex_type) == sizeof(Float) * 2)) {
             auto* const in_ptr = reinterpret_cast<Float*>(in.data_handle());
-            traits::backward_copy(in_ptr, out.data_handle(), _handle, _work_buf.get());
+            setup::backward_copy(in_ptr, out.data_handle(), _handle, _work_buf.get());
         } else {
             auto buf = _buffer.to_mdspan();
             for (auto i{0U}; i < in.size(); ++i) {
@@ -430,13 +446,13 @@ struct intel_ipp_rfft_plan
                 buf[i * 2 + 1] = imag(in[i]);
             }
 
-            traits::backward_inplace(_buffer.data(), _handle, _work_buf.get());
+            setup::backward_inplace(_buffer.data(), _handle, _work_buf.get());
             copy(stdex::submdspan(buf, std::tuple{0, size()}), out);
         }
     }
 
 private:
-    struct traits_f32
+    struct setup_f32
     {
         using float_type                       = ::Ipp32f;
         using handle_type                      = ::IppsFFTSpec_R_32f;
@@ -448,7 +464,7 @@ private:
         static constexpr auto backward_inplace = ::ippsFFTInv_CCSToR_32f_I;
     };
 
-    struct traits_f64
+    struct setup_f64
     {
         using float_type                       = ::Ipp64f;
         using handle_type                      = ::IppsFFTSpec_R_64f;
@@ -460,11 +476,11 @@ private:
         static constexpr auto backward_inplace = ::ippsFFTInv_CCSToR_64f_I;
     };
 
-    using traits = std::conditional_t<std::same_as<real_type, float>, traits_f32, traits_f64>;
+    using setup = std::conditional_t<std::same_as<real_type, float>, setup_f32, setup_f64>;
 
     fft::order _order;
-    stdex::mdarray<typename traits::float_type, stdex::dextents<size_t, 1>> _buffer{size() * 2};
-    typename traits::handle_type* _handle;
+    stdex::mdarray<typename setup::float_type, stdex::dextents<size_t, 1>> _buffer{size() * 2};
+    typename setup::handle_type* _handle;
     detail::ipp_buffer _spec_buf;
     detail::ipp_buffer _work_buf;
 };
@@ -478,7 +494,7 @@ struct intel_ipp_dct_plan
 
     explicit intel_ipp_dct_plan(fft::order order) : _order{order}
     {
-        std::tie(_handle, _spec_buf, _work_buf) = detail::make_ipp_dct_handle<traits>(static_cast<size_type>(order));
+        std::tie(_handle, _spec_buf, _work_buf) = detail::make_ipp_dct_handle<setup>(static_cast<size_type>(order));
     }
 
     intel_ipp_dct_plan(intel_ipp_dct_plan const& other)                    = delete;
@@ -497,12 +513,12 @@ struct intel_ipp_dct_plan
     {
         auto const buf = _buffer.to_mdspan();
         copy(x, buf);
-        traits::transform_inplace(_buffer.data(), _handle, _work_buf.get());
+        setup::transform_inplace(_buffer.data(), _handle, _work_buf.get());
         copy(buf, x);
     }
 
 private:
-    struct dct2_traits_f32
+    struct dct2_setup_f32
     {
         using value_type                        = ::Ipp32f;
         using handle_type                       = ::IppsDCTFwdSpec_32f;
@@ -512,7 +528,7 @@ private:
         static constexpr auto transform_inplace = ::ippsDCTFwd_32f_I;
     };
 
-    struct dct2_traits_f64
+    struct dct2_setup_f64
     {
         using value_type                        = ::Ipp64f;
         using handle_type                       = ::IppsDCTFwdSpec_64f;
@@ -522,7 +538,7 @@ private:
         static constexpr auto transform_inplace = ::ippsDCTFwd_64f_I;
     };
 
-    struct dct3_traits_f32
+    struct dct3_setup_f32
     {
         using value_type                        = ::Ipp32f;
         using handle_type                       = ::IppsDCTInvSpec_32f;
@@ -532,7 +548,7 @@ private:
         static constexpr auto transform_inplace = ::ippsDCTInv_32f_I;
     };
 
-    struct dct3_traits_f64
+    struct dct3_setup_f64
     {
         using value_type                        = ::Ipp64f;
         using handle_type                       = ::IppsDCTInvSpec_64f;
@@ -542,13 +558,13 @@ private:
         static constexpr auto transform_inplace = ::ippsDCTInv_64f_I;
     };
 
-    using dct2_traits = std::conditional_t<std::same_as<Float, float>, dct2_traits_f32, dct2_traits_f64>;
-    using dct3_traits = std::conditional_t<std::same_as<Float, float>, dct3_traits_f32, dct3_traits_f64>;
-    using traits      = std::conditional_t<Direction == direction::forward, dct2_traits, dct3_traits>;
+    using dct2_setup = std::conditional_t<std::same_as<Float, float>, dct2_setup_f32, dct2_setup_f64>;
+    using dct3_setup = std::conditional_t<std::same_as<Float, float>, dct3_setup_f32, dct3_setup_f64>;
+    using setup      = std::conditional_t<Direction == direction::forward, dct2_setup, dct3_setup>;
 
     fft::order _order;
-    stdex::mdarray<typename traits::value_type, stdex::dextents<size_t, 1>> _buffer{size()};
-    typename traits::handle_type* _handle;
+    stdex::mdarray<typename setup::value_type, stdex::dextents<size_t, 1>> _buffer{size()};
+    typename setup::handle_type* _handle;
     detail::ipp_buffer _spec_buf;
     detail::ipp_buffer _work_buf;
 };

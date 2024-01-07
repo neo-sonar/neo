@@ -29,15 +29,15 @@ auto apply_fixed_point_kernel(
     assert(lhs.size() == rhs.size());
     assert(lhs.size() == out.size());
 
-    if constexpr (config::has_simd_sse2 or config::has_simd_neon) {
-        if constexpr (std::same_as<Int, std::int8_t>) {
-            simd::apply_kernel<Int>(lhs, rhs, out, scalar_kernel, vector_kernel_s8);
-            return;
-        } else if constexpr (std::same_as<Int, std::int16_t>) {
-            simd::apply_kernel<Int>(lhs, rhs, out, scalar_kernel, vector_kernel_s16);
-            return;
-        }
+#if defined(NEO_HAS_ISA_SSE2) or defined(NEO_HAS_ISA_NEON)
+    if constexpr (std::same_as<Int, std::int8_t>) {
+        simd::apply_kernel<Int>(lhs, rhs, out, scalar_kernel, vector_kernel_s8);
+        return;
+    } else if constexpr (std::same_as<Int, std::int16_t>) {
+        simd::apply_kernel<Int>(lhs, rhs, out, scalar_kernel, vector_kernel_s16);
+        return;
     }
+#endif
 
     for (auto i{0U}; i < lhs.size(); ++i) {
         out[i] = scalar_kernel(lhs[i], rhs[i]);
@@ -81,15 +81,15 @@ auto multiply(
 
     // NOLINTBEGIN(bugprone-branch-clone)
     if constexpr (std::same_as<Int, std::int8_t>) {
-#if defined(NEO_HAS_SIMD_SSE41)
+#if defined(NEO_HAS_ISA_SSE41)
         simd::apply_kernel<Int>(lhs, rhs, out, std::multiplies{}, detail::mul_kernel_s8<FractionalBits>);
         return;
 #endif
     } else if constexpr (std::same_as<Int, std::int16_t>) {
-#if defined(NEO_HAS_SIMD_SSE41)
+#if defined(NEO_HAS_ISA_SSE41)
         simd::apply_kernel<Int>(lhs, rhs, out, std::multiplies{}, detail::mul_kernel_s16<FractionalBits>);
         return;
-#elif defined(NEO_HAS_SIMD_NEON)
+#elif defined(NEO_HAS_ISA_NEON)
         if constexpr (std::same_as<Int, std::int16_t> && FractionalBits == 15) {
             simd::apply_kernel<Int>(lhs, rhs, out, std::multiplies{}, detail::mul_kernel_s16);
             return;

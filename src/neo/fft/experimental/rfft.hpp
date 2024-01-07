@@ -26,7 +26,7 @@ struct c2c_kernel
     auto operator()(Vec x, auto const& twiddles) const noexcept -> void
     {
         auto const size  = static_cast<int>(x.extent(0) / 2);
-        auto const order = static_cast<int>(ilog2(size));
+        auto const order = static_cast<int>(bit_log2(static_cast<unsigned>(size)));
 
         {
             // stage 0

@@ -6,15 +6,15 @@
 
 #include <neo/fixed_point/fixed_point.hpp>
 
-#if defined(NEO_HAS_SIMD_SSE2)
+#if defined(NEO_HAS_ISA_SSE2)
     #include <neo/simd/sse2.hpp>
 #endif
 
-#if defined(NEO_HAS_SIMD_AVX2)
+#if defined(NEO_HAS_ISA_AVX2)
     #include <neo/simd/avx.hpp>
 #endif
 
-#if defined(NEO_HAS_SIMD_NEON)
+#if defined(NEO_HAS_ISA_NEON)
     #include <neo/simd/neon.hpp>
 #endif
 
@@ -24,20 +24,20 @@ namespace neo {
 
 namespace detail {
 
-#if defined(NEO_HAS_SIMD_NEON)
+#if defined(NEO_HAS_ISA_NEON)
 inline constexpr auto const add_kernel_s8  = [](int8x16_t l, int8x16_t r) { return vqaddq_s8(l, r); };
 inline constexpr auto const add_kernel_s16 = [](int16x8_t l, int16x8_t r) { return vqaddq_s16(l, r); };
 inline constexpr auto const sub_kernel_s8  = [](int8x16_t l, int8x16_t r) { return vqsubq_s8(l, r); };
 inline constexpr auto const sub_kernel_s16 = [](int16x8_t l, int16x8_t r) { return vqsubq_s16(l, r); };
 inline constexpr auto const mul_kernel_s16 = [](int16x8_t l, int16x8_t r) { return vqdmulhq_s16(l, r); };
-#elif defined(NEO_HAS_SIMD_SSE2)
+#elif defined(NEO_HAS_ISA_SSE2)
 inline constexpr auto const add_kernel_s8  = [](__m128i l, __m128i r) { return _mm_adds_epi8(l, r); };
 inline constexpr auto const add_kernel_s16 = [](__m128i l, __m128i r) { return _mm_adds_epi16(l, r); };
 inline constexpr auto const sub_kernel_s8  = [](__m128i l, __m128i r) { return _mm_subs_epi8(l, r); };
 inline constexpr auto const sub_kernel_s16 = [](__m128i l, __m128i r) { return _mm_subs_epi16(l, r); };
 #endif
 
-#if defined(NEO_HAS_SIMD_SSE41)
+#if defined(NEO_HAS_ISA_SSE41)
 
 template<int FractionalBits>
 inline constexpr auto const mul_kernel_s8 = [](__m128i lhs, __m128i rhs) {
@@ -74,7 +74,7 @@ inline constexpr auto const mul_kernel_s16 = [](__m128i lhs, __m128i rhs) {
 };
 #endif
 
-#if defined(NEO_HAS_SIMD_AVX2)
+#if defined(NEO_HAS_ISA_AVX2)
 
 template<int FractionalBits>
 inline constexpr auto const mul_kernel_avx2_s16 = [](__m256i lhs, __m256i rhs) {
@@ -87,7 +87,7 @@ inline constexpr auto const mul_kernel_avx2_s16 = [](__m256i lhs, __m256i rhs) {
 
 #endif
 
-#if defined(NEO_HAS_SIMD_AVX512BW)
+#if defined(NEO_HAS_ISA_AVX512BW)
 
 template<int FractionalBits>
 inline constexpr auto const mul_kernel_avx512_s16 = [](__m512i lhs, __m512i rhs) {
@@ -102,7 +102,7 @@ inline constexpr auto const mul_kernel_avx512_s16 = [](__m512i lhs, __m512i rhs)
 
 }  // namespace detail
 
-#if defined(NEO_HAS_SIMD_SSE2)
+#if defined(NEO_HAS_ISA_SSE2)
 
 struct alignas(16) q7x16
 {
@@ -144,7 +144,7 @@ struct alignas(16) q7x16
         return _mm_subs_epi8(static_cast<register_type>(lhs), static_cast<register_type>(rhs));
     }
 
-    #if defined(NEO_HAS_SIMD_SSE41)
+    #if defined(NEO_HAS_ISA_SSE41)
     NEO_ALWAYS_INLINE friend auto operator*(q7x16 lhs, q7x16 rhs) noexcept -> q7x16
     {
         return detail::mul_kernel_s8<value_type::fractional_bits>(
@@ -198,7 +198,7 @@ struct alignas(16) q15x8
         return _mm_subs_epi16(static_cast<register_type>(lhs), static_cast<register_type>(rhs));
     }
 
-    #if defined(NEO_HAS_SIMD_SSE41)
+    #if defined(NEO_HAS_ISA_SSE41)
     NEO_ALWAYS_INLINE friend auto operator*(q15x8 lhs, q15x8 rhs) noexcept -> q15x8
     {
         return detail::mul_kernel_s16<value_type::fractional_bits>(
@@ -214,7 +214,7 @@ private:
 
 #endif
 
-#if defined(NEO_HAS_SIMD_AVX2)
+#if defined(NEO_HAS_ISA_AVX2)
 
 struct alignas(32) q7x32
 {
@@ -314,7 +314,7 @@ private:
 
 #endif
 
-#if defined(NEO_HAS_SIMD_AVX512BW)
+#if defined(NEO_HAS_ISA_AVX512BW)
 
 struct alignas(64) q7x64
 {

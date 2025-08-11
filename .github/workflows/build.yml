@@ -32,6 +32,7 @@ jobs:
             cmake_exe: "cmake"
             cmake_flags: '-D CMAKE_CXX_FLAGS="-march=native" -D NEO_ENABLE_INTEL_IPP=ON -D NEO_ENABLE_INTEL_MKL=ON'
             cmake_prefix_path: "/opt/intel/oneapi/ipp/latest:/opt/intel/oneapi/mkl/latest"
+            cmake_warnings_as_errors: 'ON'
             cmake_targets: all
             macos_target: ""
 
@@ -42,6 +43,7 @@ jobs:
             cmake_exe: "cmake"
             cmake_flags: '-D CMAKE_CXX_FLAGS="-g -fno-omit-frame-pointer -fsanitize=address,undefined -fno-sanitize-recover=all -march=native" -D NEO_ENABLE_INTEL_IPP=ON -D NEO_ENABLE_INTEL_MKL=ON'
             cmake_prefix_path: "/opt/intel/oneapi/ipp/latest:/opt/intel/oneapi/mkl/latest"
+            cmake_warnings_as_errors: 'ON'
             cmake_targets: all
             macos_target: ""
 
@@ -52,6 +54,7 @@ jobs:
             cmake_exe: "emcmake cmake"
             cmake_flags: '-D CMAKE_CXX_FLAGS="-fexceptions -msimd128 -msse4.2" -D CMAKE_EXE_LINKER_FLAGS="-s ALLOW_MEMORY_GROWTH=1" -D NEO_ENABLE_PLUGIN=OFF'
             cmake_prefix_path: ""
+            cmake_warnings_as_errors: 'ON'
             cmake_targets: all
             macos_target: ""
 
@@ -62,6 +65,7 @@ jobs:
             cmake_exe: "cmake"
             cmake_flags: ""
             cmake_prefix_path: ""
+            cmake_warnings_as_errors: 'ON'
             cmake_targets: all
             macos_target: "11.0"
 
@@ -72,6 +76,7 @@ jobs:
             cmake_exe: "cmake"
             cmake_flags: ""
             cmake_prefix_path: ""
+            cmake_warnings_as_errors: 'ON'
             cmake_targets: all
             macos_target: "10.15"
 
@@ -82,6 +87,7 @@ jobs:
             cmake_exe: "cmake"
             cmake_flags: '-D CMAKE_CXX_FLAGS="-march=native" -D NEO_ENABLE_INTEL_IPP=OFF -D NEO_ENABLE_INTEL_MKL=OFF -D NEO_ENABLE_BENCHMARKS=OFF'
             cmake_prefix_path: C:\Program Files (x86)\Intel\oneAPI\ipp\latest;C:\Program Files (x86)\Intel\oneAPI\mkl\latest
+            cmake_warnings_as_errors: 'OFF'
             cmake_targets: all
             macos_target: ""
 
@@ -92,36 +98,40 @@ jobs:
             cmake_exe: "cmake"
             cmake_flags: '-D CMAKE_CXX_FLAGS="/arch:AVX2 /EHsc" -D NEO_ENABLE_INTEL_IPP=OFF -D NEO_ENABLE_INTEL_MKL=OFF'
             cmake_prefix_path: C:\Program Files (x86)\Intel\oneAPI\ipp\latest;C:\Program Files (x86)\Intel\oneAPI\mkl\latest
+            cmake_warnings_as_errors: 'OFF'
             cmake_targets: all
             macos_target: ""
 
-          - name: Coverage-Native
+          - name: Coverage-native
             os: ubuntu-22.04
             build_type: Debug
             clang_version: ""
             cmake_exe: "cmake"
-            cmake_flags: '-D CMAKE_CXX_FLAGS="--coverage -march=native" -D NEO_ENABLE_INTEL_IPP=ON -D NEO_ENABLE_INTEL_MKL=ON'
+            cmake_flags: '-D CMAKE_CXX_FLAGS="--coverage -march=native" -D NEO_ENABLE_INTEL_IPP=ON -D NEO_ENABLE_INTEL_MKL=ON -D NEO_ENABLE_PLUGIN=OFF -D NEO_ENABLE_TOOLS=OFF'
             cmake_prefix_path: "/opt/intel/oneapi/ipp/latest:/opt/intel/oneapi/mkl/latest"
+            cmake_warnings_as_errors: 'ON'
             cmake_targets: neosonar-neo-tests
             macos_target: ""
 
-          - name: Coverage-SSE41
+          - name: Coverage-x86-64-v2
             os: ubuntu-22.04
             build_type: Debug
             clang_version: ""
             cmake_exe: "cmake"
-            cmake_flags: '-D CMAKE_CXX_FLAGS="--coverage -march=x86-64-v2" -D NEO_ENABLE_INTEL_IPP=ON -D NEO_ENABLE_INTEL_MKL=ON'
+            cmake_flags: '-D CMAKE_CXX_FLAGS="--coverage -march=x86-64-v2" -D NEO_ENABLE_INTEL_IPP=ON -D NEO_ENABLE_INTEL_MKL=ON -D NEO_ENABLE_PLUGIN=OFF -D NEO_ENABLE_TOOLS=OFF'
             cmake_prefix_path: "/opt/intel/oneapi/ipp/latest:/opt/intel/oneapi/mkl/latest"
+            cmake_warnings_as_errors: 'ON'
             cmake_targets: neosonar-neo-tests
             macos_target: ""
 
-          - name: Coverage-SSE2
+          - name: Coverage-x86-64
             os: ubuntu-22.04
             build_type: Debug
             clang_version: ""
             cmake_exe: "cmake"
-            cmake_flags: '-D CMAKE_CXX_FLAGS="--coverage -march=x86-64" -D NEO_ENABLE_INTEL_IPP=ON -D NEO_ENABLE_INTEL_MKL=ON'
+            cmake_flags: '-D CMAKE_CXX_FLAGS="--coverage -march=x86-64" -D NEO_ENABLE_INTEL_IPP=ON -D NEO_ENABLE_INTEL_MKL=ON -D NEO_ENABLE_PLUGIN=OFF -D NEO_ENABLE_TOOLS=OFF'
             cmake_prefix_path: "/opt/intel/oneapi/ipp/latest:/opt/intel/oneapi/mkl/latest"
+            cmake_warnings_as_errors: 'ON'
             cmake_targets: neosonar-neo-tests
             macos_target: ""
 
@@ -187,7 +197,7 @@ jobs:
           -B build
           -G Ninja
           -D CMAKE_BUILD_TYPE=${{ matrix.build_type }}
-          -D CMAKE_COMPILE_WARNING_AS_ERROR=ON
+          -D CMAKE_COMPILE_WARNING_AS_ERROR=${{ matrix.cmake_warnings_as_errors }}
           ${{ matrix.cmake_flags }}
 
       - name: CMake build

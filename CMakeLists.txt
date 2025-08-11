@@ -1,10 +1,10 @@
-cmake_minimum_required(VERSION 3.23...3.27)
+cmake_minimum_required(VERSION 3.26...3.30)
 project(neosonar-neo-dev VERSION 0.1.0)
 
 option(NEO_ENABLE_BENCHMARKS "Build benchmarks" ON)
+option(NEO_ENABLE_PLUGIN "Build audio plugin" ON)
 option(NEO_ENABLE_TESTS "Build tests" ON)
 option(NEO_ENABLE_TOOLS "Build tools" ON)
-option(NEO_ENABLE_PLUGIN "Build audio plugin" ON)
 
 option(NEO_ENABLE_APPLE_ACCELERATE "Link against Apple Accelerate" ON)
 option(NEO_ENABLE_INTEL_IPP "Link against Intel IPP" OFF)

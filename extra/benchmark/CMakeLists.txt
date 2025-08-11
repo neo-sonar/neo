@@ -9,6 +9,7 @@ function(neo_add_benchmark _target)
     target_link_libraries(${_target}_benchmark PRIVATE neosonar::neo benchmark::benchmark)
 endfunction(neo_add_benchmark)
 
+neo_add_benchmark(biquad)
 neo_add_benchmark(convolution)
 neo_add_benchmark(fft)
 neo_add_benchmark(memcpy)

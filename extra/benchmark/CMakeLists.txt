@@ -1,7 +1,7 @@
 project(neosonar-neo-benchmark)
 
 set(BENCHMARK_ENABLE_TESTING OFF CACHE BOOL "Enable Google benchmark tests")
-FetchContent_Declare(benchmark GIT_REPOSITORY "https://github.com/google/benchmark" GIT_TAG "v1.8.3" GIT_SHALLOW TRUE)
+FetchContent_Declare(benchmark GIT_REPOSITORY "https://github.com/google/benchmark" GIT_TAG "v1.9.4" GIT_SHALLOW TRUE)
 FetchContent_MakeAvailable(benchmark)
 
 function(neo_add_benchmark _target)
@@ -9,6 +9,7 @@ function(neo_add_benchmark _target)
     target_link_libraries(${_target}_benchmark PRIVATE neosonar::neo benchmark::benchmark)
 endfunction(neo_add_benchmark)
 
+neo_add_benchmark(biquad)
 neo_add_benchmark(convolution)
 neo_add_benchmark(fft)
 neo_add_benchmark(memcpy)

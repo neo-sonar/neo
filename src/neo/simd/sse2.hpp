@@ -36,7 +36,7 @@ struct alignas(16) float32x4
         return _mm_loadu_ps(input);
     }
 
-    NEO_ALWAYS_INLINE auto store_unaligned(float* output) const noexcept -> void { return _mm_storeu_ps(output, _reg); }
+    NEO_ALWAYS_INLINE auto store_unaligned(float* output) const noexcept -> void { _mm_storeu_ps(output, _reg); }
 
     NEO_ALWAYS_INLINE friend auto operator+(float32x4 lhs, float32x4 rhs) noexcept -> float32x4
     {
@@ -78,7 +78,7 @@ struct alignas(16) float64x2
         return _mm_loadu_pd(input);
     }
 
-    NEO_ALWAYS_INLINE auto store_unaligned(double* output) const -> void { return _mm_storeu_pd(output, _reg); }
+    NEO_ALWAYS_INLINE auto store_unaligned(double* output) const -> void { _mm_storeu_pd(output, _reg); }
 
     NEO_ALWAYS_INLINE friend auto operator+(float64x2 lhs, float64x2 rhs) noexcept -> float64x2
     {

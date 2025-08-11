@@ -1,51 +1,50 @@
-Checks: >
-  *-,
-  boost-*,
+Checks:
+  - -*
 
-  bugprone-*,
-  -bugprone-macro-parentheses,
-  -bugprone-exception-escape,
-  -bugprone-signed-char-misuse,
-  -bugprone-unchecked-optional-access,
+  - bugprone-*
+  - -bugprone-exception-escape
+  - -bugprone-macro-parentheses
+  - -bugprone-signed-char-misuse
+  - -bugprone-unchecked-optional-access
 
-  cert-*,
-  -cert-err58-cpp,
-  -cert-str34-c,
+  - cert-*
+  - -cert-err58-cpp
+  - -cert-str34-c
 
-  clang-analyzer-*,
-  clang-diagnostics-*,
+  - clang-analyzer-*
+  - clang-diagnostics-*
 
-  concurrency-*,
+  - concurrency-*
 
-  cppcoreguidelines-*,
-  -cppcoreguidelines-avoid-non-const-global-variables,
-  -cppcoreguidelines-macro-usage,
-  -cppcoreguidelines-pro-bounds-constant-array-index,
-  -cppcoreguidelines-pro-bounds-pointer-arithmetic,
-  -cppcoreguidelines-pro-type-reinterpret-cast,
+  - cppcoreguidelines-*
+  - -cppcoreguidelines-avoid-non-const-global-variables
+  - -cppcoreguidelines-macro-usage
+  - -cppcoreguidelines-pro-bounds-constant-array-index
+  - -cppcoreguidelines-pro-bounds-pointer-arithmetic
+  - -cppcoreguidelines-pro-type-reinterpret-cast
 
-  hicpp-*,
-  -hicpp-explicit-conversions,
-  -hicpp-signed-bitwise,
+  - hicpp-*
+  - -hicpp-explicit-conversions
+  - -hicpp-signed-bitwise
 
-  misc-*,
-  -misc-include-cleaner,
-  -misc-use-anonymous-namespace,
+  - misc-*
+  - -misc-include-cleaner
+  - -misc-use-anonymous-namespace
 
-  modernize-*,
+  - modernize-*
+  - performance-*
 
-  performance-*,
+  - readability-*
+  - readability-identifier-naming
+  - -readability-function-cognitive-complexity
+  - -readability-identifier-length
+  - -readability-math-missing-parentheses
 
-  readability-*,
-  readability-identifier-naming,
-  -readability-function-cognitive-complexity,
-  -readability-identifier-length,
-
-  -*-avoid-c-arrays,
-  -*-magic-numbers,
+  - -*-avoid-c-arrays
+  - -*-magic-numbers
 
 WarningsAsErrors: "*"
-FormatStyle: none
+FormatStyle: file
 CheckOptions:
   - key: bugprone-easily-swappable-parameters.MinimumLength
     value: 4

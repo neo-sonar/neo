@@ -85,8 +85,8 @@ struct simd_split_fft_plan
     }
 
     template<neo::in_vector_of<FloatBatch> InVec, neo::out_vector_of<FloatBatch> OutVec>
-    auto
-    operator()(neo::split_complex<InVec> in, neo::split_complex<OutVec> out, neo::fft::direction dir) noexcept -> void
+    auto operator()(neo::split_complex<InVec> in, neo::split_complex<OutVec> out, neo::fft::direction dir) noexcept
+        -> void
     {
         assert(std::cmp_equal(in.real.extent(0), size()));
         assert(neo::detail::extents_equal(in.real, in.imag, out.real, out.imag));

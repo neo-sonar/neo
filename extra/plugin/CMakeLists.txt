@@ -1,6 +1,6 @@
 project(neosonar-neo-plugin VERSION ${CMAKE_PROJECT_VERSION})
 
-FetchContent_Declare(JUCE GIT_REPOSITORY "https://github.com/juce-framework/JUCE" GIT_TAG "develop" GIT_SHALLOW TRUE)
+FetchContent_Declare(JUCE GIT_REPOSITORY "https://github.com/juce-framework/JUCE" GIT_TAG "8.0.8" GIT_SHALLOW TRUE)
 FetchContent_MakeAvailable(JUCE)
 
 set_directory_properties(PROPERTIES JUCE_COMPANY_COPYRIGHT "Copyright 2023 neo-sonar. All rights reserved.")
@@ -63,7 +63,6 @@ target_compile_definitions(PerceptualConvolution
         JUCE_USE_CURL=0
         JUCE_VST3_CAN_REPLACE_VST2=0
         JUCE_USE_MP3AUDIOFORMAT=0
-        JUCE_DISPLAY_SPLASH_SCREEN=0
         JUCE_MODAL_LOOPS_PERMITTED=1
         JUCE_REPORT_APP_USAGE=0
         JUCE_DISABLE_JUCE_VERSION_PRINTING=1
@@ -86,7 +85,7 @@ target_link_libraries(PerceptualConvolution
     PUBLIC
         neosonar::neo
         juce::juce_recommended_config_flags
-        # juce::juce_recommended_lto_flags
+        juce::juce_recommended_lto_flags
         juce::juce_recommended_warning_flags
 )
 

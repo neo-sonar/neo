@@ -85,8 +85,8 @@ template<std::floating_point Float>
     }
 }
 
-inline auto
-write_wav_file(audio_buffer<float> const& buffer, double sampleRate, std::filesystem::path const& path) -> void
+inline auto write_wav_file(audio_buffer<float> const& buffer, double sampleRate, std::filesystem::path const& path)
+    -> void
 {
     auto format          = drwav_data_format{};
     format.container     = drwav_container_riff;

@@ -1,6 +1,6 @@
 project(neosonar-neo-test)
 
-FetchContent_Declare(Catch2 GIT_REPOSITORY "https://github.com/catchorg/Catch2" GIT_TAG "devel" GIT_SHALLOW TRUE)
+FetchContent_Declare(Catch2 GIT_REPOSITORY "https://github.com/catchorg/Catch2" GIT_TAG "v3.9.1" GIT_SHALLOW TRUE)
 FetchContent_MakeAvailable(Catch2)
 include(${Catch2_SOURCE_DIR}/extras/Catch.cmake)
 

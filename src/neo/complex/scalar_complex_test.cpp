@@ -11,7 +11,7 @@
 #include <catch2/matchers/catch_matchers_floating_point.hpp>
 
 template<typename TestType>
-auto test_floating_point(TestType tolerance)
+static auto test_floating_point(TestType tolerance)
 {
     using Float   = TestType;
     using Complex = neo::scalar_complex<Float>;
@@ -67,7 +67,7 @@ auto test_floating_point(TestType tolerance)
 }
 
 template<typename TestType>
-auto test_fixed_point()
+static auto test_fixed_point()
 {
     using FxPoint = TestType;
     using Complex = neo::scalar_complex<FxPoint>;

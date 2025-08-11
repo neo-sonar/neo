@@ -202,8 +202,8 @@ struct static_dit2_stage
         static_dit2_stage<Float, Order, Stage + 1>{}(x, twiddles);
     }
 
-    auto
-    operator()(std::complex<Float>* __restrict__ /*x*/, std::complex<Float> const* __restrict__ /*twiddles*/) -> void
+    auto operator()(std::complex<Float>* __restrict__ /*x*/, std::complex<Float> const* __restrict__ /*twiddles*/)
+        -> void
         requires(Stage == Order)
     {}
 };

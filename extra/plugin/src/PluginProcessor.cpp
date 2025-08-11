@@ -8,9 +8,11 @@
 namespace neo {
 
 PluginProcessor::PluginProcessor()
-    : AudioProcessor(BusesProperties()
-                         .withInput("Input", juce::AudioChannelSet::stereo(), true)
-                         .withOutput("Output", juce::AudioChannelSet::stereo(), true))
+    : AudioProcessor(
+          BusesProperties()
+              .withInput("Input", juce::AudioChannelSet::stereo(), true)
+              .withOutput("Output", juce::AudioChannelSet::stereo(), true)
+      )
     , _valueTree{*this, nullptr, juce::Identifier("PerceptualConvolution"), neo::createParameters()}
     , _convolution{_valueTree}
 {}

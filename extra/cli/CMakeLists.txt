@@ -1,7 +1,7 @@
 project(neosonar-neo-cli)
 
 FetchContent_Declare(dr_libs GIT_REPOSITORY "https://github.com/mackron/dr_libs" GIT_TAG "master" GIT_SHALLOW TRUE)
-FetchContent_Declare(fmt GIT_REPOSITORY "https://github.com/fmtlib/fmt" GIT_TAG "10.1.1" GIT_SHALLOW TRUE)
+FetchContent_Declare(fmt GIT_REPOSITORY "https://github.com/fmtlib/fmt" GIT_TAG "11.2.0" GIT_SHALLOW TRUE)
 FetchContent_MakeAvailable(dr_libs fmt)
 
 add_executable(neo-cli)

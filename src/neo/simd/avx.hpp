@@ -2,11 +2,12 @@
 
 #pragma once
 
+#include <algorithm>
 #include <neo/config.hpp>
 
 #include <immintrin.h>
 
-#define __STDC_WANT_IEC_60559_TYPES_EXT__ 1
+// #define __STDC_WANT_IEC_60559_TYPES_EXT__ 1
 #include <array>
 #include <cfloat>
 
@@ -30,7 +31,7 @@ struct alignas(16) float16x8
     [[nodiscard]] NEO_ALWAYS_INLINE static auto broadcast(value_type val) noexcept -> float16x8
     {
         auto values = std::array<_Float16, size>{};
-        std::fill(values.begin(), values.end(), val);
+        std::ranges::fill(values, val);
         return load_unaligned(values.data());
     }
 
@@ -41,7 +42,7 @@ struct alignas(16) float16x8
 
     NEO_ALWAYS_INLINE auto store_unaligned(value_type* output) const noexcept -> void
     {
-        return _mm_storeu_si128(reinterpret_cast<register_type*>(output), _register);
+        _mm_storeu_si128(reinterpret_cast<register_type*>(output), _register);
     }
 
     NEO_ALWAYS_INLINE friend auto operator+(float16x8 lhs, float16x8 rhs) noexcept -> float16x8
@@ -88,7 +89,7 @@ struct alignas(32) float16x16
     [[nodiscard]] NEO_ALWAYS_INLINE static auto broadcast(value_type val) noexcept -> float16x16
     {
         auto values = std::array<_Float16, size>{};
-        std::fill(values.begin(), values.end(), val);
+        std::ranges::fill(values, val);
         return load_unaligned(values.data());
     }
 
@@ -99,7 +100,7 @@ struct alignas(32) float16x16
 
     NEO_ALWAYS_INLINE auto store_unaligned(value_type* output) const noexcept -> void
     {
-        return _mm256_storeu_si256(reinterpret_cast<register_type*>(output), _register);
+        _mm256_storeu_si256(reinterpret_cast<register_type*>(output), _register);
     }
 
     NEO_ALWAYS_INLINE friend auto operator+(float16x16 lhs, float16x16 rhs) noexcept -> float16x16
@@ -165,10 +166,7 @@ struct alignas(32) float32x8
         return _mm256_loadu_ps(input);
     }
 
-    NEO_ALWAYS_INLINE auto store_unaligned(float* output) const noexcept -> void
-    {
-        return _mm256_storeu_ps(output, _val);
-    }
+    NEO_ALWAYS_INLINE auto store_unaligned(float* output) const noexcept -> void { _mm256_storeu_ps(output, _val); }
 
     NEO_ALWAYS_INLINE friend auto operator+(float32x8 lhs, float32x8 rhs) noexcept -> float32x8
     {
@@ -213,10 +211,7 @@ struct alignas(32) float64x4
         return _mm256_loadu_pd(input);
     }
 
-    NEO_ALWAYS_INLINE auto store_unaligned(double* output) const noexcept -> void
-    {
-        return _mm256_storeu_pd(output, _val);
-    }
+    NEO_ALWAYS_INLINE auto store_unaligned(double* output) const noexcept -> void { _mm256_storeu_pd(output, _val); }
 
     NEO_ALWAYS_INLINE friend auto operator+(float64x4 lhs, float64x4 rhs) noexcept -> float64x4
     {

@@ -15,8 +15,8 @@ namespace neo::fft {
 
 /// \ingroup neo-fft
 template<complex Complex>
-[[nodiscard]] constexpr auto
-twiddle(std::integral auto size, std::integral auto index, direction dir) noexcept -> Complex
+[[nodiscard]] constexpr auto twiddle(std::integral auto size, std::integral auto index, direction dir) noexcept
+    -> Complex
 {
     using Float = typename Complex::value_type;
 

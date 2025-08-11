@@ -142,7 +142,6 @@ jobs:
           libfreetype6-dev
           libglu1-mesa-dev
           xvfb
-          ninja-build
           gcovr
 
       - name: Install clang
@@ -183,11 +182,12 @@ jobs:
 
       - name: CMake configure
         run: >
-          ${{ matrix.cmake_exe }} -S .
+          ${{ matrix.cmake_exe }}
+          -S .
           -B build
           -G Ninja
           -D CMAKE_BUILD_TYPE=${{ matrix.build_type }}
-          -D CMAKE_COMPILE_WARNING_AS_ERROR=OFF
+          -D CMAKE_COMPILE_WARNING_AS_ERROR=ON
           ${{ matrix.cmake_flags }}
 
       - name: CMake build

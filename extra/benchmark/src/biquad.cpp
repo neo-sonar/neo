@@ -8,7 +8,7 @@
 
 #include <algorithm>
 #include <ranges>
-#include <stdfloat>
+// #include <stdfloat>
 
 namespace {
 

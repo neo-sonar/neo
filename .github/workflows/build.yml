@@ -28,9 +28,8 @@ jobs:
           - name: Linux-Clang
             os: ubuntu-24.04
             build_type: Release
-            generator: Ninja
             clang_version: latest
-            cmake_bin: "cmake"
+            cmake_exe: "cmake"
             cmake_flags: '-D CMAKE_CXX_FLAGS="-march=native" -D NEO_ENABLE_INTEL_IPP=ON -D NEO_ENABLE_INTEL_MKL=ON'
             cmake_prefix_path: "/opt/intel/oneapi/ipp/latest:/opt/intel/oneapi/mkl/latest"
             cmake_targets: all
@@ -39,9 +38,8 @@ jobs:
           - name: Linux-GCC
             os: ubuntu-24.04
             build_type: Debug
-            generator: Ninja
             clang_version: ""
-            cmake_bin: "cmake"
+            cmake_exe: "cmake"
             cmake_flags: '-D CMAKE_CXX_FLAGS="-g -fno-omit-frame-pointer -fsanitize=address,undefined -fno-sanitize-recover=all -march=native" -D NEO_ENABLE_INTEL_IPP=ON -D NEO_ENABLE_INTEL_MKL=ON'
             cmake_prefix_path: "/opt/intel/oneapi/ipp/latest:/opt/intel/oneapi/mkl/latest"
             cmake_targets: all
@@ -50,9 +48,8 @@ jobs:
           - name: Emscripten
             os: ubuntu-24.04
             build_type: Release
-            generator: Ninja
             clang_version: ""
-            cmake_bin: "emcmake cmake"
+            cmake_exe: "emcmake cmake"
             cmake_flags: '-D CMAKE_CXX_FLAGS="-msimd128 -msse4.2 -fexceptions"  -D NEO_ENABLE_BENCHMARKS=OFF -D NEO_ENABLE_TOOLS=OFF -D NEO_ENABLE_XSIMD=ON'
             cmake_prefix_path: ""
             cmake_targets: all
@@ -61,9 +58,8 @@ jobs:
           - name: macOS-ARM64
             os: macos-15
             build_type: Release
-            generator: Ninja
             clang_version: ""
-            cmake_bin: "cmake"
+            cmake_exe: "cmake"
             cmake_flags: ""
             cmake_prefix_path: ""
             cmake_targets: all
@@ -72,9 +68,8 @@ jobs:
           - name: macOS-X64
             os: macos-13
             build_type: Release
-            generator: Ninja
             clang_version: ""
-            cmake_bin: "cmake"
+            cmake_exe: "cmake"
             cmake_flags: ""
             cmake_prefix_path: ""
             cmake_targets: all
@@ -83,9 +78,8 @@ jobs:
           - name: Windows-Clang
             os: windows-latest
             build_type: Release
-            generator: Ninja
             clang_version: latest
-            cmake_bin: "cmake"
+            cmake_exe: "cmake"
             cmake_flags: '-D CMAKE_CXX_FLAGS="-march=native" -D NEO_ENABLE_INTEL_IPP=OFF -D NEO_ENABLE_INTEL_MKL=OFF -D NEO_ENABLE_BENCHMARKS=OFF'
             cmake_prefix_path: C:\Program Files (x86)\Intel\oneAPI\ipp\latest;C:\Program Files (x86)\Intel\oneAPI\mkl\latest
             cmake_targets: all
@@ -94,9 +88,8 @@ jobs:
           - name: Windows-MSVC
             os: windows-latest
             build_type: Release
-            generator: Ninja
             clang_version: ""
-            cmake_bin: "cmake"
+            cmake_exe: "cmake"
             cmake_flags: '-D CMAKE_CXX_FLAGS="/arch:AVX2 /EHsc" -D NEO_ENABLE_INTEL_IPP=OFF -D NEO_ENABLE_INTEL_MKL=OFF'
             cmake_prefix_path: C:\Program Files (x86)\Intel\oneAPI\ipp\latest;C:\Program Files (x86)\Intel\oneAPI\mkl\latest
             cmake_targets: all
@@ -105,9 +98,8 @@ jobs:
           - name: Coverage-Native
             os: ubuntu-22.04
             build_type: Debug
-            generator: Ninja
             clang_version: ""
-            cmake_bin: "cmake"
+            cmake_exe: "cmake"
             cmake_flags: '-D CMAKE_CXX_FLAGS="--coverage -march=native" -D NEO_ENABLE_INTEL_IPP=ON -D NEO_ENABLE_INTEL_MKL=ON'
             cmake_prefix_path: "/opt/intel/oneapi/ipp/latest:/opt/intel/oneapi/mkl/latest"
             cmake_targets: neosonar-neo-tests
@@ -116,9 +108,8 @@ jobs:
           - name: Coverage-SSE41
             os: ubuntu-22.04
             build_type: Debug
-            generator: Ninja
             clang_version: ""
-            cmake_bin: "cmake"
+            cmake_exe: "cmake"
             cmake_flags: '-D CMAKE_CXX_FLAGS="--coverage -march=x86-64-v2" -D NEO_ENABLE_INTEL_IPP=ON -D NEO_ENABLE_INTEL_MKL=ON'
             cmake_prefix_path: "/opt/intel/oneapi/ipp/latest:/opt/intel/oneapi/mkl/latest"
             cmake_targets: neosonar-neo-tests
@@ -127,9 +118,8 @@ jobs:
           - name: Coverage-SSE2
             os: ubuntu-22.04
             build_type: Debug
-            generator: Ninja
             clang_version: ""
-            cmake_bin: "cmake"
+            cmake_exe: "cmake"
             cmake_flags: '-D CMAKE_CXX_FLAGS="--coverage -march=x86-64" -D NEO_ENABLE_INTEL_IPP=ON -D NEO_ENABLE_INTEL_MKL=ON'
             cmake_prefix_path: "/opt/intel/oneapi/ipp/latest:/opt/intel/oneapi/mkl/latest"
             cmake_targets: neosonar-neo-tests
@@ -139,7 +129,6 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
         with:
-          submodules: recursive
           lfs: true
 
       - name: Install dependencies (Linux)
@@ -156,15 +145,6 @@ jobs:
           ninja-build
           gcovr
 
-      - name: Install dependencies (macOS)
-        if: runner.os == 'macOS'
-        run: brew install ninja osxutils
-
-      - name: Install dependencies (Windows)
-        if: runner.os == 'Windows'
-        shell: bash
-        run: choco install ninja ccache
-
       - name: Install clang
         if: matrix.clang_version != ''
         uses: egor-tensin/setup-clang@v1
@@ -173,7 +153,6 @@ jobs:
 
       - name: Install IPP/MKL (Linux)
         if: contains(matrix.name, 'Linux') || contains(matrix.name, 'Coverage')
-        shell: bash
         run: |
           wget -O- https://apt.repos.intel.com/intel-gpg-keys/GPG-PUB-KEY-INTEL-SW-PRODUCTS.PUB | gpg --dearmor | sudo tee /usr/share/keyrings/oneapi-archive-keyring.gpg > /dev/null
           echo "deb [signed-by=/usr/share/keyrings/oneapi-archive-keyring.gpg] https://apt.repos.intel.com/oneapi all main" | sudo tee /etc/apt/sources.list.d/oneAPI.list
@@ -213,33 +192,24 @@ jobs:
         if: matrix.name == 'Windows-MSVC'
         uses: egor-tensin/vs-shell@v2
 
-      - name: Install ccache
-        uses: hendrikmuhs/ccache-action@main
-        with:
-          key: "neo-build-${{ matrix.name }}"
-
       - name: Print native arch flags (GCC)
         if: contains(matrix.name, 'Coverage')
-        shell: bash
         run: gcc -march=native -E -v - </dev/null 2>&1 | grep cc1
 
       - name: CMake configure
-        shell: bash
         run: >
-          ${{ matrix.cmake_bin }} -S .
+          ${{ matrix.cmake_exe }} -S .
           -B build
-          -G "${{ matrix.generator }}"
+          -G Ninja
           -D CMAKE_BUILD_TYPE=${{ matrix.build_type }}
           -D CMAKE_COMPILE_WARNING_AS_ERROR=OFF
           ${{ matrix.cmake_flags }}
 
       - name: CMake build
-        shell: bash
         run: cmake --build build --config ${{ matrix.build_type }} --target ${{ matrix.cmake_targets }}
 
       - name: Test
         if: matrix.name != 'Emscripten'
-        shell: bash
         run: ctest --test-dir build -C ${{ matrix.build_type }} --output-on-failure
 
       - name: Test (Emscripten)
@@ -248,7 +218,6 @@ jobs:
 
       - name: Coverage report
         if: contains(matrix.name, 'Coverage')
-        shell: bash
         run: >
           gcovr
           --xml-pretty

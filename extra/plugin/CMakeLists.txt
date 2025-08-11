@@ -1,6 +1,6 @@
 project(neosonar-neo-plugin VERSION ${CMAKE_PROJECT_VERSION})
 
-FetchContent_Declare(JUCE GIT_REPOSITORY "https://github.com/juce-framework/JUCE" GIT_TAG "8.0.1" GIT_SHALLOW TRUE)
+FetchContent_Declare(JUCE GIT_REPOSITORY "https://github.com/juce-framework/JUCE" GIT_TAG "8.0.8" GIT_SHALLOW TRUE)
 FetchContent_MakeAvailable(JUCE)
 
 set_directory_properties(PROPERTIES JUCE_COMPANY_COPYRIGHT "Copyright 2023 neo-sonar. All rights reserved.")

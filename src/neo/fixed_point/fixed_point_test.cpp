@@ -23,7 +23,7 @@
 // NOLINTBEGIN(-bugprone-branch-clone,-*-braces-around-statements)
 
 template<typename T>
-constexpr auto get_tolerance()
+static constexpr auto get_tolerance()
 {
     if constexpr (std::same_as<T, neo::q7>) {
         return 0.01F;

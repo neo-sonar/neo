@@ -122,10 +122,11 @@ struct intel_ipp_fft_plan
     using real_type  = typename Complex::value_type;
     using size_type  = std::size_t;
 
-    intel_ipp_fft_plan(from_order_tag /*tag*/, size_type order) : _order{order}
+    intel_ipp_fft_plan(from_order_tag /*tag*/, size_type order)
+        : _order{order}
+        , _buffer(stdex::mdarray<Complex, stdex::dextents<size_t, 1>>{size()})
     {
         std::tie(_handle, _spec_buf, _work_buf) = detail::make_ipp_fft_handle<setup>(order);
-        _buffer                                 = stdex::mdarray<Complex, stdex::dextents<size_t, 1>>{size()};
     }
 
     intel_ipp_fft_plan(intel_ipp_fft_plan const& other)                    = delete;

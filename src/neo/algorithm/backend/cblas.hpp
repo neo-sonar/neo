@@ -30,34 +30,34 @@ using size_type = MKL_INT;
 
 auto scal(std::integral auto n, float alpha, float* x, std::integral auto inc_x) noexcept
 {
-    return cblas_sscal(static_cast<size_type>(n), alpha, x, static_cast<size_type>(inc_x));
+    cblas_sscal(static_cast<size_type>(n), alpha, x, static_cast<size_type>(inc_x));
 }
 
 auto scal(std::integral auto n, double alpha, double* x, std::integral auto inc_x) noexcept
 {
-    return cblas_dscal(static_cast<size_type>(n), alpha, x, static_cast<size_type>(inc_x));
+    cblas_dscal(static_cast<size_type>(n), alpha, x, static_cast<size_type>(inc_x));
 }
 
 auto scal(std::integral auto n, std::complex<float> alpha, std::complex<float>* x, std::integral auto inc_x) noexcept
 
 {
-    return cblas_cscal(static_cast<size_type>(n), &alpha, x, static_cast<size_type>(inc_x));
+    cblas_cscal(static_cast<size_type>(n), &alpha, x, static_cast<size_type>(inc_x));
 }
 
 auto scal(std::integral auto n, std::complex<double> alpha, std::complex<double>* x, std::integral auto inc_x) noexcept
 
 {
-    return cblas_zscal(static_cast<size_type>(n), &alpha, x, static_cast<size_type>(inc_x));
+    cblas_zscal(static_cast<size_type>(n), &alpha, x, static_cast<size_type>(inc_x));
 }
 
 auto scal(std::integral auto n, float alpha, std::complex<float>* x, std::integral auto inc_x) noexcept
 {
-    return cblas_csscal(static_cast<size_type>(n), alpha, x, static_cast<size_type>(inc_x));
+    cblas_csscal(static_cast<size_type>(n), alpha, x, static_cast<size_type>(inc_x));
 }
 
 auto scal(std::integral auto n, double alpha, std::complex<double>* x, std::integral auto inc_x) noexcept
 {
-    return cblas_zdscal(static_cast<size_type>(n), alpha, x, static_cast<size_type>(inc_x));
+    cblas_zdscal(static_cast<size_type>(n), alpha, x, static_cast<size_type>(inc_x));
 }
 
 }  // namespace neo::cblas

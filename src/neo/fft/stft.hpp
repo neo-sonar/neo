@@ -13,6 +13,7 @@
 #include <neo/math/windowing.hpp>
 
 #include <functional>
+#include <utility>
 
 namespace neo::fft {
 
@@ -112,7 +113,7 @@ private:
 template<in_matrix InMat>
 [[nodiscard]] auto stft(InMat x, stft_options<typename InMat::value_type> options)
 {
-    auto plan = stft_plan<typename InMat::value_type>{options};
+    auto plan = stft_plan<typename InMat::value_type>{std::move(options)};
     return plan(x);
 }
 

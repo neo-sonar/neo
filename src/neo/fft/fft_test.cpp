@@ -130,7 +130,7 @@ auto test_fft_plan()
 }
 
 template<typename ComplexBatch, typename Kernel>
-static auto test_complex_batch_roundtrip_fft()
+auto test_complex_batch_roundtrip_fft()
 {
     using ScalarComplex = neo::value_type_t<ComplexBatch>;
     using ScalarBatch   = typename ComplexBatch::real_batch;

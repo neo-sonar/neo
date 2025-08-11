@@ -57,7 +57,7 @@ struct hamming_window
 };
 
 /// \ingroup neo-math
-auto fill_window(inout_vector auto vec, auto window)
+auto fill_window(inout_vector auto vec, auto const& window)
 {
     auto const size = static_cast<std::size_t>(vec.extent(0));
     for (auto i = std::size_t(0); i < size; ++i) {

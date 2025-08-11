@@ -12,7 +12,7 @@
 #include <catch2/generators/catch_generators.hpp>
 
 template<typename Float>
-auto test_csr_matrix()
+static auto test_csr_matrix()
 {
     auto is_zero = [](auto x) { return neo::float_equality::exact(x, Float(0)); };
 

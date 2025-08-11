@@ -41,7 +41,7 @@ struct c2c_stockham_dif8_plan
     {
         using Float = value_type_t<Complex>;
 
-        auto const sqrt2_by_2 = static_cast<Float>(std::sqrt(2.0) / 2.0);
+        static constexpr auto sqrt2_by_2 = static_cast<Float>(std::numbers::sqrt2 / 2.0);
 
         auto const sign = dir == direction::forward ? Float(-1) : Float(+1);
         auto const i    = Complex{Float(0), sign};

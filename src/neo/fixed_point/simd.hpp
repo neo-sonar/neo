@@ -41,17 +41,17 @@ inline constexpr auto const sub_kernel_s16 = [](__m128i l, __m128i r) { return _
 
 template<int FractionalBits>
 inline constexpr auto const mul_kernel_s8 = [](__m128i lhs, __m128i rhs) {
-    auto const lowLeft    = _mm_cvtepi8_epi16(lhs);
-    auto const lowRight   = _mm_cvtepi8_epi16(rhs);
-    auto const lowProduct = _mm_mullo_epi16(lowLeft, lowRight);
-    auto const lowShifted = _mm_srli_epi16(lowProduct, FractionalBits);
+    auto const low_left    = _mm_cvtepi8_epi16(lhs);
+    auto const low_right   = _mm_cvtepi8_epi16(rhs);
+    auto const low_product = _mm_mullo_epi16(low_left, low_right);
+    auto const low_shifted = _mm_srli_epi16(low_product, FractionalBits);
 
-    auto const highLeft    = _mm_cvtepi8_epi16(_mm_srli_si128(lhs, 8));
-    auto const highRight   = _mm_cvtepi8_epi16(_mm_srli_si128(rhs, 8));
-    auto const highProduct = _mm_mullo_epi16(highLeft, highRight);
-    auto const highShifted = _mm_srli_epi16(highProduct, FractionalBits);
+    auto const high_left    = _mm_cvtepi8_epi16(_mm_srli_si128(lhs, 8));
+    auto const high_right   = _mm_cvtepi8_epi16(_mm_srli_si128(rhs, 8));
+    auto const high_product = _mm_mullo_epi16(high_left, high_right);
+    auto const high_shifted = _mm_srli_epi16(high_product, FractionalBits);
 
-    return _mm_packs_epi16(lowShifted, highShifted);
+    return _mm_packs_epi16(low_shifted, high_shifted);
 };
 
 template<int FractionalBits>
@@ -232,7 +232,7 @@ struct alignas(16) q7x16
     {
         auto* integer = reinterpret_cast<value_type::storage_type*>(output);
         auto* ptr     = reinterpret_cast<register_type*>(integer);
-        return _mm_storeu_si128(ptr, _reg);
+        _mm_storeu_si128(ptr, _reg);
     }
 
     NEO_ALWAYS_INLINE friend auto operator+(q7x16 lhs, q7x16 rhs) noexcept -> q7x16
@@ -286,7 +286,7 @@ struct alignas(16) q15x8
     {
         auto* integer = reinterpret_cast<value_type::storage_type*>(output);
         auto* ptr     = reinterpret_cast<register_type*>(integer);
-        return _mm_storeu_si128(ptr, _reg);
+        _mm_storeu_si128(ptr, _reg);
     }
 
     NEO_ALWAYS_INLINE friend auto operator+(q15x8 lhs, q15x8 rhs) noexcept -> q15x8
@@ -344,7 +344,7 @@ struct alignas(32) q7x32
     {
         auto* integer = reinterpret_cast<value_type::storage_type*>(output);
         auto* ptr     = reinterpret_cast<register_type*>(integer);
-        return _mm256_storeu_si256(ptr, _reg);
+        _mm256_storeu_si256(ptr, _reg);
     }
 
     NEO_ALWAYS_INLINE friend auto operator+(q7x32 lhs, q7x32 rhs) noexcept -> q7x32
@@ -388,7 +388,7 @@ struct alignas(32) q15x16
     {
         auto* integer = reinterpret_cast<value_type::storage_type*>(output);
         auto* ptr     = reinterpret_cast<register_type*>(integer);
-        return _mm256_storeu_si256(ptr, _reg);
+        _mm256_storeu_si256(ptr, _reg);
     }
 
     NEO_ALWAYS_INLINE friend auto operator+(q15x16 lhs, q15x16 rhs) noexcept -> q15x16

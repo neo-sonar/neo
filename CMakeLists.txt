@@ -41,7 +41,7 @@ if(NEO_ENABLE_INTEL_MKL)
 endif()
 
 if(NEO_ENABLE_XSIMD)
-    FetchContent_Declare(xsimd GIT_REPOSITORY "https://github.com/xtensor-stack/xsimd" GIT_TAG "13.0.0" GIT_SHALLOW TRUE)
+    FetchContent_Declare(xsimd GIT_REPOSITORY "https://github.com/xtensor-stack/xsimd" GIT_TAG "13.2.0" GIT_SHALLOW TRUE)
     FetchContent_MakeAvailable(xsimd)
 endif()
 

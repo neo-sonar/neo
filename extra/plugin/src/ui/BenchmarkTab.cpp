@@ -409,11 +409,13 @@ auto BenchmarkTab::runDenseConvolutionBenchmark() -> void
 
     auto proc = DenseConvolution{static_cast<int>(_spec.maximumBlockSize)};
     proc.loadImpulseResponse(_impulseFile.createInputStream());
-    proc.prepare(juce::dsp::ProcessSpec{
-        _spec.sampleRate,
-        static_cast<std::uint32_t>(_spec.maximumBlockSize),
-        static_cast<std::uint32_t>(inBuffer.getNumChannels()),
-    });
+    proc.prepare(
+        juce::dsp::ProcessSpec{
+            _spec.sampleRate,
+            static_cast<std::uint32_t>(_spec.maximumBlockSize),
+            static_cast<std::uint32_t>(inBuffer.getNumChannels()),
+        }
+    );
 
     auto start = std::chrono::system_clock::now();
     for (size_t i{0}; i < outBuffer.getNumSamples(); i += size_t(_spec.maximumBlockSize)) {
@@ -480,11 +482,13 @@ auto BenchmarkTab::runSparseQualityTests() -> void
     auto stftPlan = neo::fft::stft_plan<double>{stftOptions};
 
     auto const dense = [this] {
-        auto result = to_mdarray(neo::dense_convolve<neo::convolution::upols_convolver<std::complex<float>>>(
-            _signal.buffer,
-            _impulse.buffer,
-            4096
-        ));
+        auto result = to_mdarray(
+            neo::dense_convolve<neo::convolution::upols_convolver<std::complex<float>>>(
+                _signal.buffer,
+                _impulse.buffer,
+                4096
+            )
+        );
         neo::normalize_peak(result.to_mdspan());
         return result;
     }();
@@ -494,14 +498,16 @@ auto BenchmarkTab::runSparseQualityTests() -> void
     auto const numBinsToKeep = static_cast<int>(_binsToKeep.getValue());
 
     auto calculateErrorsForDynamicRange = [=, this](auto dynamicRange) {
-        auto sparse = to_mdarray(neo::sparse_convolve(
-            _signal.buffer,
-            _impulse.buffer,
-            4096,
-            _impulse.sampleRate,
-            -dynamicRange,
-            numBinsToKeep
-        ));
+        auto sparse = to_mdarray(
+            neo::sparse_convolve(
+                _signal.buffer,
+                _impulse.buffer,
+                4096,
+                _impulse.sampleRate,
+                -dynamicRange,
+                numBinsToKeep
+            )
+        );
         neo::normalize_peak(sparse.to_mdspan());
 
         auto stft             = neo::fft::stft_plan<double>{stftOptions};

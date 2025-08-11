@@ -95,18 +95,22 @@ auto as_mdspan_impl(py::array_t<T, Flags> buf, auto func)
 
     auto const mapping_right = stdex::layout_right::mapping<stdex::dextents<size_t, Dim>>{extents};
     if (is_layout_right(buf) and strides_match(buf, mapping_right)) {
-        return func(stdex::mdspan<T, stdex::dextents<size_t, Dim>, stdex::layout_right>{
-            buf.mutable_data(),
-            mapping_right,
-        });
+        return func(
+            stdex::mdspan<T, stdex::dextents<size_t, Dim>, stdex::layout_right>{
+                buf.mutable_data(),
+                mapping_right,
+            }
+        );
     }
 
     auto const mapping_left = stdex::layout_left::mapping<stdex::dextents<size_t, Dim>>{extents};
     if (is_layout_left(buf) and strides_match(buf, mapping_left)) {
-        return func(stdex::mdspan<T, stdex::dextents<size_t, Dim>, stdex::layout_left>{
-            buf.mutable_data(),
-            mapping_left,
-        });
+        return func(
+            stdex::mdspan<T, stdex::dextents<size_t, Dim>, stdex::layout_left>{
+                buf.mutable_data(),
+                mapping_left,
+            }
+        );
     }
 
     return func(to_mdspan_layout_stride<Dim>(buf));
@@ -167,8 +171,8 @@ auto fft(py::array_t<Complex> array, std::optional<std::size_t> n, neo::fft::nor
 }
 
 template<neo::convolution::method Method, std::floating_point Float>
-[[nodiscard]] auto
-convolve(py::array_t<Float> in1, py::array_t<Float> in2, neo::convolution::mode mode) -> py::array_t<Float>
+[[nodiscard]] auto convolve(py::array_t<Float> in1, py::array_t<Float> in2, neo::convolution::mode mode)
+    -> py::array_t<Float>
 {
     if (in1.ndim() != 1 or in1.ndim() != 1) {
         throw std::runtime_error{"unsupported dimension: in1 and in2 must be 1-D"};

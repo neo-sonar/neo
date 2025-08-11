@@ -51,8 +51,8 @@ inline auto ipp_check(int status) -> void
 }
 
 template<typename Setup>
-[[nodiscard]] auto make_ipp_fft_handle(std::size_t order
-) -> std::tuple<typename Setup::handle_type*, ipp_buffer, ipp_buffer>
+[[nodiscard]] auto make_ipp_fft_handle(std::size_t order)
+    -> std::tuple<typename Setup::handle_type*, ipp_buffer, ipp_buffer>
 {
     static constexpr auto flag = IPP_FFT_NODIV_BY_ANY;
     static constexpr auto hint = ippAlgHintNone;
@@ -71,8 +71,8 @@ template<typename Setup>
 }
 
 template<typename Setup>
-[[nodiscard]] auto make_ipp_dft_handle(std::size_t size
-) -> std::tuple<typename Setup::handle_type*, ipp_buffer, ipp_buffer>
+[[nodiscard]] auto make_ipp_dft_handle(std::size_t size)
+    -> std::tuple<typename Setup::handle_type*, ipp_buffer, ipp_buffer>
 {
     static constexpr auto flag = IPP_FFT_NODIV_BY_ANY;
     static constexpr auto hint = ippAlgHintNone;
@@ -91,8 +91,8 @@ template<typename Setup>
 }
 
 template<typename Setup>
-[[nodiscard]] auto make_ipp_dct_handle(std::size_t order
-) -> std::tuple<typename Setup::handle_type*, ipp_buffer, ipp_buffer>
+[[nodiscard]] auto make_ipp_dct_handle(std::size_t order)
+    -> std::tuple<typename Setup::handle_type*, ipp_buffer, ipp_buffer>
 {
     static constexpr auto hint = ippAlgHintNone;
 
@@ -394,7 +394,10 @@ private:
 
 /// \ingroup neo-fft
 template<std::floating_point Float, complex Complex = std::complex<Float>>
-    requires((std::same_as<Float, float> or std::same_as<Float, double>) and std::same_as<typename Complex::value_type, Float>)
+    requires(
+        (std::same_as<Float, float> or std::same_as<Float, double>)
+        and std::same_as<typename Complex::value_type, Float>
+    )
 struct intel_ipp_rfft_plan
 {
     using real_type    = Float;

@@ -7,7 +7,16 @@
 #include <catch2/catch_approx.hpp>
 #include <catch2/catch_template_test_macros.hpp>
 
-TEMPLATE_TEST_CASE("neo/math: imag", "", float, double, neo::complex64, neo::complex128, std::complex<float>, std::complex<double>)
+TEMPLATE_TEST_CASE(
+    "neo/math: imag",
+    "",
+    float,
+    double,
+    neo::complex64,
+    neo::complex128,
+    std::complex<float>,
+    std::complex<double>
+)
 {
     using Float = TestType;
 

@@ -8,6 +8,7 @@
 
 #include <algorithm>
 #include <ranges>
+
 // #include <stdfloat>
 
 namespace {
@@ -93,8 +94,7 @@ auto biquad(benchmark::State& state) -> void
 
 }  // namespace
 
-
-static constexpr auto N = 2048*16;
+static constexpr auto N = 2048 * 16;
 
 #if defined(NEO_HAS_BUILTIN_FLOAT16)
 BENCHMARK(biquad<_Float16>)->RangeMultiplier(2)->Range(N, N);

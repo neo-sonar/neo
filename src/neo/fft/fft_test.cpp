@@ -193,36 +193,61 @@ static auto test_complex_batch_roundtrip_fft()
         neo::scale(scalar, stdex::mdspan{reals.data(), stdex::extents{reals.size()}});
         neo::scale(scalar, stdex::mdspan{imags.data(), stdex::extents{imags.size()}});
 
-        REQUIRE(neo::allclose(
-            stdex::mdspan{reals.data(), stdex::extents{reals.size()}},
-            stdex::mdspan{expected_reals.data(), stdex::extents{expected_reals.size()}}
-        ));
+        REQUIRE(
+            neo::allclose(
+                stdex::mdspan{reals.data(), stdex::extents{reals.size()}},
+                stdex::mdspan{expected_reals.data(), stdex::extents{expected_reals.size()}}
+            )
+        );
 
-        REQUIRE(neo::allclose(
-            stdex::mdspan{imags.data(), stdex::extents{imags.size()}},
-            stdex::mdspan{expected_imags.data(), stdex::extents{expected_imags.size()}}
-        ));
+        REQUIRE(
+            neo::allclose(
+                stdex::mdspan{imags.data(), stdex::extents{imags.size()}},
+                stdex::mdspan{expected_imags.data(), stdex::extents{expected_imags.size()}}
+            )
+        );
     }
 }
 
 }  // namespace
 
 #if defined(NEO_HAS_APPLE_ACCELERATE)
-TEMPLATE_TEST_CASE("neo/fft: apple_vdsp_fft_plan", "", neo::complex64, std::complex<float>, neo::complex128, std::complex<double>)
+TEMPLATE_TEST_CASE(
+    "neo/fft: apple_vdsp_fft_plan",
+    "",
+    neo::complex64,
+    std::complex<float>,
+    neo::complex128,
+    std::complex<double>
+)
 {
     test_fft_plan<neo::fft::apple_vdsp_fft_plan<TestType>>();
 }
 #endif
 
 #if defined(NEO_HAS_INTEL_IPP)
-TEMPLATE_TEST_CASE("neo/fft: intel_ipp_fft_plan", "", neo::complex64, std::complex<float>, neo::complex128, std::complex<double>)
+TEMPLATE_TEST_CASE(
+    "neo/fft: intel_ipp_fft_plan",
+    "",
+    neo::complex64,
+    std::complex<float>,
+    neo::complex128,
+    std::complex<double>
+)
 {
     test_fft_plan<neo::fft::intel_ipp_fft_plan<TestType>>();
 }
 #endif
 
 #if defined(NEO_HAS_INTEL_MKL)
-TEMPLATE_TEST_CASE("neo/fft: intel_mkl_fft_plan", "", neo::complex64, std::complex<float>, neo::complex128, std::complex<double>)
+TEMPLATE_TEST_CASE(
+    "neo/fft: intel_mkl_fft_plan",
+    "",
+    neo::complex64,
+    std::complex<float>,
+    neo::complex128,
+    std::complex<double>
+)
 {
     test_fft_plan<neo::fft::intel_mkl_fft_plan<TestType>>();
 }

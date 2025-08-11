@@ -210,7 +210,7 @@ jobs:
           version: latest
 
       - name: Set up Visual Studio shell
-        if: ${{ matrix.name }} == 'Windows-MSVC'
+        if: matrix.name == 'Windows-MSVC'
         uses: egor-tensin/vs-shell@v2
 
       - name: Install ccache

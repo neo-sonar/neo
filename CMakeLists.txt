@@ -4,6 +4,7 @@ project(neosonar-neo-dev VERSION 0.1.0)
 option(NEO_ENABLE_BENCHMARKS "Build benchmarks" ON)
 option(NEO_ENABLE_TESTS "Build tests" ON)
 option(NEO_ENABLE_TOOLS "Build tools" ON)
+option(NEO_ENABLE_PLUGIN "Build audio plugin" ON)
 
 option(NEO_ENABLE_APPLE_ACCELERATE "Link against Apple Accelerate" ON)
 option(NEO_ENABLE_INTEL_IPP "Link against Intel IPP" OFF)
@@ -62,5 +63,8 @@ endif()
 
 if(NEO_ENABLE_TOOLS)
     add_subdirectory(extra/cli)
+endif()
+
+if(NEO_ENABLE_PLUGIN)
     add_subdirectory(extra/plugin)
 endif()

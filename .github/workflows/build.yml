@@ -59,7 +59,7 @@ jobs:
             macos_target: ""
 
           - name: macOS-ARM64
-            os: macos-14
+            os: macos-15
             build_type: Release
             generator: Ninja
             clang_version: ""
@@ -103,7 +103,7 @@ jobs:
             macos_target: ""
 
           - name: Coverage-Native
-            os: ubuntu-22.04
+            os: ubuntu-24.04
             build_type: Debug
             generator: Ninja
             clang_version: ""
@@ -114,7 +114,7 @@ jobs:
             macos_target: ""
 
           - name: Coverage-SSE41
-            os: ubuntu-22.04
+            os: ubuntu-24.04
             build_type: Debug
             generator: Ninja
             clang_version: ""
@@ -125,7 +125,7 @@ jobs:
             macos_target: ""
 
           - name: Coverage-SSE2
-            os: ubuntu-22.04
+            os: ubuntu-24.04
             build_type: Debug
             generator: Ninja
             clang_version: ""

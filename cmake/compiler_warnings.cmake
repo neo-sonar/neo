@@ -33,5 +33,9 @@ else ()
             # Warns for [[no_unique_address]] being ignored for ABI reasons
             target_compile_options(neosonar.compiler_warnings INTERFACE "-Wno-unknown-attributes")
         endif()
+        if(EMSCRIPTEN)
+            # Warnings in xsimd
+            target_compile_options(neosonar.compiler_warnings INTERFACE "-Wno-implicit-int-conversion-on-negation")
+        endif()
     endif()
 endif ()

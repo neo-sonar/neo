@@ -13,17 +13,17 @@ template<std::unsigned_integral UInt>
 [[nodiscard]] constexpr auto bit_ceil_fallback(UInt x) noexcept -> UInt
 {
     --x;
-    x |= (x >> 1);
-    x |= (x >> 2);
-    x |= (x >> 4);
+    x = static_cast<UInt>(x | static_cast<UInt>((x >> UInt(1))));
+    x = static_cast<UInt>(x | static_cast<UInt>((x >> UInt(2))));
+    x = static_cast<UInt>(x | static_cast<UInt>((x >> UInt(4))));
     if constexpr (sizeof(UInt) > 1) {
-        x |= (x >> 8);
+        x = static_cast<UInt>(x | static_cast<UInt>((x >> UInt(8))));
     }
     if constexpr (sizeof(UInt) > 2) {
-        x |= (x >> 16);
+        x = static_cast<UInt>(x | static_cast<UInt>((x >> UInt(16))));
     }
     if constexpr (sizeof(UInt) > 4) {
-        x |= (x >> 32);
+        x = static_cast<UInt>(x | static_cast<UInt>((x >> UInt(32))));
     }
     return x + 1;
 }

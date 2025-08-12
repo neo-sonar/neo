@@ -1,11 +1,12 @@
-cmake_minimum_required(VERSION 3.23...3.27)
+cmake_minimum_required(VERSION 3.26...3.27)
 project(neosonar-neo VERSION ${CMAKE_PROJECT_VERSION})
 
 add_library(neosonar-neo INTERFACE)
 add_library(neosonar::neo ALIAS neosonar-neo)
 
 target_link_libraries(neosonar-neo INTERFACE mdspan::mdspan)
-target_compile_features(neosonar-neo INTERFACE cxx_std_20)
+target_compile_features(neosonar-neo INTERFACE cxx_std_23)
+target_compile_definitions(neosonar-neo INTERFACE MDSPAN_USE_BRACKET_OPERATOR=0 MDSPAN_USE_PAREN_OPERATOR=1)
 target_include_directories(neosonar-neo INTERFACE
     $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}>
     $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>

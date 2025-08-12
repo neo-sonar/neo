@@ -20,5 +20,6 @@ target_include_directories(neo-cli
 target_link_libraries(neo-cli
     PRIVATE
         neosonar::neo
+        neosonar::compiler_warnings
         fmt::fmt-header-only
 )

@@ -7,6 +7,10 @@
 #include <neo/algorithm/copy.hpp>
 #include <neo/container/mdspan.hpp>
 
+#include <filesystem>
+#include <stdexcept>
+#include <utility>
+
 #if defined(__clang__)
     #pragma clang diagnostic push
     #pragma clang diagnostic ignored "-Wcast-align"
@@ -28,18 +32,14 @@
 
 #include "dr_wav.h"
 
+#include <fmt/format.h>
+#include <fmt/os.h>
+
 #if defined(__clang__)
     #pragma clang diagnostic pop
 #elif defined(__GNUC__)
     #pragma GCC diagnostic pop
 #endif
-
-#include <fmt/format.h>
-#include <fmt/os.h>
-
-#include <filesystem>
-#include <stdexcept>
-#include <utility>
 
 namespace neo {
 

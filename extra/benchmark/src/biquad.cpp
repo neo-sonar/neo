@@ -1,12 +1,16 @@
 // SPDX-License-Identifier: MIT
 
+#include "multi_batch.hpp"
+
 #include <neo/fft.hpp>
 
+#include <neo/config/xsimd.hpp>
 #include <neo/testing/testing.hpp>
 
 #include <benchmark/benchmark.h>
 
 #include <algorithm>
+#include <functional>
 #include <ranges>
 
 // #include <stdfloat>
@@ -66,6 +70,13 @@ auto biquad(benchmark::State& state) -> void
                 x(i) = xsimd::broadcast(s(i));
             }
             return x;
+        } else if constexpr (neo::is_multi_batch<Float>) {
+            auto s = neo::generate_noise_signal<typename Float::real_type>(size, std::random_device{}());
+            auto x = stdex::mdarray<Float, stdex::dextents<size_t, 1>>{size};
+            for (auto i{0U}; i < size; ++i) {
+                x(i) = xsimd::broadcast(s(i));
+            }
+            return x;
         } else {
             return neo::generate_noise_signal<Float>(size, std::random_device{}());
         }
@@ -85,7 +96,7 @@ auto biquad(benchmark::State& state) -> void
 
     auto const items = int64_t(state.iterations()) * int64_t(size);
     state.SetBytesProcessed(items * sizeof(Float));
-    if constexpr (xsimd::is_batch<Float>::value) {
+    if constexpr (xsimd::is_batch<Float>::value or neo::is_multi_batch<Float>) {
         state.SetItemsProcessed(items * Float::size);
     } else {
         state.SetItemsProcessed(items);
@@ -94,21 +105,25 @@ auto biquad(benchmark::State& state) -> void
 
 }  // namespace
 
-static constexpr auto N = 2048 * 16;
+static constexpr auto N = 2048 * 1024;
 
-#if defined(NEO_HAS_BUILTIN_FLOAT16)
-BENCHMARK(biquad<_Float16>)->RangeMultiplier(2)->Range(N, N);
-#endif
+// #if defined(NEO_HAS_BUILTIN_FLOAT16)
+// BENCHMARK(biquad<_Float16>)->RangeMultiplier(2)->Range(256, N);
+// #endif
 
-// BENCHMARK(biquad<xsimd::batch<float>>)->RangeMultiplier(2)->Range(N, N);
-// BENCHMARK(biquad<xsimd::batch<double>>)->RangeMultiplier(2)->Range(N, N);
+BENCHMARK(biquad<float>)->RangeMultiplier(2)->Range(256, N);
+// BENCHMARK(biquad<double>)->RangeMultiplier(2)->Range(256, N);
+// BENCHMARK(biquad<long double>)->RangeMultiplier(2)->Range(256, N);
 
-// BENCHMARK(biquad<std::float32_t>)->RangeMultiplier(2)->Range(N, N);
-// BENCHMARK(biquad<std::float64_t>)->RangeMultiplier(2)->Range(N, N);
-// BENCHMARK(biquad<std::float128_t>)->RangeMultiplier(2)->Range(N, N);
+BENCHMARK(biquad<xsimd::batch<float>>)->RangeMultiplier(2)->Range(256, N);
+// BENCHMARK(biquad<xsimd::batch<double>>)->RangeMultiplier(2)->Range(256, N);
 
-BENCHMARK(biquad<float>)->RangeMultiplier(2)->Range(N, N);
-BENCHMARK(biquad<double>)->RangeMultiplier(2)->Range(N, N);
-BENCHMARK(biquad<long double>)->RangeMultiplier(2)->Range(N, N);
+BENCHMARK(biquad<neo::multi_batch<float, 2>>)->RangeMultiplier(2)->Range(256, N);
+BENCHMARK(biquad<neo::multi_batch<float, 4>>)->RangeMultiplier(2)->Range(256, N);
+BENCHMARK(biquad<neo::multi_batch<float, 8>>)->RangeMultiplier(2)->Range(256, N);
+
+// BENCHMARK(biquad<std::float32_t>)->RangeMultiplier(2)->Range(256, N);
+// BENCHMARK(biquad<std::float64_t>)->RangeMultiplier(2)->Range(256, N);
+// BENCHMARK(biquad<std::float128_t>)->RangeMultiplier(2)->Range(256, N);
 
 BENCHMARK_MAIN();

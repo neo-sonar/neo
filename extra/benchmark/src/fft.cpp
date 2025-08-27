@@ -113,40 +113,76 @@ auto split_c2c(benchmark::State& state) -> void
 using namespace neo::fft;
 namespace kernel = neo::fft::kernel;
 
-BENCHMARK(c2c<c2c_dit2_plan<neo::complex64, kernel::c2c_dit2_v1>>)->RangeMultiplier(4)->Range(1 << 8, 1 << 20);
-BENCHMARK(c2c<c2c_dit2_plan<neo::complex64, kernel::c2c_dit2_v2>>)->RangeMultiplier(4)->Range(1 << 8, 1 << 20);
-BENCHMARK(c2c<c2c_dit2_plan<neo::complex64, kernel::c2c_dit2_v3>>)->RangeMultiplier(4)->Range(1 << 8, 1 << 20);
-BENCHMARK(c2c<c2c_dit2_plan<neo::complex64, kernel::c2c_dit2_v4>>)->RangeMultiplier(4)->Range(1 << 8, 1 << 20);
+BENCHMARK(c2c<c2c_dit2_plan<neo::complex64, kernel::c2c_dit2_v1>>)
+    ->RangeMultiplier(4)
+    ->Range(1 << 8, 1 << 24)
+    ->Name("c2c_dit2_v1");
+BENCHMARK(c2c<c2c_dit2_plan<neo::complex64, kernel::c2c_dit2_v2>>)
+    ->RangeMultiplier(4)
+    ->Range(1 << 8, 1 << 24)
+    ->Name("c2c_dit2_v2");
+BENCHMARK(c2c<c2c_dit2_plan<neo::complex64, kernel::c2c_dit2_v3>>)
+    ->RangeMultiplier(4)
+    ->Range(1 << 8, 1 << 24)
+    ->Name("c2c_dit2_v3");
+BENCHMARK(c2c<c2c_dit2_plan<neo::complex64, kernel::c2c_dit2_v4>>)
+    ->RangeMultiplier(4)
+    ->Range(1 << 8, 1 << 24)
+    ->Name("c2c_dit2_v4");
 
-BENCHMARK(c2c_r4<c2c_dit4_plan<neo::complex64>>)->RangeMultiplier(4)->Range(1 << 8, 1 << 20);
-BENCHMARK(c2c_r4<c2c_dif4_plan<neo::complex64>>)->RangeMultiplier(4)->Range(1 << 8, 1 << 20);
+BENCHMARK(c2c_r4<c2c_dit4_plan<neo::complex64>>)->RangeMultiplier(4)->Range(1 << 8, 1 << 24)->Name("c2c_dit4_plan");
+BENCHMARK(c2c_r4<c2c_dif4_plan<neo::complex64>>)->RangeMultiplier(4)->Range(1 << 8, 1 << 24)->Name("c2c_dif4_plan");
 
-BENCHMARK(c2c<c2c_stockham_dif2r_plan<neo::complex64>>)->RangeMultiplier(4)->Range(1 << 8, 1 << 20);
-BENCHMARK(c2c<c2c_stockham_dif2i_plan<neo::complex64>>)->RangeMultiplier(4)->Range(1 << 8, 1 << 20);
+BENCHMARK(c2c<c2c_stockham_dif2r_plan<neo::complex64>>)
+    ->RangeMultiplier(4)
+    ->Range(1 << 8, 1 << 24)
+    ->Name("c2c_stockham_dif2r_plan");
+BENCHMARK(c2c<c2c_stockham_dif2i_plan<neo::complex64>>)
+    ->RangeMultiplier(4)
+    ->Range(1 << 8, 1 << 24)
+    ->Name("c2c_stockham_dif2i_plan");
 
-BENCHMARK(c2c<fft_plan<neo::complex64>>)->RangeMultiplier(4)->Range(1 << 8, 1 << 20);
+BENCHMARK(c2c<fft_plan<neo::complex64>>)->RangeMultiplier(4)->Range(1 << 8, 1 << 24)->Name("fft_plan");
 
 #if defined(NEO_HAS_APPLE_ACCELERATE)
-BENCHMARK(c2c<apple_vdsp_fft_plan<neo::complex64>>)->RangeMultiplier(4)->Range(1 << 8, 1 << 20);
+BENCHMARK(c2c<apple_vdsp_fft_plan<neo::complex64>>)
+    ->RangeMultiplier(4)
+    ->Range(1 << 8, 1 << 24)
+    ->Name("apple_vdsp_fft_plan");
 #endif
 
 #if defined(NEO_HAS_INTEL_IPP)
-BENCHMARK(c2c<intel_ipp_fft_plan<neo::complex64>>)->RangeMultiplier(4)->Range(1 << 8, 1 << 20);
+BENCHMARK(c2c<intel_ipp_fft_plan<neo::complex64>>)
+    ->RangeMultiplier(4)
+    ->Range(1 << 8, 1 << 24)
+    ->Name("intel_ipp_fft_plan");
 #endif
 
 #if defined(NEO_HAS_INTEL_MKL)
-BENCHMARK(c2c<intel_mkl_fft_plan<neo::complex64>>)->RangeMultiplier(4)->Range(1 << 8, 1 << 20);
+BENCHMARK(c2c<intel_mkl_fft_plan<neo::complex64>>)
+    ->RangeMultiplier(4)
+    ->Range(1 << 8, 1 << 24)
+    ->Name("intel_mkl_fft_plan");
 #endif
 
-BENCHMARK(split_c2c<split_fft_plan<float>>)->RangeMultiplier(4)->Range(1 << 8, 1 << 20);
-BENCHMARK(split_c2c<fallback_split_fft_plan<float>>)->RangeMultiplier(4)->Range(1 << 8, 1 << 20);
+BENCHMARK(split_c2c<split_fft_plan<float>>)->RangeMultiplier(4)->Range(1 << 8, 1 << 24)->Name("split_fft_plan");
+BENCHMARK(split_c2c<fallback_split_fft_plan<float>>)
+    ->RangeMultiplier(4)
+    ->Range(1 << 8, 1 << 24)
+    ->Name("fallback_split_fft_plan");
 
 #if defined(NEO_HAS_INTEL_IPP)
-BENCHMARK(split_c2c<intel_ipp_split_fft_plan<float>>)->RangeMultiplier(4)->Range(1 << 8, 1 << 20);
+BENCHMARK(split_c2c<intel_ipp_split_fft_plan<float>>)
+    ->RangeMultiplier(4)
+    ->Range(1 << 8, 1 << 24)
+    ->Name("intel_ipp_split_fft_plan");
 #endif
 
 #if defined(NEO_HAS_APPLE_ACCELERATE)
-BENCHMARK(split_c2c<apple_vdsp_split_fft_plan<float>>)->RangeMultiplier(4)->Range(1 << 8, 1 << 20);
+BENCHMARK(split_c2c<apple_vdsp_split_fft_plan<float>>)
+    ->RangeMultiplier(4)
+    ->Range(1 << 8, 1 << 24)
+    ->Name("apple_vdsp_split_fft_plan");
 #endif
 
 BENCHMARK_MAIN();

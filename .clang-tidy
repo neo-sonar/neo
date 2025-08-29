@@ -2,6 +2,7 @@ Checks:
   - -*
 
   - bugprone-*
+  - -bugprone-easily-swappable-parameters
   - -bugprone-exception-escape
   - -bugprone-macro-parentheses
   - -bugprone-signed-char-misuse
@@ -12,6 +13,8 @@ Checks:
   - -cert-str34-c
 
   - clang-analyzer-*
+  - -clang-analyzer-optin.core.EnumCastOutOfRange
+
   - clang-diagnostics-*
 
   - concurrency-*
@@ -29,26 +32,35 @@ Checks:
 
   - misc-*
   - -misc-include-cleaner
+  - -misc-no-recursion
   - -misc-use-anonymous-namespace
 
   - modernize-*
   - performance-*
+  - -performance-enum-size
 
   - readability-*
   - readability-identifier-naming
   - -readability-function-cognitive-complexity
   - -readability-identifier-length
   - -readability-math-missing-parentheses
+  - -readability-qualified-auto
 
   - -*-avoid-c-arrays
   - -*-magic-numbers
+  - -*-vararg
 
 WarningsAsErrors: "*"
 FormatStyle: file
+HeaderFileExtensions: ["hpp"]
+ImplementationFileExtensions: ["cpp"]
+ExcludeHeaderFilterRegex: "(.*/catch2/*)|(.*/xsimd/*)"
 CheckOptions:
   - key: bugprone-easily-swappable-parameters.MinimumLength
     value: 4
   - key: cppcoreguidelines-avoid-do-while.IgnoreMacros
+    value: true
+  - key: misc-non-private-member-variables-in-classes.IgnoreClassesWithAllMemberVariablesBeingPublic
     value: true
   - key: readability-identifier-naming.ClassCase
     value: lower_case

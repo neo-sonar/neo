@@ -11,6 +11,7 @@
 # Perf
 /perf.data
 /perf.data.old
+/heaptrack.*
 
 # Test data
 .DS_Store

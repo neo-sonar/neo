@@ -50,11 +50,17 @@ auto multiply_add(
         auto const zre = reg::loadu(&z_real[i]);
         auto const zim = reg::loadu(&z_imag[i]);
 
-        auto const out_re = reg::add(reg::sub(reg::mul(xre, yre), reg::mul(xim, yim)), zre);
-        auto const out_im = reg::add(reg::add(reg::mul(xre, yim), reg::mul(xim, yre)), zim);
-
-        reg::storeu(&out_real[i], out_re);
-        reg::storeu(&out_imag[i], out_im);
+        if constexpr (requires { reg::fma(xre, xre, xre); }) {
+            auto const out_re = reg::add(reg::fms(xre, yre, reg::mul(xim, yim)), zre);
+            auto const out_im = reg::add(reg::fma(xre, yim, reg::mul(xim, yre)), zim);
+            reg::storeu(&out_real[i], out_re);
+            reg::storeu(&out_imag[i], out_im);
+        } else {
+            auto const out_re = reg::add(reg::sub(reg::mul(xre, yre), reg::mul(xim, yim)), zre);
+            auto const out_im = reg::add(reg::add(reg::mul(xre, yim), reg::mul(xim, yre)), zim);
+            reg::storeu(&out_real[i], out_re);
+            reg::storeu(&out_imag[i], out_im);
+        }
     }
 
     for (auto i = vec_size; i < size; ++i) {
@@ -159,6 +165,8 @@ struct batch_f32
     static constexpr auto const add    = _mm256_add_ps;
     static constexpr auto const sub    = _mm256_sub_ps;
     static constexpr auto const mul    = _mm256_mul_ps;
+    static constexpr auto const fma    = _mm256_fmadd_ps;
+    static constexpr auto const fms    = _mm256_fmsub_ps;
 };
 
 struct batch_f64
@@ -171,6 +179,8 @@ struct batch_f64
     static constexpr auto const add    = _mm256_add_pd;
     static constexpr auto const sub    = _mm256_sub_pd;
     static constexpr auto const mul    = _mm256_mul_pd;
+    static constexpr auto const fma    = _mm256_fmadd_pd;
+    static constexpr auto const fms    = _mm256_fmsub_pd;
 };
 
 template<std::floating_point Float>

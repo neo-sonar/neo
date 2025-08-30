@@ -364,16 +364,16 @@ multiply_add(split_complex<VecX> x, split_complex<VecY> y, split_complex<VecZ> z
             return;
         }
 #endif
-    }
+    } else {
+        for (auto i{0}; i < static_cast<int>(x.real.extent(0)); ++i) {
+            auto const xre = x.real[i];
+            auto const xim = x.imag[i];
+            auto const yre = y.real[i];
+            auto const yim = y.imag[i];
 
-    for (auto i{0}; i < static_cast<int>(x.real.extent(0)); ++i) {
-        auto const xre = x.real[i];
-        auto const xim = x.imag[i];
-        auto const yre = y.real[i];
-        auto const yim = y.imag[i];
-
-        out.real[i] = (xre * yre - xim * yim) + z.real[i];
-        out.imag[i] = (xre * yim + xim * yre) + z.imag[i];
+            out.real[i] = (xre * yre - xim * yim) + z.real[i];
+            out.imag[i] = (xre * yim + xim * yre) + z.imag[i];
+        }
     }
 }
 

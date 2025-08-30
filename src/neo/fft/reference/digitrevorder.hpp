@@ -5,6 +5,8 @@
 #include <neo/complex/complex.hpp>
 #include <neo/container/mdspan.hpp>
 
+#include <cassert>
+
 namespace neo::fft {
 
 /// Reorder input using base-radix digit reversal permutation.
@@ -28,18 +30,20 @@ struct digitrevorder_plan
 private:
     [[nodiscard]] static auto make(std::size_t size) -> std::vector<std::uint32_t>
     {
+        assert(size > 0);
+
         auto lut = std::vector<std::uint32_t>(size);
 
-        auto j = 0UL;
-        for (auto i = 0UL; i < size - 1UL; i++) {
+        auto j = 0zu;
+        for (auto i = 0zu; i < size - 1zu; i++) {
             lut[i] = static_cast<std::uint32_t>(j);
 
-            auto k = (Radix - 1UL) * size / Radix;
+            auto k = (Radix - 1zu) * size / Radix;
             while (k <= j) {
                 j -= k;
                 k /= Radix;
             }
-            j += k / (Radix - 1);
+            j += k / (Radix - 1zu);
         }
 
         return lut;

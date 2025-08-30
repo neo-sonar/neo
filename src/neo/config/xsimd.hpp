@@ -7,6 +7,7 @@
 #if defined(__clang__)
     #pragma clang diagnostic push
     #pragma clang diagnostic ignored "-Wcast-align"
+    #pragma clang diagnostic ignored "-Wcast-qual"
     #pragma clang diagnostic ignored "-Wdeprecated"
     #pragma clang diagnostic ignored "-Wdocumentation"
     #pragma clang diagnostic ignored "-Wdouble-promotion"

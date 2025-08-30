@@ -29,7 +29,6 @@ elseif(CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
             "-Wstrict-overflow=1"
             "-Wswitch-enum"
             "-Wtrampolines"
-            "-Wundef"
             "-Wuninitialized"
             "-Wunreachable-code"
             "-Wunused-parameter"

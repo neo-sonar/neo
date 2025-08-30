@@ -13,6 +13,7 @@
     #pragma clang diagnostic ignored "-Wdouble-promotion"
     #pragma clang diagnostic ignored "-Wfloat-conversion"
     #pragma clang diagnostic ignored "-Wfloat-equal"
+    #pragma clang diagnostic ignored "-Wimplicit-int-conversion-on-negation"
     #pragma clang diagnostic ignored "-Wlanguage-extension-token"
     #pragma clang diagnostic ignored "-Wold-style-cast"
     #pragma clang diagnostic ignored "-Wreserved-identifier"

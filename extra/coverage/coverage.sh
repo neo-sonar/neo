@@ -19,7 +19,7 @@ rm -rf "$BUILD_DIR"
 cmake -S . -B "$BUILD_DIR" -D NEO_ENABLE_INTEL_IPP=ON -D NEO_ENABLE_INTEL_MKL=ON -D NEO_ENABLE_BENCHMARKS=OFF -D NEO_ENABLE_TOOLS=OFF -D NEO_ENABLE_PLUGIN=OFF
 
 # Build
-cmake --build "$BUILD_DIR" --target neosonar-neo-tests
+cmake --build "$BUILD_DIR" --target neo-tests
 
 # Enter build directory
 cd "$BUILD_DIR"

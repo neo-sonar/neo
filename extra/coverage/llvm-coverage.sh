@@ -22,7 +22,7 @@ ctest --test-dir "$BUILD_DIR" --output-on-failure -j $(nproc)
 
 llvm-profdata-20 merge -sparse $BUILD_DIR/raw/*.profraw -o "$BUILD_DIR/combined.profdata"
 llvm-cov-20 show \
-  -object $BUILD_DIR/test/neosonar-neo-tests \
+  -object $BUILD_DIR/test/neo-tests \
   -instr-profile="$BUILD_DIR/combined.profdata" \
   -format=html \
   -output-dir="$BUILD_DIR/html" \
@@ -32,7 +32,7 @@ llvm-cov-20 show \
 
 
 llvm-cov-20 export \
-  -object $BUILD_DIR/test/neosonar-neo-tests \
+  -object $BUILD_DIR/test/neo-tests \
   -instr-profile="$BUILD_DIR/combined.profdata" \
   -format=lcov \
   -ignore-filename-regex='(^/usr/|/catch2/|/_deps/)' > "$BUILD_DIR/coverage.info"

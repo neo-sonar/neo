@@ -3,6 +3,7 @@ project(neosonar-neo-tests)
 FetchContent_Declare(Catch2 GIT_REPOSITORY "https://github.com/catchorg/Catch2" GIT_TAG "v3.10.0" GIT_SHALLOW TRUE)
 FetchContent_MakeAvailable(Catch2)
 include(${Catch2_SOURCE_DIR}/extras/Catch.cmake)
+set_target_properties(Catch2 PROPERTIES UNITY_BUILD ON)
 
 add_executable(neo-tests)
 target_link_libraries(neo-tests PRIVATE neosonar::neo neosonar::compiler_warnings Catch2::Catch2WithMain)

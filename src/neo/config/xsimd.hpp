@@ -8,10 +8,15 @@
     #pragma clang diagnostic push
     #pragma clang diagnostic ignored "-Wcast-align"
     #pragma clang diagnostic ignored "-Wdeprecated"
+    #pragma clang diagnostic ignored "-Wdocumentation"
+    #pragma clang diagnostic ignored "-Wdouble-promotion"
     #pragma clang diagnostic ignored "-Wfloat-conversion"
     #pragma clang diagnostic ignored "-Wfloat-equal"
+    #pragma clang diagnostic ignored "-Wold-style-cast"
+    #pragma clang diagnostic ignored "-Wreserved-identifier"
     #pragma clang diagnostic ignored "-Wshorten-64-to-32"
     #pragma clang diagnostic ignored "-Wsign-conversion"
+    #pragma clang diagnostic ignored "-Wundef"
     #pragma clang diagnostic ignored "-Wzero-as-null-pointer-constant"
 #elif defined(__GNUC__)
     #pragma GCC diagnostic push

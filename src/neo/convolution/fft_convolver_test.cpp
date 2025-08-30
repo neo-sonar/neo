@@ -10,11 +10,11 @@
 #include <catch2/catch_template_test_macros.hpp>
 #include <catch2/generators/catch_generators.hpp>
 
-using namespace neo::convolution;
-
 TEMPLATE_TEST_CASE("neo/convolution: fft_convolve", "", float, double)
 {
     using Float = TestType;
+
+    using namespace neo::convolution;
 
     auto const empty = stdex::mdarray<Float, stdex::dextents<std::size_t, 1>>{0};
     auto const one   = stdex::mdarray<Float, stdex::dextents<std::size_t, 1>>{0};

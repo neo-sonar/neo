@@ -282,25 +282,25 @@ TEMPLATE_PRODUCT_TEST_CASE(
 }
 #endif
 
-using namespace neo::fft;
-
 TEMPLATE_PRODUCT_TEST_CASE(
     "neo/fft: ",
     "",
-    (c2c_dif3_plan,
-     c2c_dif4_plan,
-     c2c_dif5_plan,
-     c2c_dit4_plan,
-     c2c_stockham_dif2r_plan,
-     c2c_stockham_dif2i_plan,
-     c2c_stockham_dif3_plan,
-     c2c_stockham_dif4_plan,
-     c2c_stockham_dif5_plan,
-     c2c_stockham_dif8_plan,
-     c2c_stockham_dit4_plan),
+    (neo::fft::c2c_dif3_plan,
+     neo::fft::c2c_dif4_plan,
+     neo::fft::c2c_dif5_plan,
+     neo::fft::c2c_dit4_plan,
+     neo::fft::c2c_stockham_dif2r_plan,
+     neo::fft::c2c_stockham_dif2i_plan,
+     neo::fft::c2c_stockham_dif3_plan,
+     neo::fft::c2c_stockham_dif4_plan,
+     neo::fft::c2c_stockham_dif5_plan,
+     neo::fft::c2c_stockham_dif8_plan,
+     neo::fft::c2c_stockham_dit4_plan),
     (std::complex<float>, std::complex<double>, neo::complex64, neo::complex128)
 )
 {
+    using namespace neo::fft;
+
     using Plan    = TestType;
     using Complex = typename Plan::value_type;
     using Float   = typename Complex::value_type;

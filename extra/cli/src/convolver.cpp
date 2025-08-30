@@ -7,9 +7,6 @@
 #include <neo/convolution.hpp>
 #include <neo/math.hpp>
 
-#include <fmt/format.h>
-#include <fmt/os.h>
-
 #include <cstdlib>
 
 namespace conv = neo::convolution;

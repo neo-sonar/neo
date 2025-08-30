@@ -7,6 +7,8 @@
 #if defined(__clang__)
     #pragma clang diagnostic push
     #pragma clang diagnostic ignored "-Wextra-semi"
+    #pragma clang diagnostic ignored "-Wmissing-noreturn"
+    #pragma clang diagnostic ignored "-Wold-style-cast"
     #pragma clang diagnostic ignored "-Wshadow"
     #pragma clang diagnostic ignored "-Wsign-compare"
 #elif defined(__GNUC__)

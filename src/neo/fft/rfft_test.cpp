@@ -63,8 +63,6 @@ auto test_rfft()
 
 }  // namespace
 
-using namespace neo::fft;
-
 TEMPLATE_PRODUCT_TEST_CASE("neo/fft: fallback_rfft_plan", "", (std_complex, neo_complex), (float, double))
 {
     test_rfft<typename TestType::plan_type>();

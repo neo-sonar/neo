@@ -7,6 +7,7 @@
 #include <neo/bit/bit_log2.hpp>
 #include <neo/math/ipow.hpp>
 
+#include <bit>
 #include <cassert>
 #include <cstddef>
 #include <type_traits>

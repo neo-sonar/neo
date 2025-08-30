@@ -9,7 +9,7 @@ export CXXFLAGS="-fprofile-arcs -ftest-coverage -march=native"
 export CMAKE_BUILD_TYPE="Debug"
 export CMAKE_GENERATOR="Ninja"
 
-BUILD_DIR=cmake-build-coverage
+BUILD_DIR=cmake-build-coverage-gcc
 BASE_DIR=$PWD
 
 # Clean up old build

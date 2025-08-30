@@ -13,7 +13,7 @@ namespace neo {
 template<std::floating_point Float>
 [[nodiscard]] auto a_weighting(Float frequency) noexcept -> Float
 {
-    static constexpr auto const constants = [] {
+    static constexpr auto const constants = []() -> std::array<Float, 4> {
         auto c = std::array<Float, 4>{Float(12194.217), Float(20.598997), Float(107.65265), Float(737.86223)};
         for (auto& v : c) {
             v = v * v;

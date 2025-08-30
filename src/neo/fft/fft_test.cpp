@@ -136,7 +136,8 @@ auto test_complex_batch_roundtrip_fft()
     using ScalarBatch   = typename ComplexBatch::real_batch;
     using ScalarFloat   = typename ScalarComplex::value_type;
 
-    auto make_noise_signal = [](auto size) {
+    static constexpr auto make_noise_signal
+        = [](auto size) -> stdex::mdarray<ComplexBatch, stdex::dextents<size_t, 1>> {
         auto noise = neo::generate_noise_signal<ScalarComplex>(size, Catch::getSeed());
         auto buf   = stdex::mdarray<ComplexBatch, stdex::dextents<size_t, 1>>{size};
         for (auto i{0UL}; i < size; ++i) {
@@ -148,7 +149,8 @@ auto test_complex_batch_roundtrip_fft()
         return buf;
     };
 
-    auto make_twiddles = [](auto size, neo::fft::direction dir) {
+    static constexpr auto make_twiddles
+        = [](auto size, neo::fft::direction dir) -> stdex::mdarray<ComplexBatch, stdex::dextents<size_t, 1>> {
         auto tw  = neo::fft::make_twiddle_lut_radix2<ScalarComplex>(size, dir);
         auto buf = stdex::mdarray<ComplexBatch, stdex::dextents<size_t, 1>>{tw.extents()};
         for (auto i{0UL}; i < buf.extent(0); ++i) {

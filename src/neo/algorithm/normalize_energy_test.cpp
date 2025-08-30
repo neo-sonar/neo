@@ -15,12 +15,12 @@ TEMPLATE_TEST_CASE("neo/algorithm: normalize_energy", "", float, double)
     using Float = TestType;
 
     auto const size        = GENERATE(as<std::size_t>{}, 2, 33, 128);
-    auto const set1_vector = [size](Float val) {
+    auto const set1_vector = [size](Float val) -> stdex::mdarray<Float, stdex::dextents<std::size_t, 1>> {
         auto vec = stdex::mdarray<Float, stdex::dextents<std::size_t, 1>>{size};
         vec(0)   = val;
         return vec;
     };
-    auto const set1_matrix = [size](Float val) {
+    auto const set1_matrix = [size](Float val) -> stdex::mdarray<Float, stdex::dextents<std::size_t, 2>> {
         auto mat  = stdex::mdarray<Float, stdex::dextents<std::size_t, 2>>{size, size * 2};
         mat(0, 0) = val;
         return mat;

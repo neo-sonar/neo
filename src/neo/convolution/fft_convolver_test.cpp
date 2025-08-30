@@ -26,7 +26,7 @@ TEMPLATE_TEST_CASE("neo/convolution: fft_convolve", "", float, double)
     auto const patch_size  = GENERATE(as<std::size_t>{}, 4, 8, 9, 10, 64, 78, 143, 256, 444, 666, 1024);
 
     auto const signal = neo::generate_noise_signal<Float>(signal_size, Catch::getSeed());
-    auto const patch  = [patch_size] {
+    auto const patch  = [patch_size]() -> stdex::mdarray<Float, stdex::dextents<std::size_t, 1>> {
         auto buf = stdex::mdarray<Float, stdex::dextents<std::size_t, 1>>{patch_size};
         buf(0)   = Float(1);
         return buf;

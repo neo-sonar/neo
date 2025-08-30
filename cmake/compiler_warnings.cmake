@@ -69,7 +69,6 @@ elseif(CMAKE_CXX_COMPILER_ID MATCHES "AppleClang|Clang")
     if(CMAKE_CXX_COMPILER_VERSION VERSION_GREATER_EQUAL "22.0.0")
         target_compile_options(neosonar.compiler_warnings
             INTERFACE
-                "-Wno-nrvo"
                 "-Wno-unique-object-duplication" # xsimd
         )
     endif()

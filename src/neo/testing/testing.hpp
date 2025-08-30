@@ -35,6 +35,7 @@ using real_or_complex_value_t = decltype(detail::real_or_complex_value<RealOrCom
 
 template<typename FloatOrComplex, typename URNG = std::mt19937>
 [[nodiscard]] auto generate_noise_signal(std::size_t length, typename URNG::result_type seed)
+    -> stdex::mdarray<FloatOrComplex, stdex::dextents<size_t, 1>>
 {
     auto rng = URNG{seed};
 

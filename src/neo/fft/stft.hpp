@@ -56,7 +56,7 @@ struct stft_plan
 
     template<in_matrix InMat>
         requires std::convertible_to<value_type_t<InMat>, Float>
-    [[nodiscard]] auto operator()(InMat x)
+    [[nodiscard]] auto operator()(InMat x) -> stdex::mdarray<Complex, stdex::dextents<std::size_t, 3>>
     {
         auto const frame_len = _options.frame_size;
         auto const overlap   = _options.overlap_size;

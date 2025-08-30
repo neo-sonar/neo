@@ -61,7 +61,7 @@ auto direct_convolve(Signal signal, Patch patch, Output output) noexcept -> void
 /// \ingroup neo-convolution
 template<in_vector Signal, in_vector Patch>
     requires(std::same_as<value_type_t<Signal>, value_type_t<Patch>>)
-auto direct_convolve(Signal signal, Patch patch)
+auto direct_convolve(Signal signal, Patch patch) -> stdex::mdarray<value_type_t<Signal>, stdex::dextents<size_t, 1>>
 {
     using Float = value_type_t<Signal>;
 

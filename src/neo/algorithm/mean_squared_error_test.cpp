@@ -25,12 +25,12 @@ TEMPLATE_TEST_CASE(
     using Float  = neo::real_or_complex_value_t<Scalar>;
 
     auto const size        = GENERATE(as<std::size_t>{}, 2, 33, 128);
-    auto const fill_vector = [size](Scalar val) {
+    auto const fill_vector = [size](Scalar val) -> stdex::mdarray<Scalar, stdex::dextents<std::size_t, 1>> {
         auto vec = stdex::mdarray<Scalar, stdex::dextents<std::size_t, 1>>{size};
         neo::fill(vec.to_mdspan(), val);
         return vec;
     };
-    auto const fill_matrix = [size](Scalar val) {
+    auto const fill_matrix = [size](Scalar val) -> stdex::mdarray<Scalar, stdex::dextents<std::size_t, 2>> {
         auto vec = stdex::mdarray<Scalar, stdex::dextents<std::size_t, 2>>{size, size * 2};
         neo::fill(vec.to_mdspan(), val);
         return vec;

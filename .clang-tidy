@@ -48,6 +48,7 @@ Checks:
 
   - -*-avoid-c-arrays
   - -*-magic-numbers
+  - -*-uppercase-literal-suffix
   - -*-vararg
 
 WarningsAsErrors: "*"

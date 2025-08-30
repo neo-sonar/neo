@@ -7,6 +7,11 @@
 
 #include <array>
 
+#if defined(__clang__)
+    #pragma clang diagnostic push
+    #pragma clang diagnostic ignored "-Wunused-template"
+#endif
+
 template<typename Batch>
 static auto test()
 {
@@ -32,6 +37,10 @@ static auto test()
     test(std::minus{}, Float(1), Float(2), Float(-1));
     test(std::multiplies{}, Float(1), Float(2), Float(2));
 }
+
+#if defined(__clang__)
+    #pragma clang diagnostic pop
+#endif
 
 #if defined(NEO_HAS_ISA_SSE2)
 TEMPLATE_TEST_CASE("neo/simd: batch", "", neo::float32x, neo::float64x) { test<TestType>(); }

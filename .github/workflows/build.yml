@@ -90,7 +90,7 @@ jobs:
             cmake_exe: "cmake"
             cmake_flags: '-D CMAKE_CXX_FLAGS="-march=native" -D NEO_ENABLE_INTEL_IPP=OFF -D NEO_ENABLE_INTEL_MKL=OFF -D NEO_ENABLE_BENCHMARKS=OFF'
             cmake_prefix_path: C:\Program Files (x86)\Intel\oneAPI\ipp\latest;C:\Program Files (x86)\Intel\oneAPI\mkl\latest
-            cmake_warnings_as_errors: "OFF"
+            cmake_warnings_as_errors: "ON"
             cmake_targets: all
             macos_target: ""
 

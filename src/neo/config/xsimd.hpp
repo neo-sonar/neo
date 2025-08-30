@@ -25,6 +25,7 @@
     #pragma GCC diagnostic ignored "-Wdeprecated"
     #pragma GCC diagnostic ignored "-Wfloat-equal"
     #pragma GCC diagnostic ignored "-Wsign-conversion"
+    #pragma GCC diagnostic ignored "-Wundef"
 #endif
 
 #include <xsimd/xsimd.hpp>

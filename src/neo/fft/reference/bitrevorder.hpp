@@ -66,9 +66,9 @@ private:
     {
         auto const order = bit_log2(size);
         auto table       = std::vector<std::uint32_t>(size, 0);
-        for (auto i{0zu}; i < size; ++i) {
-            for (auto j{0zu}; j < order; ++j) {
-                table[i] |= ((i >> j) & 1) << (order - 1 - j);
+        for (auto i = std::uint32_t(0); i < size; ++i) {
+            for (auto j = std::uint32_t(0); j < order; ++j) {
+                table[i] |= ((i >> j) & std::uint32_t(1)) << (order - std::uint32_t(1) - j);
             }
         }
         return table;

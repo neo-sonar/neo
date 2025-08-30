@@ -227,7 +227,7 @@ TEMPLATE_TEST_CASE("neo/fft: experimental::rfft_plan", "", float, double)
 
         for (auto i{0U}; i < signal.extent(0); ++i) {
             CAPTURE(i);
-            REQUIRE(copy(i) == Catch::Approx(signal(i) * double(size) / 2.0).scale(double(order)));
+            REQUIRE(copy(i) == Catch::Approx(double(signal(i)) * double(size) / 2.0).scale(double(order)));
         }
     }
 }

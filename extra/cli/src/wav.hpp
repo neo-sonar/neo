@@ -7,6 +7,7 @@
 #include <neo/algorithm/copy.hpp>
 #include <neo/container/mdspan.hpp>
 
+#include <cstdio>
 #include <filesystem>
 #include <stdexcept>
 #include <utility>
@@ -41,9 +42,6 @@
 
 #include "dr_wav.h"
 
-#include <fmt/format.h>
-#include <fmt/os.h>
-
 #if defined(__clang__)
     #pragma clang diagnostic pop
 #elif defined(__GNUC__)
@@ -61,14 +59,14 @@ template<std::floating_point Float>
     auto path_str = path.string();
     auto wav_file = drwav{};
     if (not drwav_init_file(&wav_file, path_str.c_str(), nullptr)) {
-        fmt::println("Could not open wav-file at: {}", path_str.c_str());
+        std::printf("Could not open wav-file at: %s\n", path_str.c_str());
         return {};
     }
 
     auto interleaved = audio_buffer<float>{wav_file.channels, wav_file.totalPCMFrameCount};
     auto const read  = drwav_read_pcm_frames_f32(&wav_file, wav_file.totalPCMFrameCount, interleaved.data());
     if (read != interleaved.extent(1)) {
-        fmt::println("Frames read size mismatch, expected: {} actual: {}", int(interleaved.extent(1)), int(read));
+        std::printf("Frames read size mismatch, expected: %d actual: %d\n", int(interleaved.extent(1)), int(read));
         drwav_uninit(&wav_file);
         return {};
     }

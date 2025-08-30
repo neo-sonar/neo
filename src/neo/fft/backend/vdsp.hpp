@@ -54,7 +54,7 @@ struct apple_vdsp_fft_plan
 
     [[nodiscard]] static constexpr auto max_order() noexcept -> size_type { return size_type{27}; }
 
-    [[nodiscard]] static constexpr auto max_size() noexcept -> size_type { return fft::size(max_order()); }
+    [[nodiscard]] static constexpr auto max_size() noexcept -> size_type { return neo::ipow<2zu>(max_order()); }
 
     [[nodiscard]] auto order() const noexcept -> size_type;
     [[nodiscard]] auto size() const noexcept -> size_type;
@@ -64,7 +64,7 @@ struct apple_vdsp_fft_plan
 
 private:
     size_type _order;
-    size_type _size{fft::size(order())};
+    size_type _size{neo::ipow<2zu>(order())};
     native_handle_type _plan;
     stdex::mdarray<real_type, stdex::dextents<size_t, 2>> _input{2, _size};
     stdex::mdarray<real_type, stdex::dextents<size_t, 2>> _output{2, _size};
@@ -189,7 +189,7 @@ struct apple_vdsp_split_fft_plan
 
 private:
     size_type _order;
-    size_type _size{fft::size(order())};
+    size_type _size{neo::ipow<2zu>(order())};
     native_handle_type _plan;
     stdex::mdarray<Float, stdex::dextents<size_t, 2>> _input{2, _size};
     stdex::mdarray<Float, stdex::dextents<size_t, 2>> _output{2, _size};

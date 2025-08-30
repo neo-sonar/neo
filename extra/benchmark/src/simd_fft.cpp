@@ -39,11 +39,11 @@ struct simd_fft_plan
 
     [[nodiscard]] static constexpr auto max_order() noexcept -> size_type { return size_type{27}; }
 
-    [[nodiscard]] static constexpr auto max_size() noexcept -> size_type { return neo::fft::size(max_order()); }
+    [[nodiscard]] static constexpr auto max_size() noexcept -> size_type { return neo::ipow<2zu>(max_order()); }
 
     [[nodiscard]] auto order() const noexcept -> size_type { return _order; }
 
-    [[nodiscard]] auto size() const noexcept -> size_type { return neo::fft::size(order()); }
+    [[nodiscard]] auto size() const noexcept -> size_type { return neo::ipow<2zu>(order()); }
 
     template<neo::inout_vector Vec>
         requires std::same_as<neo::value_type_t<Vec>, value_type>
@@ -88,7 +88,7 @@ struct simd_split_fft_plan
 
     [[nodiscard]] auto order() const noexcept -> size_type { return _order; }
 
-    [[nodiscard]] auto size() const noexcept -> size_type { return neo::fft::size(order()); }
+    [[nodiscard]] auto size() const noexcept -> size_type { return neo::ipow<2zu>(order()); }
 
     template<neo::inout_vector_of<FloatBatch> InOutVec>
     auto operator()(neo::split_complex<InOutVec> x, neo::fft::direction dir) noexcept -> void

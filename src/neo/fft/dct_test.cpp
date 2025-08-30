@@ -17,7 +17,7 @@ TEMPLATE_PRODUCT_TEST_CASE("neo/fft: dct2_plan", "", (neo::fft::fallback_dct2_pl
 
         auto plan = Plan{neo::fft::from_order, order};
         REQUIRE(plan.order() == order);
-        REQUIRE(plan.size() == neo::fft::size(order));
+        REQUIRE(plan.size() == neo::ipow<2zu>(order));
     }
 
     SECTION("python: scipy.fft.dct(x, type=2)")

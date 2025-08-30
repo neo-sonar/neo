@@ -139,11 +139,11 @@ struct intel_ipp_fft_plan
 
     [[nodiscard]] static constexpr auto max_order() noexcept -> size_type { return setup::max_order; }
 
-    [[nodiscard]] static constexpr auto max_size() noexcept -> size_type { return fft::size(max_order()); }
+    [[nodiscard]] static constexpr auto max_size() noexcept -> size_type { return neo::ipow<2zu>(max_order()); }
 
     [[nodiscard]] auto order() const noexcept -> size_type { return _order; }
 
-    [[nodiscard]] auto size() const noexcept -> size_type { return fft::size(order()); }
+    [[nodiscard]] auto size() const noexcept -> size_type { return neo::ipow<2zu>(order()); }
 
     template<inout_vector_of<Complex> InOutVec>
     auto operator()(InOutVec x, direction dir) noexcept -> void
@@ -328,7 +328,7 @@ struct intel_ipp_split_fft_plan
 
     [[nodiscard]] auto order() const noexcept -> size_type { return _order; }
 
-    [[nodiscard]] auto size() const noexcept -> size_type { return fft::size(order()); }
+    [[nodiscard]] auto size() const noexcept -> size_type { return neo::ipow<2zu>(order()); }
 
     template<inout_vector_of<Float> InOutVec>
     auto operator()(split_complex<InOutVec> x, direction dir) noexcept -> void
@@ -426,7 +426,7 @@ struct intel_ipp_rfft_plan
 
     [[nodiscard]] auto order() const noexcept -> size_type { return _order; }
 
-    [[nodiscard]] auto size() const noexcept -> size_type { return fft::size(order()); }
+    [[nodiscard]] auto size() const noexcept -> size_type { return neo::ipow<2zu>(order()); }
 
     template<in_vector_of<Float> InVec, out_vector_of<complex_type> OutVec>
     auto operator()(InVec in, OutVec out) noexcept -> void
@@ -526,7 +526,7 @@ struct intel_ipp_dct_plan
 
     [[nodiscard]] auto order() const noexcept -> size_type { return _order; }
 
-    [[nodiscard]] auto size() const noexcept -> size_type { return fft::size(order()); }
+    [[nodiscard]] auto size() const noexcept -> size_type { return neo::ipow<2zu>(order()); }
 
     template<inout_vector Vec>
         requires std::same_as<typename Vec::value_type, Float>

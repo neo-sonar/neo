@@ -40,7 +40,7 @@ private:
     [[nodiscard]] static auto check_order(size_type order) -> size_type;
 
     size_type _order;
-    size_type _size{fft::size(order())};
+    size_type _size{neo::ipow<2zu>(order())};
     bitrevorder_plan _reorder{static_cast<size_t>(_order)};
     stdex::mdarray<Complex, stdex::dextents<size_type, 1>> _wf{
         make_twiddle_lut_radix2<Complex>(_size, direction::forward),
@@ -63,7 +63,7 @@ constexpr auto c2c_dit2_plan<Complex, Kernel>::max_order() noexcept -> size_type
 template<typename Complex, typename Kernel>
 constexpr auto c2c_dit2_plan<Complex, Kernel>::max_size() noexcept -> size_type
 {
-    return fft::size(max_order());
+    return neo::ipow<2zu>(max_order());
 }
 
 template<typename Complex, typename Kernel>

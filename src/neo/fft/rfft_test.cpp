@@ -46,7 +46,7 @@ auto test_rfft()
 
     auto rfft = Plan{neo::fft::from_order, order};
     REQUIRE(rfft.order() == order);
-    REQUIRE(rfft.size() == neo::fft::size(order));
+    REQUIRE(rfft.size() == neo::ipow<2zu>(order));
 
     auto signal         = neo::generate_noise_signal<Float>(rfft.size(), Catch::getSeed());
     auto spectrum       = std::vector<Complex>(rfft.size() / 2UL + 1UL, Float(0));
@@ -83,7 +83,7 @@ TEMPLATE_PRODUCT_TEST_CASE("neo/fft: rfft_deinterleave", "", (std::complex, neo:
     using Float   = typename Complex::value_type;
 
     auto const order      = GENERATE(as<std::size_t>{}, 4, 5, 6, 7, 8);
-    auto const size       = neo::fft::size(order);
+    auto const size       = neo::ipow<2zu>(order);
     auto const num_coeffs = size / 2 + 1;
     CAPTURE(order);
     CAPTURE(size);

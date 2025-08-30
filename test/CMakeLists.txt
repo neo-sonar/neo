@@ -6,7 +6,7 @@ include(${Catch2_SOURCE_DIR}/extras/Catch.cmake)
 
 add_executable(neosonar-neo-tests)
 target_link_libraries(neosonar-neo-tests PRIVATE neosonar::neo neosonar::compiler_warnings Catch2::Catch2WithMain)
-catch_discover_tests(neosonar-neo-tests WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+catch_discover_tests(neosonar-neo-tests TEST_SPEC "--order lex" WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 
 target_sources(neosonar-neo-tests
     PRIVATE

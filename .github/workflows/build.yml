@@ -101,7 +101,7 @@ jobs:
             cmake_exe: "cmake"
             cmake_flags: '-D CMAKE_CXX_FLAGS="/arch:AVX2 /EHsc" -D NEO_ENABLE_INTEL_IPP=OFF -D NEO_ENABLE_INTEL_MKL=OFF'
             cmake_prefix_path: C:\Program Files (x86)\Intel\oneAPI\ipp\latest;C:\Program Files (x86)\Intel\oneAPI\mkl\latest
-            cmake_warnings_as_errors: "OFF"
+            cmake_warnings_as_errors: "ON"
             cmake_targets: all
             macos_target: ""
 

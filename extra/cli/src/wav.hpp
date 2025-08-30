@@ -39,6 +39,9 @@
     #pragma GCC diagnostic ignored "-Wswitch-enum"
     #pragma GCC diagnostic ignored "-Wunused-but-set-variable"
     #pragma GCC diagnostic ignored "-Wzero-as-null-pointer-constant"
+#elif defined(_MSC_VER)
+    #pragma warning(push)
+    #pragma warning(disable: 4245)  // signed/unsigned mismatch
 #endif
 
 #include "dr_wav.h"
@@ -47,6 +50,8 @@
     #pragma clang diagnostic pop
 #elif defined(__GNUC__)
     #pragma GCC diagnostic pop
+#elif defined(_MSC_VER)
+    #pragma warning(pop)
 #endif
 
 namespace neo {

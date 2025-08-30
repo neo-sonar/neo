@@ -19,7 +19,7 @@ jobs:
         platform: [macos-latest, ubuntu-latest, windows-latest]
         python-version: ["3.9", "3.13", "pypy-3.10", "pypy-3.11"]
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
       - uses: actions/setup-python@v5
         with:

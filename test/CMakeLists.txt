@@ -20,7 +20,6 @@ target_sources(neosonar-neo-tests
         "${CMAKE_SOURCE_DIR}/src/neo/algorithm/standard_deviation_test.cpp"
         "${CMAKE_SOURCE_DIR}/src/neo/algorithm/variance_test.cpp"
 
-        "${CMAKE_SOURCE_DIR}/src/neo/bit/bit_ceil_test.cpp"
         "${CMAKE_SOURCE_DIR}/src/neo/bit/bit_log2_test.cpp"
 
         "${CMAKE_SOURCE_DIR}/src/neo/complex/complex_test.cpp"

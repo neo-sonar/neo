@@ -4,7 +4,6 @@
 
 #include <neo/config.hpp>
 
-#include <neo/bit/bit_ceil.hpp>
 #include <neo/bit/bit_log2.hpp>
 #include <neo/math/ipow.hpp>
 
@@ -30,7 +29,7 @@ template<std::integral Int>
 {
     assert(size > 0);
     auto const usize = static_cast<std::make_unsigned_t<Int>>(size);
-    return static_cast<Int>(bit_log2(bit_ceil(usize)));
+    return static_cast<Int>(bit_log2(std::bit_ceil(usize)));
 }
 
 }  // namespace neo::fft

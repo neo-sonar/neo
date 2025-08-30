@@ -24,7 +24,7 @@ static auto test_overlap() -> void
 
     auto const block_size  = GENERATE(as<std::size_t>{}, 128, 512);
     auto const filter_size = GENERATE(as<std::size_t>{}, 8, 9, 10, 17, 127, 128, 129, 130, 512, 999, 1024);
-    auto const signal      = neo::generate_noise_signal<Float>(block_size * 8UL, Catch::getSeed());
+    auto const signal      = neo::generate_noise_signal<Float>(block_size * 8zu, Catch::getSeed());
 
     auto overlap = Overlap{block_size, filter_size};
     REQUIRE(overlap.block_size() == block_size);
@@ -37,7 +37,7 @@ static auto test_overlap() -> void
     for (std::size_t i{0}; i < output.size(); i += block_size) {
         auto block = stdex::submdspan(blocks, std::tuple{i, i + block_size});
         overlap(block, [&](neo::inout_vector auto io) {
-            REQUIRE(io.extent(0) == overlap.transform_size() / 2UL + 1UL);
+            REQUIRE(io.extent(0) == overlap.transform_size() / 2zu + 1zu);
         });
     }
 
@@ -47,7 +47,7 @@ static auto test_overlap() -> void
     REQUIRE(neo::allclose(out, sig));
     REQUIRE_THAT(neo::root_mean_squared_error(sig, out), Catch::Matchers::WithinAbs(0.0, 0.00001));
 
-    for (auto i{0ULL}; i < output.size(); ++i) {
+    for (auto i{0zu}; i < output.size(); ++i) {
         CAPTURE(i);
         REQUIRE_THAT(out[i], Catch::Matchers::WithinAbs(sig[i], 0.00001));
     }

@@ -33,7 +33,7 @@ auto c2c(benchmark::State& state) -> void
     }
 
     auto const items       = static_cast<int64_t>(state.iterations()) * plan.size();
-    auto const flop        = 5UL * size_t(plan.order()) * items;
+    auto const flop        = 5zu * plan.order() * items;
     state.counters["flop"] = benchmark::Counter(static_cast<double>(flop), benchmark::Counter::kIsRate);
     state.SetBytesProcessed(items * sizeof(Complex));
 }
@@ -68,7 +68,7 @@ auto c2c_r4(benchmark::State& state) -> void
     }
 
     auto const items       = static_cast<int64_t>(state.iterations()) * plan.size();
-    auto const flop        = 5UL * size_t(plan.order() * 2) * items;
+    auto const flop        = 5zu * size_t(plan.order() * 2) * items;
     state.counters["flop"] = benchmark::Counter(static_cast<double>(flop), benchmark::Counter::kIsRate);
     state.SetBytesProcessed(items * sizeof(Complex));
 }
@@ -103,7 +103,7 @@ auto split_c2c(benchmark::State& state) -> void
     }
 
     auto const items       = static_cast<int64_t>(state.iterations()) * plan.size();
-    auto const flop        = 5UL * size_t(plan.order()) * items;
+    auto const flop        = 5zu * plan.order() * items;
     state.counters["flop"] = benchmark::Counter(static_cast<double>(flop), benchmark::Counter::kIsRate);
     state.SetBytesProcessed(items * sizeof(Float) * 2);
 }

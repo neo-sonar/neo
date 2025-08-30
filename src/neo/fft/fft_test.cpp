@@ -56,12 +56,12 @@ auto test_fft_plan()
     using Complex = typename Plan::value_type;
     using Float   = typename Complex::value_type;
 
-    // REQUIRE(neo::fft::next_order(2U) == 1U);
-    // REQUIRE(neo::fft::next_order(3U) == 2U);
+    // REQUIRE(neo::fft::next_order(2zu) == 1zu);
+    // REQUIRE(neo::fft::next_order(3zu) == 2zu);
 
     SECTION("fail")
     {
-        auto const next = neo::fft::next_order(Plan::max_size() + 1U);
+        auto const next = neo::fft::next_order(Plan::max_size() + 1zu);
         CAPTURE(int(next));
         REQUIRE_THROWS(Plan{neo::fft::from_order, next});
     }
@@ -161,7 +161,7 @@ auto test_complex_batch_roundtrip_fft()
     };
 
     auto const order = GENERATE(as<std::size_t>{}, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14);
-    auto const size  = 1UL << order;
+    auto const size  = 1zu << order;
 
     auto inout = make_noise_signal(size);
 

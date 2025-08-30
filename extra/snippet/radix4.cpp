@@ -19,7 +19,7 @@ template<std::integral T>
 constexpr auto bitrevorder(std::span<std::complex<double>> x) -> void
 {
     std::size_t j = 0;
-    for (std::size_t i = 0; i < x.size() - 1U; ++i) {
+    for (std::size_t i = 0; i < x.size() - 1zu; ++i) {
         if (i < j) {
             std::swap(x[i], x[j]);
         }
@@ -38,17 +38,17 @@ auto digitrevorder(std::span<std::complex<double>> x) noexcept -> void
 {
     auto const len = x.size();
 
-    auto j = 0UL;
-    for (auto i = 0UL; i < len - 1UL; i++) {
+    auto j = 0zu;
+    for (auto i = 0zu; i < len - 1zu; i++) {
         if (i < j) {
             std::swap(x[i], x[j]);
         }
-        auto k = (Radix - 1UL) * len / Radix;
+        auto k = (Radix - 1zu) * len / Radix;
         while (k <= j) {
             j -= k;
             k /= Radix;
         }
-        j += k / (Radix - 1);
+        j += k / (Radix - 1zu);
     }
 }
 
@@ -57,7 +57,7 @@ auto digitrevorder(std::span<std::complex<double>> x) noexcept -> void
 // ISBN: 978-0-89871-285-8
 auto c2c_dit4(std::span<std::complex<double>> x, std::size_t order, double sign) -> void
 {
-    static constexpr auto Radix = 4UL;
+    static constexpr auto Radix = 4zu;
     static constexpr auto TwoPi = 3.14159265359 * 2.0;
 
     auto const I = std::complex{0.0, sign};
@@ -66,18 +66,18 @@ auto c2c_dit4(std::span<std::complex<double>> x, std::size_t order, double sign)
 
     digitrevorder<Radix>(x);
 
-    for (auto q{1UL}; q <= t; ++q) {
+    for (auto q{1zu}; q <= t; ++q) {
         auto const L  = ipow(Radix, q);
         auto const LR = L / Radix;
         auto const r  = n / L;
 
-        for (auto j{0UL}; j < LR; ++j) {
+        for (auto j{0zu}; j < LR; ++j) {
             auto const angle = sign * TwoPi * static_cast<double>(j) / static_cast<double>(L);
             auto const w1    = std::polar(1.0, angle * 1.0);
             auto const w2    = std::polar(1.0, angle * 2.0);
             auto const w3    = std::polar(1.0, angle * 3.0);
 
-            for (auto k{0UL}; k < r; ++k) {
+            for (auto k{0zu}; k < r; ++k) {
                 auto const a = x[k * L + LR * 0 + j];
                 auto const b = x[k * L + LR * 1 + j] * w1;
                 auto const c = x[k * L + LR * 2 + j] * w2;
@@ -104,7 +104,7 @@ auto c2c_dit4(
     double sign
 ) -> void
 {
-    static constexpr auto Radix = 4UL;
+    static constexpr auto Radix = 4zu;
     static constexpr auto TwoPi = 3.14159265359 * 2.0;
 
     auto const I = std::complex{0.0, sign};
@@ -113,17 +113,17 @@ auto c2c_dit4(
 
     digitrevorder<Radix>(x);
 
-    for (auto q{1UL}; q <= t; ++q) {
+    for (auto q{1zu}; q <= t; ++q) {
         auto const L  = ipow(Radix, q);
         auto const LR = L / Radix;
         auto const r  = n / L;
 
-        for (auto j{0UL}; j < LR; ++j) {
+        for (auto j{0zu}; j < LR; ++j) {
             auto const w1 = w[j];
             auto const w2 = w1 * w1;
             auto const w3 = w2 * w1;
 
-            for (auto k{0UL}; k < r; ++k) {
+            for (auto k{0zu}; k < r; ++k) {
                 auto const a = x[k * L + LR * 0 + j];
                 auto const b = x[k * L + LR * 1 + j] * w1;
                 auto const c = x[k * L + LR * 2 + j] * w2;
@@ -150,19 +150,19 @@ auto c2c_stockham(
     double sign
 ) -> void
 {
-    static constexpr auto Radix = 2UL;
+    static constexpr auto Radix = 2zu;
     static constexpr auto TwoPi = 3.14159265359 * 2.0;
 
     auto const n = ipow(std::size_t(2), order);
 
     auto l = n / 2U;
-    auto m = 1UL;
+    auto m = 1zu;
 
-    for (auto t{1UL}; t <= order; ++t) {
-        for (auto j{0UL}; j < l; ++j) {
+    for (auto t{1zu}; t <= order; ++t) {
+        for (auto j{0zu}; j < l; ++j) {
             auto const angle = sign * TwoPi * static_cast<double>(j) / static_cast<double>(2 * l);
             auto const w     = std::polar(1.0, angle);
-            for (auto k{0UL}; k < m; ++k) {
+            for (auto k{0zu}; k < m; ++k) {
                 auto const c0 = x[k + j * m];
                 auto const c1 = x[k + j * m + l * m];
 
@@ -176,7 +176,7 @@ auto c2c_stockham(
         std::swap(x, work);
     }
 
-    if ((order & 1U) != 0) {
+    if ((order & 1zu) != 0) {
         std::ranges::copy(x, work.begin());
     }
 }

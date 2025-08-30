@@ -35,7 +35,7 @@ auto r2c(benchmark::State& state) -> void
         benchmark::ClobberMemory();
     }
 
-    auto const flop        = 5UL * plan.size() * size_t(plan.order()) * static_cast<size_t>(state.iterations());
+    auto const flop        = 5zu * plan.size() * size_t(plan.order()) * static_cast<size_t>(state.iterations());
     state.counters["flop"] = benchmark::Counter(static_cast<double>(flop), benchmark::Counter::kIsRate);
 }
 

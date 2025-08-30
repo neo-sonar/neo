@@ -24,7 +24,7 @@ struct bitrevorder_plan
         requires complex<value_type_t<Vec>>
     auto operator()(Vec x) -> void
     {
-        for (auto i{0U}; i < _table.size(); ++i) {
+        for (auto i{0zu}; i < _table.size(); ++i) {
             if (i < _table[i]) {
                 std::swap(x[i], x[_table[i]]);
             }
@@ -35,13 +35,13 @@ struct bitrevorder_plan
         requires std::floating_point<value_type_t<Vec>>
     auto operator()(Vec x) -> void
     {
-        for (auto i{0U}; i < _table.size(); ++i) {
+        for (auto i{0zu}; i < _table.size(); ++i) {
             if (i < _table[i]) {
-                auto const src_re = i * 2U;
-                auto const src_im = src_re + 1U;
+                auto const src_re = i * 2zu;
+                auto const src_im = src_re + 1zu;
 
-                auto const dest_re = _table[i] * 2U;
-                auto const dest_im = dest_re + 1U;
+                auto const dest_re = _table[i] * 2zu;
+                auto const dest_im = dest_re + 1zu;
 
                 std::swap(x[src_re], x[dest_re]);
                 std::swap(x[src_im], x[dest_im]);
@@ -52,7 +52,7 @@ struct bitrevorder_plan
     template<inout_vector Vec>
     auto operator()(split_complex<Vec> x) -> void
     {
-        for (auto i{0U}; i < _table.size(); ++i) {
+        for (auto i{0zu}; i < _table.size(); ++i) {
             auto const other_idx = _table[i];
             if (i < other_idx) {
                 std::swap(x.real[i], x.real[other_idx]);
@@ -66,8 +66,8 @@ private:
     {
         auto const order = bit_log2(size);
         auto table       = std::vector<std::uint32_t>(size, 0);
-        for (auto i{0U}; i < size; ++i) {
-            for (auto j{0U}; j < order; ++j) {
+        for (auto i{0zu}; i < size; ++i) {
+            for (auto j{0zu}; j < order; ++j) {
                 table[i] |= ((i >> j) & 1) << (order - 1 - j);
             }
         }
@@ -82,7 +82,7 @@ template<inout_vector Vec>
 constexpr auto bitrevorder(Vec x) -> void
 {
     std::size_t j = 0;
-    for (std::size_t i = 0; i < x.size() - 1U; ++i) {
+    for (std::size_t i = 0; i < x.size() - 1zu; ++i) {
         if (i < j) {
             std::swap(x[i], x[j]);
         }

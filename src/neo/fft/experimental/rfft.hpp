@@ -117,7 +117,7 @@ struct c2c_dit2_plan
         requires std::same_as<typename Vec::value_type, Float>
     auto operator()(Vec x, direction dir) -> void
     {
-        assert(std::cmp_equal(x.extent(0) / 2U, size()));
+        assert(std::cmp_equal(x.extent(0) / 2zu, size()));
 
         _rev(x);
 
@@ -169,7 +169,7 @@ struct rfft_plan
         auto wr        = Float(1) + wpr;
         auto wi        = wpi;
 
-        for (auto i = 1U; i < (n >> 2); i++) {
+        for (auto i = 1zu; i < (n >> 2zu); i++) {
             auto const i1 = i + i;
             auto const i2 = i1 + 1;
             auto const i3 = n - i1;
@@ -203,7 +203,7 @@ struct rfft_plan
 
 private:
     size_type _order;
-    c2c_dit2_plan<Float> _fft{from_order, _order - 1U};
+    c2c_dit2_plan<Float> _fft{from_order, _order - 1zu};
 };
 
 }  // namespace neo::fft::experimental

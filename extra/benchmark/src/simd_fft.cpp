@@ -252,7 +252,7 @@ auto simd_c2c(benchmark::State& state) -> void
     }
 
     auto const items       = static_cast<int64_t>(state.iterations()) * plan.size();
-    auto const flop        = 5UL * size_t(plan.order()) * items * SimdComplex::size;
+    auto const flop        = 5zu * plan.order() * items * SimdComplex::size;
     state.counters["flop"] = benchmark::Counter(static_cast<double>(flop), benchmark::Counter::kIsRate);
     state.SetBytesProcessed(items * sizeof(SimdComplex));
 }
@@ -294,7 +294,7 @@ auto simd_split_c2c(benchmark::State& state) -> void
     }
 
     auto const items       = static_cast<int64_t>(state.iterations()) * plan.size();
-    auto const flop        = 5UL * size_t(plan.order()) * items * SimdFloat::size;
+    auto const flop        = 5zu * plan.order() * items * SimdFloat::size;
     state.counters["flop"] = benchmark::Counter(static_cast<double>(flop), benchmark::Counter::kIsRate);
     state.SetBytesProcessed(items * sizeof(SimdFloat) * 2);
 }

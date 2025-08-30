@@ -137,7 +137,7 @@ auto sparse_convolve(
     neo::convolution::normalize_impulse(matrix.to_mdspan());
     auto partitions = neo::convolution::uniform_partition(matrix.to_mdspan(), static_cast<std::size_t>(blockSize));
 
-    auto const K = std::bit_ceil((partitions.extent(2) - 1U) * 2U);
+    auto const K = std::bit_ceil((partitions.extent(2) - 1zu) * 2zu);
 
     auto const weights = [K, bins = partitions.extent(2), lowBinsToKeep, sampleRate] {
         jassert(std::cmp_less(lowBinsToKeep, bins));

@@ -49,7 +49,7 @@ auto test_rfft()
     REQUIRE(rfft.size() == neo::ipow<2zu>(order));
 
     auto signal         = neo::generate_noise_signal<Float>(rfft.size(), Catch::getSeed());
-    auto spectrum       = std::vector<Complex>(rfft.size() / 2UL + 1UL, Float(0));
+    auto spectrum       = std::vector<Complex>(rfft.size() / 2zu + 1zu, Float(0));
     auto const original = signal;
 
     auto const real    = signal.to_mdspan();
@@ -130,7 +130,7 @@ TEMPLATE_TEST_CASE("neo/fft: experimental::fft", "", float, double)
     SECTION("identity")
     {
         auto const order = GENERATE(as<std::size_t>{}, 2, 3, 4, 5, 6, 7, 8);
-        auto const size  = std::size_t(1) << order;
+        auto const size  = 1zu << order;
         CAPTURE(order);
         CAPTURE(size);
 
@@ -156,8 +156,8 @@ TEMPLATE_TEST_CASE("neo/fft: experimental::fft", "", float, double)
         REQUIRE(signal(0) == Catch::Approx(1.0 * double(size)));
         REQUIRE(signal(1) == Catch::Approx(0.0));
 
-        for (auto i{1U}; i < size; ++i) {
-            auto const ire = i * 2U;
+        for (auto i{1zu}; i < size; ++i) {
+            auto const ire = i * 2zu;
             auto const iim = ire + 1;
 
             REQUIRE(signal(ire) == Catch::Approx(0.0));
@@ -189,7 +189,7 @@ TEMPLATE_TEST_CASE("neo/fft: experimental::rfft_plan", "", float, double)
     using Float = TestType;
 
     auto const order = GENERATE(as<std::size_t>{}, 2, 3, 4, 5, 6, 7, 8);
-    auto const size  = std::size_t(1) << order;
+    auto const size  = 1zu << order;
     CAPTURE(order);
     CAPTURE(size);
 

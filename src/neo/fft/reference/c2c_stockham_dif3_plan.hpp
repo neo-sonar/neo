@@ -49,17 +49,17 @@ struct c2c_stockham_dif3_plan
         auto const p = static_cast<size_t>(_order);
         auto const y = _work.to_mdspan();
 
-        auto l = n / 3U;
-        auto m = 1U;
+        auto l = n / 3zu;
+        auto m = 1zu;
 
-        for (auto t{1U}; t <= p; ++t) {
+        for (auto t{1zu}; t <= p; ++t) {
             copy(x, y);
 
-            for (auto j{0U}; j < l; ++j) {
+            for (auto j{0zu}; j < l; ++j) {
                 auto const w1 = twiddle<Complex>(3 * l, 1 * j, dir);
                 auto const w2 = twiddle<Complex>(3 * l, 2 * j, dir);
 
-                for (auto k{0U}; k < m; ++k) {
+                for (auto k{0zu}; k < m; ++k) {
                     auto const c0 = y[k + (j * m) + (0 * l * m)];
                     auto const c1 = y[k + (j * m) + (1 * l * m)];
                     auto const c2 = y[k + (j * m) + (2 * l * m)];

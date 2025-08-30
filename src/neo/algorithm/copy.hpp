@@ -41,8 +41,8 @@ constexpr auto copy(InVec in, split_complex<OutVec> out) noexcept -> void
     assert(detail::extents_equal(in, out.real, out.imag));
 
     for (auto i = std::size_t(0); i < static_cast<std::size_t>(in.extent(0)); ++i) {
-        out.real[i] = math::real(in[i]);
-        out.imag[i] = math::imag(in[i]);
+        out.real[i] = static_cast<value_type_t<OutVec>>(math::real(in[i]));
+        out.imag[i] = static_cast<value_type_t<OutVec>>(math::imag(in[i]));
     }
 }
 

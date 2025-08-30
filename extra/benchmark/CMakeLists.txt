@@ -3,6 +3,7 @@ project(neosonar-neo-benchmark)
 set(BENCHMARK_ENABLE_TESTING OFF CACHE BOOL "Enable Google benchmark tests")
 FetchContent_Declare(benchmark GIT_REPOSITORY "https://github.com/google/benchmark" GIT_TAG "v1.9.4" GIT_SHALLOW TRUE)
 FetchContent_MakeAvailable(benchmark)
+set_target_properties(benchmark PROPERTIES UNITY_BUILD ON)
 
 function(neo_add_benchmark _target)
     add_executable(${_target}_benchmark src/${_target}.cpp)

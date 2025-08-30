@@ -39,11 +39,11 @@ struct intel_mkl_fft_plan
 
     [[nodiscard]] static constexpr auto max_order() noexcept -> size_type { return size_type{27}; }
 
-    [[nodiscard]] static constexpr auto max_size() noexcept -> size_type { return fft::size(max_order()); }
+    [[nodiscard]] static constexpr auto max_size() noexcept -> size_type { return neo::ipow<2zu>(max_order()); }
 
     [[nodiscard]] auto order() const noexcept -> size_type { return _order; }
 
-    [[nodiscard]] auto size() const noexcept -> size_type { return fft::size(order()); }
+    [[nodiscard]] auto size() const noexcept -> size_type { return neo::ipow<2zu>(order()); }
 
     template<inout_vector InOutVec>
         requires std::same_as<typename InOutVec::value_type, Complex>

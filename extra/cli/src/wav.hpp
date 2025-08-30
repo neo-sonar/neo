@@ -7,23 +7,35 @@
 #include <neo/algorithm/copy.hpp>
 #include <neo/container/mdspan.hpp>
 
+#include <cstdio>
+#include <filesystem>
+#include <stdexcept>
+#include <utility>
+
 #if defined(__clang__)
     #pragma clang diagnostic push
     #pragma clang diagnostic ignored "-Wcast-align"
+    #pragma clang diagnostic ignored "-Wcast-qual"
     #pragma clang diagnostic ignored "-Wimplicit-int-conversion"
     #pragma clang diagnostic ignored "-Wimplicit-int-float-conversion"
+    #pragma clang diagnostic ignored "-Wold-style-cast"
+    #pragma clang diagnostic ignored "-Wreserved-identifier"
     #pragma clang diagnostic ignored "-Wshift-sign-overflow"
     #pragma clang diagnostic ignored "-Wsign-conversion"
-    #pragma clang diagnostic ignored "-Wswitch-enum"
-    #pragma clang diagnostic ignored "-Wunused-but-set-variable"
+    #pragma clang diagnostic ignored "-Wstring-conversion"
     #pragma clang diagnostic ignored "-Wzero-as-null-pointer-constant"
 #elif defined(__GNUC__)
     #pragma GCC diagnostic push
     #pragma GCC diagnostic ignored "-Wcast-align"
+    #pragma GCC diagnostic ignored "-Wcast-qual"
+    #pragma GCC diagnostic ignored "-Wconversion"
     #pragma GCC diagnostic ignored "-Wsign-conversion"
     #pragma GCC diagnostic ignored "-Wswitch-enum"
     #pragma GCC diagnostic ignored "-Wunused-but-set-variable"
     #pragma GCC diagnostic ignored "-Wzero-as-null-pointer-constant"
+#elif defined(_MSC_VER)
+    #pragma warning(push)
+    #pragma warning(disable: 4245)  // signed/unsigned mismatch
 #endif
 
 #include "dr_wav.h"
@@ -32,14 +44,9 @@
     #pragma clang diagnostic pop
 #elif defined(__GNUC__)
     #pragma GCC diagnostic pop
+#elif defined(_MSC_VER)
+    #pragma warning(pop)
 #endif
-
-#include <fmt/format.h>
-#include <fmt/os.h>
-
-#include <filesystem>
-#include <stdexcept>
-#include <utility>
 
 namespace neo {
 
@@ -52,14 +59,14 @@ template<std::floating_point Float>
     auto path_str = path.string();
     auto wav_file = drwav{};
     if (not drwav_init_file(&wav_file, path_str.c_str(), nullptr)) {
-        fmt::println("Could not open wav-file at: {}", path_str.c_str());
+        std::printf("Could not open wav-file at: %s\n", path_str.c_str());
         return {};
     }
 
     auto interleaved = audio_buffer<float>{wav_file.channels, wav_file.totalPCMFrameCount};
     auto const read  = drwav_read_pcm_frames_f32(&wav_file, wav_file.totalPCMFrameCount, interleaved.data());
     if (read != interleaved.extent(1)) {
-        fmt::println("Frames read size mismatch, expected: {} actual: {}", int(interleaved.extent(1)), int(read));
+        std::printf("Frames read size mismatch, expected: %d actual: %d\n", int(interleaved.extent(1)), int(read));
         drwav_uninit(&wav_file);
         return {};
     }

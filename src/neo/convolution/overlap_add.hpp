@@ -97,7 +97,7 @@ auto overlap_add<Complex>::operator()(inout_vector auto block, auto callback) ->
 
     // K-point irfft
     irfft(_rfft, spectrum, window);
-    scale(1.0F / static_cast<real_type>(_rfft.size()), window);
+    scale(real_type(1) / static_cast<real_type>(_rfft.size()), window);
 
     // Copy to output
     add(signal, overlap, block);

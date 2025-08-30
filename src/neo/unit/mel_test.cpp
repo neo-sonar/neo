@@ -54,7 +54,7 @@ TEMPLATE_TEST_CASE("neo/unit: mel_frequencies ", "", float, double)
 
     REQUIRE(buffer(0) == Catch::Approx(fmin));
 
-    if (n_mels > 1UL) {
+    if (n_mels > 1zu) {
         REQUIRE(buffer(n_mels - 1) == Catch::Approx(fmax));
     }
 }

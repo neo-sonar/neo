@@ -21,8 +21,8 @@ struct fft_convolver
 {
     fft_convolver(std::size_t signal_size, std::size_t patch_size) : _signal_size{signal_size}, _patch_size{patch_size}
     {
-        assert(_signal_size > 1);
-        assert(_patch_size > 1);
+        assert(_signal_size > 0);
+        assert(_patch_size > 0);
     }
 
     [[nodiscard]] auto signal_size() const noexcept -> std::size_t { return _signal_size; }
@@ -34,7 +34,7 @@ struct fft_convolver
         return convolution::output_size<mode::full>(signal_size(), patch_size());
     }
 
-    template<in_vector Signal, in_vector Patch, out_vector Output>
+    template<in_vector_of<Float> Signal, in_vector_of<Float> Patch, out_vector_of<Float> Output>
     auto operator()(Signal signal, Patch patch, Output output) -> void
     {
         assert(signal.extent(0) == signal_size());

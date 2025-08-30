@@ -7,6 +7,9 @@
 #if defined(__clang__)
     #pragma clang diagnostic push
     #pragma clang diagnostic ignored "-Wextra-semi"
+    #pragma clang diagnostic ignored "-Wmissing-noreturn"
+    #pragma clang diagnostic ignored "-Wold-style-cast"
+    #pragma clang diagnostic ignored "-Wreserved-identifier"
     #pragma clang diagnostic ignored "-Wshadow"
     #pragma clang diagnostic ignored "-Wsign-compare"
 #elif defined(__GNUC__)
@@ -14,6 +17,9 @@
     #pragma GCC diagnostic ignored "-Wextra-semi"
     #pragma GCC diagnostic ignored "-Wshadow"
     #pragma GCC diagnostic ignored "-Wsign-compare"
+#elif defined(_MSC_VER)
+    #pragma warning(push)
+    #pragma warning(disable: 4702)  // unreachable code
 #endif
 
 #include <mdspan/mdarray.hpp>
@@ -23,6 +29,8 @@
     #pragma clang diagnostic pop
 #elif defined(__GNUC__)
     #pragma GCC diagnostic pop
+#elif defined(_MSC_VER)
+    #pragma warning(pop)
 #endif
 
 #include <concepts>

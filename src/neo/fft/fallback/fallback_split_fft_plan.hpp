@@ -22,7 +22,7 @@ struct fallback_split_fft_plan
 
     [[nodiscard]] auto order() const noexcept -> size_type { return _order; }
 
-    [[nodiscard]] auto size() const noexcept -> size_type { return fft::size(order()); }
+    [[nodiscard]] auto size() const noexcept -> size_type { return neo::ipow<2zu>(order()); }
 
     template<inout_vector_of<Float> InOutVec>
     auto operator()(split_complex<InOutVec> x, direction dir) noexcept -> void

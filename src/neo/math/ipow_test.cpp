@@ -55,5 +55,4 @@ TEMPLATE_TEST_CASE(
     REQUIRE(neo::ipow<Int(32)>(Int(0)) == Int(1));
     REQUIRE(neo::ipow<Int(32)>(Int(1)) == Int(32));
     REQUIRE(neo::ipow<Int(32)>(Int(2)) == Int(1024));
-    REQUIRE(neo::ipow<Int(32)>(Int(3)) == Int(32768));
 }

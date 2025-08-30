@@ -60,16 +60,16 @@ private:
 
         auto const z = Complex{Float(0), sign};
 
-        auto length   = 4UL;
-        auto w_stride = ipow<size_type(4)>(order - 1UL);
-        auto krange   = 1UL;
-        auto block    = x.size() / 4UL;
-        auto base     = 0UL;
+        auto length   = 4zu;
+        auto w_stride = ipow<4zu>(order - 1zu);
+        auto krange   = 1zu;
+        auto block    = x.size() / 4zu;
+        auto base     = 0zu;
 
-        for (auto o{0ULL}; o < order; ++o) {
+        for (auto o{0zu}; o < order; ++o) {
             auto const offset = length / 4;
 
-            for (auto h{0ULL}; h < block; ++h) {
+            for (auto h{0zu}; h < block; ++h) {
 
                 {
                     auto const i0 = base;
@@ -93,7 +93,7 @@ private:
                     x[i3] = d3 + d1;
                 }
 
-                for (auto k{1ULL}; k < krange; ++k) {
+                for (auto k{1zu}; k < krange; ++k) {
                     auto w1 = twiddle[1 * k * w_stride];
                     auto w2 = twiddle[2 * k * w_stride];
                     auto w3 = twiddle[3 * k * w_stride];
@@ -119,10 +119,10 @@ private:
                     x[i3] = d3 + d1;
                 }
 
-                base = base + (4UL * krange);
+                base = base + (4zu * krange);
             }
 
-            block    = block / 4UL;
+            block    = block / 4zu;
             length   = 4 * length;
             krange   = 4 * krange;
             base     = 0;
@@ -141,16 +141,16 @@ private:
 
         auto const z = Complex{Float(0), sign};
 
-        auto length   = ipow<size_type(4)>(order);
-        auto w_stride = 1UL;
-        auto krange   = length / 4UL;
-        auto block    = 1UL;
-        auto base     = 0UL;
+        auto length   = ipow<4zu>(order);
+        auto w_stride = 1zu;
+        auto krange   = length / 4zu;
+        auto block    = 1zu;
+        auto base     = 0zu;
 
-        for (auto o{0ULL}; o < order; ++o) {
-            for (auto h{0ULL}; h < block; ++h) {
-                for (auto k{0ULL}; k < krange; ++k) {
-                    auto const offset = length / 4UL;
+        for (auto o{0zu}; o < order; ++o) {
+            for (auto h{0zu}; h < block; ++h) {
+                for (auto k{0zu}; k < krange; ++k) {
+                    auto const offset = length / 4zu;
                     auto const i0     = base + k;
                     auto const i1     = base + k + offset;
                     auto const i2     = base + k + (2 * offset);
@@ -176,12 +176,12 @@ private:
                     }
                 }
 
-                base = base + (4UL * krange);
+                base = base + (4zu * krange);
             }
 
-            block    = block * 4UL;
-            length   = length / 4UL;
-            krange   = krange / 4UL;
+            block    = block * 4zu;
+            length   = length / 4zu;
+            krange   = krange / 4zu;
             base     = 0;
             w_stride = w_stride * 4;
         }
@@ -189,11 +189,11 @@ private:
 
     [[nodiscard]] static auto make_twiddle_lut(size_type n)
     {
-        auto kmax  = 3UL * (n / 4UL - 1UL);
-        auto w     = stdex::mdarray<Complex, stdex::dextents<std::size_t, 2>>{2, n};
+        auto kmax  = 3zu * (n / 4zu - 1zu);
+        auto w     = stdex::mdarray<Complex, stdex::dextents<std::size_t, 2>>{2zu, n};
         auto w_fwd = stdex::submdspan(w.to_mdspan(), 0, stdex::full_extent);
         auto w_bwd = stdex::submdspan(w.to_mdspan(), 1, stdex::full_extent);
-        for (auto i{0U}; i < kmax + 1; ++i) {
+        for (auto i{0zu}; i < kmax + 1zu; ++i) {
             w_fwd[i] = twiddle<Complex>(n, i, direction::forward);
             w_bwd[i] = twiddle<Complex>(n, i, direction::backward);
         }

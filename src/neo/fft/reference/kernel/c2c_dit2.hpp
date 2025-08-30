@@ -145,14 +145,14 @@ struct c2c_dit2_v3
             }
         }
 
-        for (auto stage{1ULL}; stage < order; ++stage) {
+        for (auto stage{1zu}; stage < order; ++stage) {
 
-            auto const stage_length = ipow<2ULL>(stage);
-            auto const stride       = ipow<2ULL>(stage + 1);
-            auto const tw_stride    = ipow<2ULL>(order - stage - 1ULL);
+            auto const stage_length = ipow<2zu>(stage);
+            auto const stride       = ipow<2zu>(stage + 1zu);
+            auto const tw_stride    = ipow<2zu>(order - stage - 1zu);
 
-            for (auto k{0ULL}; k < size; k += stride) {
-                for (auto pair{0ULL}; pair < stage_length; ++pair) {
+            for (auto k{0zu}; k < size; k += stride) {
+                for (auto pair{0zu}; pair < stage_length; ++pair) {
                     auto const tw = twiddles[pair * tw_stride];
 
                     auto const i1 = k + pair;
@@ -194,14 +194,14 @@ struct c2c_dit2_v4
             }
         }
 
-        for (auto stage{1ULL}; stage < order - 1; ++stage) {
+        for (auto stage{1zu}; stage < order - 1; ++stage) {
 
-            auto const stage_length = ipow<2ULL>(stage);
-            auto const stride       = ipow<2ULL>(stage + 1);
-            auto const tw_stride    = ipow<2ULL>(order - stage - 1ULL);
+            auto const stage_length = ipow<2zu>(stage);
+            auto const stride       = ipow<2zu>(stage + 1);
+            auto const tw_stride    = ipow<2zu>(order - stage - 1zu);
 
-            for (auto k{0ULL}; k < size; k += stride) {
-                for (auto pair{0ULL}; pair < stage_length; ++pair) {
+            for (auto k{0zu}; k < size; k += stride) {
+                for (auto pair{0zu}; pair < stage_length; ++pair) {
                     auto const tw = twiddles[pair * tw_stride];
 
                     auto const i1 = k + pair;
@@ -218,7 +218,7 @@ struct c2c_dit2_v4
             // stage = order - 1
             auto const stage_length = size / 2UL;
 
-            for (auto pair{0ULL}; pair < stage_length; ++pair) {
+            for (auto pair{0zu}; pair < stage_length; ++pair) {
                 auto const tw = twiddles[pair];
 
                 auto const i1 = pair;

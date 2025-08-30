@@ -51,7 +51,7 @@ private:
             return;
         }
 
-        auto const m = n / 2U;
+        auto const m = n / 2zu;
 
         for (std::size_t p = 0; p < m; p++) {
             auto wp = w[p * s];
@@ -93,8 +93,8 @@ auto print = [](auto const* msg, auto x, auto scale) {
 
 auto main() -> int
 {
-    static constexpr auto const Order = 2U;
-    static constexpr auto const Size  = 1U << Order;
+    static constexpr auto const Order = 2zu;
+    static constexpr auto const Size  = 1zu << Order;
 
     auto plan = c2c_stockham_dif2_plan{Size};
     auto x    = std::array<std::complex<double>, Size>{};

@@ -50,13 +50,13 @@ struct c2c_stockham_dif8_plan
         auto const p = static_cast<size_t>(_order);
         auto const y = _work.to_mdspan();
 
-        auto l = n / 8U;
-        auto m = 1U;
+        auto l = n / 8zu;
+        auto m = 1zu;
 
-        for (auto t{1U}; t <= p; ++t) {
+        for (auto t{1zu}; t <= p; ++t) {
             copy(x, y);
 
-            for (auto j{0U}; j < l; ++j) {
+            for (auto j{0zu}; j < l; ++j) {
                 auto const w1 = twiddle<Complex>(l * 8, 1 * j, dir);
                 auto const w2 = twiddle<Complex>(l * 8, 2 * j, dir);
                 auto const w3 = twiddle<Complex>(l * 8, 3 * j, dir);
@@ -65,7 +65,7 @@ struct c2c_stockham_dif8_plan
                 auto const w6 = twiddle<Complex>(l * 8, 6 * j, dir);
                 auto const w7 = twiddle<Complex>(l * 8, 7 * j, dir);
 
-                for (auto k{0U}; k < m; ++k) {
+                for (auto k{0zu}; k < m; ++k) {
                     auto const c0 = y[k + (j * m) + (0 * l * m)];
                     auto const c1 = y[k + (j * m) + (1 * l * m)];
                     auto const c2 = y[k + (j * m) + (2 * l * m)];

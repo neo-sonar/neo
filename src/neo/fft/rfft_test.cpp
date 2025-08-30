@@ -46,10 +46,10 @@ auto test_rfft()
 
     auto rfft = Plan{neo::fft::from_order, order};
     REQUIRE(rfft.order() == order);
-    REQUIRE(rfft.size() == neo::fft::size(order));
+    REQUIRE(rfft.size() == neo::ipow<2zu>(order));
 
     auto signal         = neo::generate_noise_signal<Float>(rfft.size(), Catch::getSeed());
-    auto spectrum       = std::vector<Complex>(rfft.size() / 2UL + 1UL, Float(0));
+    auto spectrum       = std::vector<Complex>(rfft.size() / 2zu + 1zu, Float(0));
     auto const original = signal;
 
     auto const real    = signal.to_mdspan();
@@ -62,8 +62,6 @@ auto test_rfft()
 }
 
 }  // namespace
-
-using namespace neo::fft;
 
 TEMPLATE_PRODUCT_TEST_CASE("neo/fft: fallback_rfft_plan", "", (std_complex, neo_complex), (float, double))
 {
@@ -83,7 +81,7 @@ TEMPLATE_PRODUCT_TEST_CASE("neo/fft: rfft_deinterleave", "", (std::complex, neo:
     using Float   = typename Complex::value_type;
 
     auto const order      = GENERATE(as<std::size_t>{}, 4, 5, 6, 7, 8);
-    auto const size       = neo::fft::size(order);
+    auto const size       = neo::ipow<2zu>(order);
     auto const num_coeffs = size / 2 + 1;
     CAPTURE(order);
     CAPTURE(size);
@@ -132,7 +130,7 @@ TEMPLATE_TEST_CASE("neo/fft: experimental::fft", "", float, double)
     SECTION("identity")
     {
         auto const order = GENERATE(as<std::size_t>{}, 2, 3, 4, 5, 6, 7, 8);
-        auto const size  = std::size_t(1) << order;
+        auto const size  = 1zu << order;
         CAPTURE(order);
         CAPTURE(size);
 
@@ -158,8 +156,8 @@ TEMPLATE_TEST_CASE("neo/fft: experimental::fft", "", float, double)
         REQUIRE(signal(0) == Catch::Approx(1.0 * double(size)));
         REQUIRE(signal(1) == Catch::Approx(0.0));
 
-        for (auto i{1U}; i < size; ++i) {
-            auto const ire = i * 2U;
+        for (auto i{1zu}; i < size; ++i) {
+            auto const ire = i * 2zu;
             auto const iim = ire + 1;
 
             REQUIRE(signal(ire) == Catch::Approx(0.0));
@@ -191,7 +189,7 @@ TEMPLATE_TEST_CASE("neo/fft: experimental::rfft_plan", "", float, double)
     using Float = TestType;
 
     auto const order = GENERATE(as<std::size_t>{}, 2, 3, 4, 5, 6, 7, 8);
-    auto const size  = std::size_t(1) << order;
+    auto const size  = 1zu << order;
     CAPTURE(order);
     CAPTURE(size);
 
@@ -229,7 +227,7 @@ TEMPLATE_TEST_CASE("neo/fft: experimental::rfft_plan", "", float, double)
 
         for (auto i{0U}; i < signal.extent(0); ++i) {
             CAPTURE(i);
-            REQUIRE(copy(i) == Catch::Approx(signal(i) * double(size) / 2.0).scale(double(order)));
+            REQUIRE(copy(i) == Catch::Approx(double(signal(i)) * double(size) / 2.0).scale(double(order)));
         }
     }
 }

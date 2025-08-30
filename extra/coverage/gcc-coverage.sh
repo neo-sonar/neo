@@ -1,22 +1,25 @@
 #!/bin/bash
 set -euxo pipefail
 
-# Record the base directory
 export CC="${CC:-gcc}"
 export CXX="${CXX:-g++}"
 : "${GCOV:=gcov}"
 
+export CXXFLAGS="-fprofile-arcs -ftest-coverage -march=native"
+export CMAKE_BUILD_TYPE="Debug"
+export CMAKE_GENERATOR="Ninja"
+
+BUILD_DIR=cmake-build-coverage-gcc
 BASE_DIR=$PWD
-BUILD_DIR=cmake-build-coverage
 
 # Clean up old build
-# rm -rf "$BUILD_DIR"
+rm -rf "$BUILD_DIR"
 
 # Configure
-cmake -S . -B "$BUILD_DIR" -G Ninja -D CMAKE_BUILD_TYPE=Debug -D CMAKE_CXX_FLAGS="-fprofile-arcs -ftest-coverage -march=native" -D NEO_ENABLE_INTEL_IPP=ON -D NEO_ENABLE_INTEL_MKL=ON
+cmake -S . -B "$BUILD_DIR" -D NEO_ENABLE_INTEL_IPP=ON -D NEO_ENABLE_INTEL_MKL=ON -D NEO_ENABLE_BENCHMARKS=OFF -D NEO_ENABLE_TOOLS=OFF -D NEO_ENABLE_PLUGIN=OFF
 
 # Build
-cmake --build "$BUILD_DIR" --target neosonar-neo-tests
+cmake --build "$BUILD_DIR" --target neo-tests
 
 # Enter build directory
 cd "$BUILD_DIR"
@@ -25,7 +28,7 @@ cd "$BUILD_DIR"
 lcov --zerocounters --directory .
 
 # Run tests
-ctest --test-dir . -C Debug --output-on-failure -j 4
+ctest --test-dir . -C Debug --output-on-failure -j $(nproc)
 
 # Create coverage report by taking into account only the files contained in src/
 lcov --ignore-errors mismatch --capture --directory . -o coverage.info --include "$BASE_DIR/src/*" --exclude "*_test.cpp" --gcov-tool $GCOV

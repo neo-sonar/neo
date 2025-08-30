@@ -46,15 +46,15 @@ struct c2c_stockham_dit4_plan
         //                     ? stdex::submdspan(_w.to_mdspan(), 0, stdex::full_extent, stdex::full_extent)
         //                     : stdex::submdspan(_w.to_mdspan(), 1, stdex::full_extent, stdex::full_extent);
 
-        for (auto q{1U}; q <= t; ++q) {
-            auto const l     = ipow<4UL>(q);
+        for (auto q{1zu}; q <= t; ++q) {
+            auto const l     = ipow<4zu>(q);
             auto const r     = n / l;
-            auto const lstar = l / 4UL;
-            auto const rstar = 4UL * r;
+            auto const lstar = l / 4zu;
+            auto const rstar = 4zu * r;
 
             copy(x, y);
 
-            for (auto j{0U}; j < lstar; ++j) {
+            for (auto j{0zu}; j < lstar; ++j) {
                 auto const w1 = twiddle<Complex>(l, 1 * j, dir);
                 auto const w2 = twiddle<Complex>(l, 2 * j, dir);
                 auto const w3 = twiddle<Complex>(l, 3 * j, dir);
@@ -63,13 +63,13 @@ struct c2c_stockham_dit4_plan
                 // auto const w2 = twiddle<Complex>(n / 4, 2 * j * r, dir);
                 // auto const w3 = twiddle<Complex>(n / 4, 3 * j * r, dir);
 
-                // auto const v  = (ipow<4UL>(q - 1UL) - 1UL) / 3;
+                // auto const v  = (ipow<4zu>(q - 1zu) - 1zu) / 3;
                 // auto const vj = v + j;
                 // auto const w1 = w(vj, 0);
                 // auto const w2 = w(vj, 1);
                 // auto const w3 = w(vj, 2);
 
-                for (auto k{0U}; k < r; ++k) {
+                for (auto k{0zu}; k < r; ++k) {
                     auto const a = y[j * rstar + r * 0 + k];
                     auto const b = y[j * rstar + r * 1 + k] * w1;
                     auto const c = y[j * rstar + r * 2 + k] * w2;
@@ -92,7 +92,7 @@ struct c2c_stockham_dit4_plan
 private:
     static auto make_twiddle_lut(size_t n) -> stdex::mdarray<Complex, stdex::dextents<std::size_t, 3>>
     {
-        auto w = stdex::mdarray<Complex, stdex::dextents<std::size_t, 3>>(2, n / 4, 3);
+        auto w = stdex::mdarray<Complex, stdex::dextents<std::size_t, 3>>(2zu, n / 4zu, 3zu);
         for (std::size_t i = 0; i < w.size(); i++) {
             // w(0, i, 0) = twiddle<Complex>(n, 1 * i, fft::direction::forward);
             // w(0, i, 1) = twiddle<Complex>(n, 2 * i, fft::direction::forward);

@@ -58,7 +58,7 @@ private:
 template<typename T, typename IndexType, typename ValueContainer, typename IndexContainer>
 csr_matrix<T, IndexType, ValueContainer, IndexContainer>::csr_matrix(size_type rows, size_type cols)
     : _extents{rows, cols}
-    , _row_indices(rows + 1UL, 0)
+    , _row_indices(rows + 1zu, 0)
 {}
 
 template<typename T, typename IndexType, typename ValueContainer, typename IndexContainer>
@@ -67,10 +67,10 @@ template<in_matrix InMat, std::predicate<IndexType, IndexType, T> Filter>
 csr_matrix<T, IndexType, ValueContainer, IndexContainer>::csr_matrix(InMat matrix, Filter filter)
     : csr_matrix{matrix.extent(0), matrix.extent(1)}
 {
-    auto count = 0UL;
-    for (auto row_idx{0UL}; row_idx < matrix.extent(0); ++row_idx) {
+    auto count = 0zu;
+    for (auto row_idx{0zu}; row_idx < matrix.extent(0); ++row_idx) {
         auto const row = stdex::submdspan(matrix, row_idx, stdex::full_extent);
-        for (auto col{0UL}; col < matrix.extent(1); ++col) {
+        for (auto col{0zu}; col < matrix.extent(1); ++col) {
             if (filter(row_idx, col, row(col))) {
                 ++count;
             }
@@ -80,12 +80,12 @@ csr_matrix<T, IndexType, ValueContainer, IndexContainer>::csr_matrix(InMat matri
     _values.resize(count);
     _colum_indices.resize(count);
 
-    auto idx = 0UL;
-    for (auto row_idx{0UL}; row_idx < matrix.extent(0); ++row_idx) {
+    auto idx = 0zu;
+    for (auto row_idx{0zu}; row_idx < matrix.extent(0); ++row_idx) {
         auto const row        = stdex::submdspan(matrix, row_idx, stdex::full_extent);
         _row_indices[row_idx] = idx;
 
-        for (auto col{0UL}; col < matrix.extent(1); ++col) {
+        for (auto col{0zu}; col < matrix.extent(1); ++col) {
             if (auto const& val = row(col); filter(row_idx, col, val)) {
                 _values[idx]        = val;
                 _colum_indices[idx] = col;

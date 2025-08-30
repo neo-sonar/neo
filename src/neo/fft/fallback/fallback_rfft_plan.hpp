@@ -22,7 +22,7 @@ struct fallback_rfft_plan
 
     [[nodiscard]] auto order() const noexcept -> size_type { return _order; }
 
-    [[nodiscard]] auto size() const noexcept -> size_type { return fft::size(order()); }
+    [[nodiscard]] auto size() const noexcept -> size_type { return neo::ipow<2zu>(order()); }
 
     template<in_vector_of<Float> InVec, out_vector_of<Complex> OutVec>
     auto operator()(InVec in, OutVec out) noexcept -> void

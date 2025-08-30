@@ -7,17 +7,13 @@ on:
 
 jobs:
   check:
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     steps:
       - name: Check out code
         uses: actions/checkout@v4
-        with:
-          submodules: true
-          lfs: true
 
       - name: Install dependencies
         run: |
-          sudo snap install shellcheck shfmt
           python -m pip install --upgrade pip
           pip install pre-commit
 

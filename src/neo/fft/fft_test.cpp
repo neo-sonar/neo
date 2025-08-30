@@ -56,12 +56,12 @@ auto test_fft_plan()
     using Complex = typename Plan::value_type;
     using Float   = typename Complex::value_type;
 
-    // REQUIRE(neo::fft::next_order(2U) == 1U);
-    // REQUIRE(neo::fft::next_order(3U) == 2U);
+    // REQUIRE(neo::fft::next_order(2zu) == 1zu);
+    // REQUIRE(neo::fft::next_order(3zu) == 2zu);
 
     SECTION("fail")
     {
-        auto const next = neo::fft::next_order(Plan::max_size() + 1U);
+        auto const next = neo::fft::next_order(Plan::max_size() + 1zu);
         CAPTURE(int(next));
         REQUIRE_THROWS(Plan{neo::fft::from_order, next});
     }
@@ -71,7 +71,7 @@ auto test_fft_plan()
 
     auto plan = Plan{neo::fft::from_order, order};
     REQUIRE(plan.order() == order);
-    REQUIRE(plan.size() == neo::fft::size(order));
+    REQUIRE(plan.size() == neo::ipow<2zu>(order));
     REQUIRE(neo::fft::next_order(plan.size()) == plan.order());
 
     auto const noise = neo::generate_noise_signal<Complex>(plan.size(), Catch::getSeed());
@@ -161,7 +161,7 @@ auto test_complex_batch_roundtrip_fft()
     };
 
     auto const order = GENERATE(as<std::size_t>{}, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14);
-    auto const size  = 1UL << order;
+    auto const size  = 1zu << order;
 
     auto inout = make_noise_signal(size);
 
@@ -282,25 +282,25 @@ TEMPLATE_PRODUCT_TEST_CASE(
 }
 #endif
 
-using namespace neo::fft;
-
 TEMPLATE_PRODUCT_TEST_CASE(
     "neo/fft: ",
     "",
-    (c2c_dif3_plan,
-     c2c_dif4_plan,
-     c2c_dif5_plan,
-     c2c_dit4_plan,
-     c2c_stockham_dif2r_plan,
-     c2c_stockham_dif2i_plan,
-     c2c_stockham_dif3_plan,
-     c2c_stockham_dif4_plan,
-     c2c_stockham_dif5_plan,
-     c2c_stockham_dif8_plan,
-     c2c_stockham_dit4_plan),
+    (neo::fft::c2c_dif3_plan,
+     neo::fft::c2c_dif4_plan,
+     neo::fft::c2c_dif5_plan,
+     neo::fft::c2c_dit4_plan,
+     neo::fft::c2c_stockham_dif2r_plan,
+     neo::fft::c2c_stockham_dif2i_plan,
+     neo::fft::c2c_stockham_dif3_plan,
+     neo::fft::c2c_stockham_dif4_plan,
+     neo::fft::c2c_stockham_dif5_plan,
+     neo::fft::c2c_stockham_dif8_plan,
+     neo::fft::c2c_stockham_dit4_plan),
     (std::complex<float>, std::complex<double>, neo::complex64, neo::complex128)
 )
 {
+    using namespace neo::fft;
+
     using Plan    = TestType;
     using Complex = typename Plan::value_type;
     using Float   = typename Complex::value_type;

@@ -31,7 +31,7 @@ auto test_split_fft_plan() -> void
 
     auto plan = Plan{neo::fft::from_order, order};
     REQUIRE(plan.order() == order);
-    REQUIRE(plan.size() == neo::fft::size(order));
+    REQUIRE(plan.size() == neo::ipow<2zu>(order));
 
     auto const noise = neo::generate_noise_signal<Float>(plan.size(), Catch::getSeed());
 

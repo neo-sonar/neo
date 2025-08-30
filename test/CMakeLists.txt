@@ -1,14 +1,15 @@
-project(neosonar-neo-test)
+project(neosonar-neo-tests)
 
-FetchContent_Declare(Catch2 GIT_REPOSITORY "https://github.com/catchorg/Catch2" GIT_TAG "v3.9.1" GIT_SHALLOW TRUE)
+FetchContent_Declare(Catch2 GIT_REPOSITORY "https://github.com/catchorg/Catch2" GIT_TAG "v3.10.0" GIT_SHALLOW TRUE)
 FetchContent_MakeAvailable(Catch2)
 include(${Catch2_SOURCE_DIR}/extras/Catch.cmake)
+set_target_properties(Catch2 PROPERTIES UNITY_BUILD ON)
 
-add_executable(neosonar-neo-tests)
-target_link_libraries(neosonar-neo-tests PRIVATE neosonar::neo Catch2::Catch2WithMain)
-catch_discover_tests(neosonar-neo-tests WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_executable(neo-tests)
+target_link_libraries(neo-tests PRIVATE neosonar::neo neosonar::compiler_warnings Catch2::Catch2WithMain)
+catch_discover_tests(neo-tests TEST_SPEC "--order lex" WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 
-target_sources(neosonar-neo-tests
+target_sources(neo-tests
     PRIVATE
         "${CMAKE_SOURCE_DIR}/src/neo/algorithm/allclose_test.cpp"
         "${CMAKE_SOURCE_DIR}/src/neo/algorithm/allmatch_test.cpp"
@@ -20,7 +21,6 @@ target_sources(neosonar-neo-tests
         "${CMAKE_SOURCE_DIR}/src/neo/algorithm/standard_deviation_test.cpp"
         "${CMAKE_SOURCE_DIR}/src/neo/algorithm/variance_test.cpp"
 
-        "${CMAKE_SOURCE_DIR}/src/neo/bit/bit_ceil_test.cpp"
         "${CMAKE_SOURCE_DIR}/src/neo/bit/bit_log2_test.cpp"
 
         "${CMAKE_SOURCE_DIR}/src/neo/complex/complex_test.cpp"

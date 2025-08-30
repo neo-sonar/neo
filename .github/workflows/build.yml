@@ -14,6 +14,9 @@ env:
   DEBIAN_FRONTEND: noninteractive
   HOMEBREW_NO_INSTALL_CLEANUP: 1
 
+permissions:
+  contents: read
+
 jobs:
   build:
     name: ${{ matrix.name }}
@@ -32,6 +35,7 @@ jobs:
             cmake_exe: "cmake"
             cmake_flags: '-D CMAKE_CXX_FLAGS="-march=native" -D NEO_ENABLE_INTEL_IPP=ON -D NEO_ENABLE_INTEL_MKL=ON'
             cmake_prefix_path: "/opt/intel/oneapi/ipp/latest:/opt/intel/oneapi/mkl/latest"
+            cmake_warnings_as_errors: "ON"
             cmake_targets: all
             macos_target: ""
 
@@ -42,6 +46,7 @@ jobs:
             cmake_exe: "cmake"
             cmake_flags: '-D CMAKE_CXX_FLAGS="-g -fno-omit-frame-pointer -fsanitize=address,undefined -fno-sanitize-recover=all -march=native" -D NEO_ENABLE_INTEL_IPP=ON -D NEO_ENABLE_INTEL_MKL=ON'
             cmake_prefix_path: "/opt/intel/oneapi/ipp/latest:/opt/intel/oneapi/mkl/latest"
+            cmake_warnings_as_errors: "ON"
             cmake_targets: all
             macos_target: ""
 
@@ -50,8 +55,9 @@ jobs:
             build_type: Release
             clang_version: ""
             cmake_exe: "emcmake cmake"
-            cmake_flags: '-D CMAKE_CXX_FLAGS="-msimd128 -msse4.2 -fexceptions"  -D NEO_ENABLE_BENCHMARKS=OFF -D NEO_ENABLE_TOOLS=OFF -D NEO_ENABLE_XSIMD=ON'
+            cmake_flags: '-D CMAKE_UNITY_BUILD=ON -D CMAKE_CXX_FLAGS="-fexceptions -msimd128 -msse4.2" -D CMAKE_EXE_LINKER_FLAGS="-s ALLOW_MEMORY_GROWTH=1" -D NEO_ENABLE_PLUGIN=OFF'
             cmake_prefix_path: ""
+            cmake_warnings_as_errors: "ON"
             cmake_targets: all
             macos_target: ""
 
@@ -62,6 +68,7 @@ jobs:
             cmake_exe: "cmake"
             cmake_flags: ""
             cmake_prefix_path: ""
+            cmake_warnings_as_errors: "ON"
             cmake_targets: all
             macos_target: "11.0"
 
@@ -72,6 +79,7 @@ jobs:
             cmake_exe: "cmake"
             cmake_flags: ""
             cmake_prefix_path: ""
+            cmake_warnings_as_errors: "ON"
             cmake_targets: all
             macos_target: "10.15"
 
@@ -82,6 +90,7 @@ jobs:
             cmake_exe: "cmake"
             cmake_flags: '-D CMAKE_CXX_FLAGS="-march=native" -D NEO_ENABLE_INTEL_IPP=OFF -D NEO_ENABLE_INTEL_MKL=OFF -D NEO_ENABLE_BENCHMARKS=OFF'
             cmake_prefix_path: C:\Program Files (x86)\Intel\oneAPI\ipp\latest;C:\Program Files (x86)\Intel\oneAPI\mkl\latest
+            cmake_warnings_as_errors: "ON"
             cmake_targets: all
             macos_target: ""
 
@@ -92,44 +101,46 @@ jobs:
             cmake_exe: "cmake"
             cmake_flags: '-D CMAKE_CXX_FLAGS="/arch:AVX2 /EHsc" -D NEO_ENABLE_INTEL_IPP=OFF -D NEO_ENABLE_INTEL_MKL=OFF'
             cmake_prefix_path: C:\Program Files (x86)\Intel\oneAPI\ipp\latest;C:\Program Files (x86)\Intel\oneAPI\mkl\latest
+            cmake_warnings_as_errors: "ON"
             cmake_targets: all
             macos_target: ""
 
-          - name: Coverage-Native
+          - name: Coverage-native
             os: ubuntu-22.04
             build_type: Debug
             clang_version: ""
             cmake_exe: "cmake"
-            cmake_flags: '-D CMAKE_CXX_FLAGS="--coverage -march=native" -D NEO_ENABLE_INTEL_IPP=ON -D NEO_ENABLE_INTEL_MKL=ON'
+            cmake_flags: '-D CMAKE_UNITY_BUILD=ON -D CMAKE_CXX_FLAGS="--coverage -march=native" -D NEO_ENABLE_INTEL_IPP=ON -D NEO_ENABLE_INTEL_MKL=ON -D NEO_ENABLE_PLUGIN=OFF -D NEO_ENABLE_TOOLS=OFF'
             cmake_prefix_path: "/opt/intel/oneapi/ipp/latest:/opt/intel/oneapi/mkl/latest"
-            cmake_targets: neosonar-neo-tests
+            cmake_warnings_as_errors: "ON"
+            cmake_targets: neo-tests
             macos_target: ""
 
-          - name: Coverage-SSE41
+          - name: Coverage-x86-64-v2
             os: ubuntu-22.04
             build_type: Debug
             clang_version: ""
             cmake_exe: "cmake"
-            cmake_flags: '-D CMAKE_CXX_FLAGS="--coverage -march=x86-64-v2" -D NEO_ENABLE_INTEL_IPP=ON -D NEO_ENABLE_INTEL_MKL=ON'
+            cmake_flags: '-D CMAKE_UNITY_BUILD=ON -D CMAKE_CXX_FLAGS="--coverage -march=x86-64-v2" -D NEO_ENABLE_INTEL_IPP=ON -D NEO_ENABLE_INTEL_MKL=ON -D NEO_ENABLE_PLUGIN=OFF -D NEO_ENABLE_TOOLS=OFF'
             cmake_prefix_path: "/opt/intel/oneapi/ipp/latest:/opt/intel/oneapi/mkl/latest"
-            cmake_targets: neosonar-neo-tests
+            cmake_warnings_as_errors: "ON"
+            cmake_targets: neo-tests
             macos_target: ""
 
-          - name: Coverage-SSE2
+          - name: Coverage-x86-64
             os: ubuntu-22.04
             build_type: Debug
             clang_version: ""
             cmake_exe: "cmake"
-            cmake_flags: '-D CMAKE_CXX_FLAGS="--coverage -march=x86-64" -D NEO_ENABLE_INTEL_IPP=ON -D NEO_ENABLE_INTEL_MKL=ON'
+            cmake_flags: '-D CMAKE_UNITY_BUILD=ON -D CMAKE_CXX_FLAGS="--coverage -march=x86-64" -D NEO_ENABLE_INTEL_IPP=ON -D NEO_ENABLE_INTEL_MKL=ON -D NEO_ENABLE_PLUGIN=OFF -D NEO_ENABLE_TOOLS=OFF'
             cmake_prefix_path: "/opt/intel/oneapi/ipp/latest:/opt/intel/oneapi/mkl/latest"
-            cmake_targets: neosonar-neo-tests
+            cmake_warnings_as_errors: "ON"
+            cmake_targets: neo-tests
             macos_target: ""
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-        with:
-          lfs: true
 
       - name: Install dependencies (Linux)
         if: runner.os == 'Linux'
@@ -142,7 +153,6 @@ jobs:
           libfreetype6-dev
           libglu1-mesa-dev
           xvfb
-          ninja-build
           gcovr
 
       - name: Install clang
@@ -159,14 +169,6 @@ jobs:
           sudo apt update
           sudo apt install intel-oneapi-mkl-devel intel-oneapi-ipp-devel
 
-      # - name: Cache IPP (Windows)
-      #   if: runner.os == 'Windows'
-      #   id: cache-ipp
-      #   uses: actions/cache@v4
-      #   with:
-      #     key: ipp-v4
-      #     path: C:\Program Files (x86)\Intel
-
       # - name: Install IPP (Windows)
       #   if: (runner.os == 'Windows') && (steps.cache-ipp.outputs.cache-hit != 'true')
       #   shell: bash
@@ -174,13 +176,6 @@ jobs:
       #     curl --output oneapi.exe https://registrationcenter-download.intel.com/akdlm/IRC_NAS/5cb30fb9-21e9-47e8-82da-a91e00191670/w_BaseKit_p_2024.0.1.45_offline.exe
       #     ./oneapi.exe -s -x -f oneapi
       #     ./oneapi/bootstrapper.exe -s -c --action install --components=intel.oneapi.win.ipp.devel:intel.oneapi.win.mkl.devel --eula=accept -p=NEED_VS2022_INTEGRATION=1 --log-dir=.
-
-      # - name: Save IPP cache (even on CI fail)
-      #   if: runner.os == 'Windows' && (steps.cache-ipp.outputs.cache-hit != 'true')
-      #   uses: actions/cache/save@v4
-      #   with:
-      #     path: C:\Program Files (x86)\Intel
-      #     key: ipp-v4
 
       - name: Setup emsdk
         if: matrix.name == 'Emscripten'
@@ -198,23 +193,19 @@ jobs:
 
       - name: CMake configure
         run: >
-          ${{ matrix.cmake_exe }} -S .
+          ${{ matrix.cmake_exe }}
+          -S .
           -B build
           -G Ninja
           -D CMAKE_BUILD_TYPE=${{ matrix.build_type }}
-          -D CMAKE_COMPILE_WARNING_AS_ERROR=OFF
+          -D CMAKE_COMPILE_WARNING_AS_ERROR=${{ matrix.cmake_warnings_as_errors }}
           ${{ matrix.cmake_flags }}
 
       - name: CMake build
-        run: cmake --build build --config ${{ matrix.build_type }} --target ${{ matrix.cmake_targets }}
+        run: cmake --build build --target ${{ matrix.cmake_targets }}
 
       - name: Test
-        if: matrix.name != 'Emscripten'
-        run: ctest --test-dir build -C ${{ matrix.build_type }} --output-on-failure
-
-      - name: Test (Emscripten)
-        if: matrix.name == 'Emscripten'
-        run: node build/test/neosonar-neo-tests.js -v high
+        run: ctest --test-dir build --output-on-failure
 
       - name: Coverage report
         if: contains(matrix.name, 'Coverage')
@@ -229,7 +220,7 @@ jobs:
           -o build/coverage.xml
 
       - name: Upload coverage report
-        uses: codecov/codecov-action@v4
+        uses: codecov/codecov-action@v5
         if: contains(matrix.name, 'Coverage')
         with:
           token: ${{ secrets.CODECOV_TOKEN }}

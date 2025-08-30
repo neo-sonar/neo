@@ -10,11 +10,11 @@
 #include <catch2/catch_template_test_macros.hpp>
 #include <catch2/generators/catch_generators.hpp>
 
-using namespace neo::convolution;
-
 TEMPLATE_TEST_CASE("neo/convolution: direct_convolve", "", float, double)
 {
     using Float = TestType;
+
+    using namespace neo::convolution;
 
     auto const signal_size = GENERATE(as<std::size_t>{}, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10);
     auto const patch_size  = GENERATE(as<std::size_t>{}, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11);

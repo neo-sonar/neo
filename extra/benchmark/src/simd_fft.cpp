@@ -1,12 +1,33 @@
 // SPDX-License-Identifier: MIT
 
+#include "multi_batch.hpp"
+
 #include <neo/fft.hpp>
 
+#include <neo/config/xsimd.hpp>
 #include <neo/testing/testing.hpp>
 
 #include <benchmark/benchmark.h>
 
 namespace {
+
+template<typename>
+struct float_type;
+
+template<typename T>
+struct float_type<xsimd::batch<T>>
+{
+    using type = neo::value_type_t<xsimd::batch<T>>;
+};
+
+template<typename T, std::size_t Size>
+struct float_type<neo::multi_batch<T, Size>>
+{
+    using type = typename neo::multi_batch<T, Size>::real_type;
+};
+
+template<typename T>
+using float_type_t = typename float_type<T>::type;
 
 template<typename Complex, typename Kernel>
 struct simd_fft_plan
@@ -18,11 +39,11 @@ struct simd_fft_plan
 
     [[nodiscard]] static constexpr auto max_order() noexcept -> size_type { return size_type{27}; }
 
-    [[nodiscard]] static constexpr auto max_size() noexcept -> size_type { return neo::fft::size(max_order()); }
+    [[nodiscard]] static constexpr auto max_size() noexcept -> size_type { return neo::ipow<2zu>(max_order()); }
 
     [[nodiscard]] auto order() const noexcept -> size_type { return _order; }
 
-    [[nodiscard]] auto size() const noexcept -> size_type { return neo::fft::size(order()); }
+    [[nodiscard]] auto size() const noexcept -> size_type { return neo::ipow<2zu>(order()); }
 
     template<neo::inout_vector Vec>
         requires std::same_as<neo::value_type_t<Vec>, value_type>
@@ -67,7 +88,7 @@ struct simd_split_fft_plan
 
     [[nodiscard]] auto order() const noexcept -> size_type { return _order; }
 
-    [[nodiscard]] auto size() const noexcept -> size_type { return neo::fft::size(order()); }
+    [[nodiscard]] auto size() const noexcept -> size_type { return neo::ipow<2zu>(order()); }
 
     template<neo::inout_vector_of<FloatBatch> InOutVec>
     auto operator()(neo::split_complex<InOutVec> x, neo::fft::direction dir) noexcept -> void
@@ -153,8 +174,17 @@ private:
                     auto const x2re = xre[i2];
                     auto const x2im = xim[i2];
 
-                    auto const xwre = xsimd::fms(wre, x2re, wim * x2im);
-                    auto const xwim = xsimd::fma(wre, x2im, wim * x2re);
+                    auto const [xwre, xwim] = [&] {
+                        if constexpr (xsimd::is_batch<FloatBatch>::value) {
+                            auto const re = xsimd::fms(wre, x2re, wim * x2im);
+                            auto const im = xsimd::fma(wre, x2im, wim * x2re);
+                            return std::pair{re, im};
+                        } else {
+                            auto const re = fms(wre, x2re, wim * x2im);
+                            auto const im = fma(wre, x2im, wim * x2re);
+                            return std::pair{re, im};
+                        }
+                    }();
 
                     xre[i1] = x1re + xwre;
                     xim[i1] = x1im + xwim;
@@ -167,7 +197,7 @@ private:
 
     [[nodiscard]] static auto twiddle(size_type n)
     {
-        using scalar_type = neo::value_type_t<FloatBatch>;
+        using scalar_type = float_type_t<FloatBatch>;
         using complex     = std::complex<scalar_type>;
 
         auto const dir         = neo::fft::direction::forward;
@@ -222,7 +252,7 @@ auto simd_c2c(benchmark::State& state) -> void
     }
 
     auto const items       = static_cast<int64_t>(state.iterations()) * plan.size();
-    auto const flop        = 5UL * size_t(plan.order()) * items * SimdComplex::size;
+    auto const flop        = 5zu * plan.order() * items * SimdComplex::size;
     state.counters["flop"] = benchmark::Counter(static_cast<double>(flop), benchmark::Counter::kIsRate);
     state.SetBytesProcessed(items * sizeof(SimdComplex));
 }
@@ -231,7 +261,7 @@ template<typename SimdFloat>
 auto simd_split_c2c(benchmark::State& state) -> void
 {
     using Plan  = simd_split_fft_plan<SimdFloat>;
-    using Float = neo::value_type_t<SimdFloat>;
+    using Float = float_type_t<SimdFloat>;
 
     auto const len   = static_cast<std::size_t>(state.range(0));
     auto const order = neo::fft::next_order(len);
@@ -264,17 +294,37 @@ auto simd_split_c2c(benchmark::State& state) -> void
     }
 
     auto const items       = static_cast<int64_t>(state.iterations()) * plan.size();
-    auto const flop        = 5UL * size_t(plan.order()) * items * SimdFloat::size;
+    auto const flop        = 5zu * plan.order() * items * SimdFloat::size;
     state.counters["flop"] = benchmark::Counter(static_cast<double>(flop), benchmark::Counter::kIsRate);
     state.SetBytesProcessed(items * sizeof(SimdFloat) * 2);
 }
 
 }  // namespace
 
-BENCHMARK(simd_c2c<std::complex<float>, neo::fft::kernel::c2c_dit2_v1>)->RangeMultiplier(2)->Range(1 << 7, 1 << 16);
-BENCHMARK(simd_c2c<std::complex<float>, neo::fft::kernel::c2c_dit2_v2>)->RangeMultiplier(2)->Range(1 << 7, 1 << 16);
-BENCHMARK(simd_c2c<std::complex<float>, neo::fft::kernel::c2c_dit2_v3>)->RangeMultiplier(2)->Range(1 << 7, 1 << 16);
-BENCHMARK(simd_c2c<std::complex<float>, neo::fft::kernel::c2c_dit2_v4>)->RangeMultiplier(2)->Range(1 << 7, 1 << 16);
-BENCHMARK(simd_split_c2c<xsimd::batch<float>>)->RangeMultiplier(2)->Range(1 << 7, 1 << 16);
+BENCHMARK(simd_c2c<std::complex<float>, neo::fft::kernel::c2c_dit2_v1>)
+    ->RangeMultiplier(2)
+    ->Range(1 << 7, 1 << 16)
+    ->Name("c2c_dit2_v1");
+BENCHMARK(simd_c2c<std::complex<float>, neo::fft::kernel::c2c_dit2_v2>)
+    ->RangeMultiplier(2)
+    ->Range(1 << 7, 1 << 16)
+    ->Name("c2c_dit2_v2");
+BENCHMARK(simd_c2c<std::complex<float>, neo::fft::kernel::c2c_dit2_v3>)
+    ->RangeMultiplier(2)
+    ->Range(1 << 7, 1 << 16)
+    ->Name("c2c_dit2_v3");
+BENCHMARK(simd_c2c<std::complex<float>, neo::fft::kernel::c2c_dit2_v4>)
+    ->RangeMultiplier(2)
+    ->Range(1 << 7, 1 << 16)
+    ->Name("c2c_dit2_v4");
+BENCHMARK(simd_split_c2c<xsimd::batch<float>>)->RangeMultiplier(2)->Range(1 << 7, 1 << 16)->Name("xsimd::batch");
+BENCHMARK(simd_split_c2c<neo::multi_batch<float, 2>>)
+    ->RangeMultiplier(2)
+    ->Range(1 << 7, 1 << 16)
+    ->Name("multi_batch<2>");
+BENCHMARK(simd_split_c2c<neo::multi_batch<float, 4>>)
+    ->RangeMultiplier(2)
+    ->Range(1 << 7, 1 << 16)
+    ->Name("multi_batch<4>");
 
 BENCHMARK_MAIN();

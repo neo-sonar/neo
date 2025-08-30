@@ -88,10 +88,3 @@ target_link_libraries(PerceptualConvolution
         juce::juce_recommended_lto_flags
         juce::juce_recommended_warning_flags
 )
-
-if(CMAKE_SYSTEM_NAME MATCHES "Darwin")
-    if(CMAKE_CXX_COMPILER_VERSION VERSION_GREATER_EQUAL "15.0.0" AND CMAKE_CXX_COMPILER_VERSION VERSION_LESS "15.1")
-        target_compile_definitions(PerceptualConvolution PUBLIC JUCE_SILENCE_XCODE_15_LINKER_WARNING=1)
-        target_link_options(PerceptualConvolution PUBLIC -Wl,-ld_classic)
-    endif()
-endif()

@@ -64,7 +64,7 @@ struct stft_plan
         auto const num_channels = static_cast<std::size_t>(x.extent(0));
         auto const signal_len   = static_cast<std::size_t>(x.extent(1));
 
-        auto const num_bins   = _rfft.size() / 2UL + 1UL;
+        auto const num_bins   = _rfft.size() / 2zu + 1zu;
         auto const num_frames = detail::num_sftf_frames(signal_len, frame_len, overlap);
 
         auto const in  = _input.to_mdspan();

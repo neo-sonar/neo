@@ -18,8 +18,8 @@ auto powerSpectrumImage(
 {
     auto const scale = [=] {
         auto max = 0.0F;
-        for (auto frameIdx{0U}; frameIdx < frames.extent(0); ++frameIdx) {
-            for (auto binIdx{0U}; binIdx < frames.extent(1); ++binIdx) {
+        for (auto frameIdx{0zu}; frameIdx < frames.extent(0); ++frameIdx) {
+            for (auto binIdx{0zu}; binIdx < frames.extent(1); ++binIdx) {
                 auto bin = std::abs(frames(frameIdx, binIdx));
                 max      = std::max(max, bin * bin);
             }
@@ -59,8 +59,8 @@ auto powerHistogram(
 
     auto const scale = [=] {
         auto max = 0.0F;
-        for (auto frameIdx{0U}; frameIdx < spectogram.extent(0); ++frameIdx) {
-            for (auto binIdx{0U}; binIdx < spectogram.extent(1); ++binIdx) {
+        for (auto frameIdx{0zu}; frameIdx < spectogram.extent(0); ++frameIdx) {
+            for (auto binIdx{0zu}; binIdx < spectogram.extent(1); ++binIdx) {
                 auto const bin = std::abs(spectogram(frameIdx, binIdx));
                 max            = std::max(max, bin * bin);
             }
@@ -70,8 +70,8 @@ auto powerHistogram(
 
     auto histogram = std::vector<int>(144, 0);
 
-    for (auto frameIdx{0U}; frameIdx < spectogram.extent(0); ++frameIdx) {
-        for (auto binIdx{0U}; binIdx < spectogram.extent(1); ++binIdx) {
+    for (auto frameIdx{0zu}; frameIdx < spectogram.extent(0); ++frameIdx) {
+        for (auto binIdx{0zu}; binIdx < spectogram.extent(1); ++binIdx) {
             auto const weight     = weighting(binIdx);
             auto const bin        = std::abs(spectogram(frameIdx, binIdx));
             auto const power      = bin * bin;
@@ -98,14 +98,14 @@ auto powerHistogramImage(
     }
 
     auto const binWidth  = 8;
-    auto const imgWidth  = static_cast<int>((histogram.size() - 1) * binWidth);
+    auto const imgWidth  = static_cast<int>((histogram.size() - 1zu) * binWidth);
     auto const imgHeight = 250;
 
     auto img = juce::Image{juce::Image::PixelFormat::ARGB, imgWidth, imgHeight, true};
     auto g   = juce::Graphics{img};
     g.fillAll(juce::Colours::black);
 
-    for (auto i{0U}; i < histogram.size() - 1U; ++i) {
+    for (auto i{0zu}; i < histogram.size() - 1zu; ++i) {
         auto const x      = int(i) * binWidth;
         auto const height = float(histogram[i]) / float(*maxBin) * float(imgHeight);
         auto const rect   = juce::Rectangle{x, 0, binWidth, juce::roundToInt(height)};

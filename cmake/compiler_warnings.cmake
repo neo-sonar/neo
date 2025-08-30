@@ -47,7 +47,6 @@ elseif(CMAKE_CXX_COMPILER_ID MATCHES "AppleClang|Clang")
     if(WIN32)
         target_compile_options(neosonar.compiler_warnings
             INTERFACE
-                "-Wno-language-extension-token" # xsimd
                 "-Wno-unknown-attributes" # Warns for [[no_unique_address]] being ignored for ABI reasons
         )
     endif()

@@ -9,6 +9,11 @@
 #include <neo/container/mdspan.hpp>
 #include <neo/fft/direction.hpp>
 
+#if defined(__clang__)
+    #pragma clang diagnostic push
+    #pragma clang diagnostic ignored "-Wdisabled-macro-expansion"
+#endif
+
 #include <mkl_dfti.h>
 
 namespace neo::fft {
@@ -100,3 +105,7 @@ private:
 };
 
 }  // namespace neo::fft
+
+#if defined(__clang__)
+    #pragma clang diagnostic pop
+#endif

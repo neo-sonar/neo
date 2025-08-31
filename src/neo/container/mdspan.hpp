@@ -6,6 +6,7 @@
 
 #if defined(__clang__)
     #pragma clang diagnostic push
+    #pragma clang diagnostic ignored "-Wdisabled-macro-expansion"
     #pragma clang diagnostic ignored "-Wextra-semi"
     #pragma clang diagnostic ignored "-Wmissing-noreturn"
     #pragma clang diagnostic ignored "-Wold-style-cast"

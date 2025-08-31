@@ -45,7 +45,6 @@ elseif(CMAKE_CXX_COMPILER_ID MATCHES "AppleClang|Clang")
             "-Wno-c++20-compat"
             "-Wno-c++98-compat-pedantic"
             "-Wno-ctad-maybe-unsupported"
-            "-Wno-disabled-macro-expansion"
             "-Wno-double-promotion"
             "-Wno-float-equal"
             "-Wno-padded"

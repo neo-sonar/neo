@@ -13,7 +13,6 @@
     #pragma clang diagnostic ignored "-Wdouble-promotion"
     #pragma clang diagnostic ignored "-Wfloat-conversion"
     #pragma clang diagnostic ignored "-Wfloat-equal"
-    #pragma clang diagnostic ignored "-Wimplicit-int-conversion-on-negation"
     #pragma clang diagnostic ignored "-Wlanguage-extension-token"
     #pragma clang diagnostic ignored "-Wold-style-cast"
     #pragma clang diagnostic ignored "-Wreserved-identifier"
@@ -21,6 +20,9 @@
     #pragma clang diagnostic ignored "-Wsign-conversion"
     #pragma clang diagnostic ignored "-Wundef"
     #pragma clang diagnostic ignored "-Wzero-as-null-pointer-constant"
+    #if __clang_major__ >= 22
+        #pragma clang diagnostic ignored "-Wimplicit-int-conversion-on-negation"
+    #endif
 #elif defined(__GNUC__)
     #pragma GCC diagnostic push
     #pragma GCC diagnostic ignored "-Wdeprecated"

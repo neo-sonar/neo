@@ -22,6 +22,7 @@
     #pragma clang diagnostic ignored "-Wzero-as-null-pointer-constant"
     #if __clang_major__ >= 22
         #pragma clang diagnostic ignored "-Wimplicit-int-conversion-on-negation"
+        #pragma clang diagnostic ignored "-Wunique-object-duplication"
     #endif
 #elif defined(__GNUC__)
     #pragma GCC diagnostic push

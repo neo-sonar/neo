@@ -48,23 +48,11 @@ def dct2_nfft(x):
     return V.real
 
 
+inp = np.array([1, 2, 3, 4, 5, 6, 7, 8])
+digits = 8
+
 np.set_printoptions(linewidth=200)
-print(dct2_scipy([1, 2, 3, 4, 5, 6, 7, 8]))
-print(dct2_2nfft_1([1, 2, 3, 4, 5, 6, 7, 8]))
-print(dct2_2nfft_2([1, 2, 3, 4, 5, 6, 7, 8]))
-print(dct2_nfft([1, 2, 3, 4, 5, 6, 7, 8]))
-
-x = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h']
-v = np.empty_like(x)
-N = len(x)
-print(x[-2])
-print(x)
-
-v[:(N-1)//2+1] = x[::2]
-print(v)
-
-if N % 2:
-    v[(N-1)//2+1:] = x[-2::-2]
-else:
-    v[(N-1)//2+1:] = x[::-2]
-print(v)
+print(np.round(dct2_scipy(inp), digits))
+print(np.round(dct2_2nfft_1(inp), digits))
+print(np.round(dct2_2nfft_2(inp), digits))
+print(np.round(dct2_nfft(inp), digits))

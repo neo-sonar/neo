@@ -355,12 +355,12 @@ multiply_add(split_complex<VecX> x, split_complex<VecY> y, split_complex<VecZ> z
         [[maybe_unused]] auto const* zre = z.real.data_handle();
         [[maybe_unused]] auto const* zim = z.imag.data_handle();
 
-        [[maybe_unused]] auto* ore = out.real.data_handle();
-        [[maybe_unused]] auto* oim = out.imag.data_handle();
+        [[maybe_unused]] auto* out_re = out.real.data_handle();
+        [[maybe_unused]] auto* out_im = out.imag.data_handle();
 
 #if defined(NEO_HAS_SIMD_SPLIT_COMPLEX_MULTIPLY_ADD) or defined(NEO_HAS_XSIMD)
-        if constexpr (requires { simd::multiply_add(xre, xim, yre, yim, zre, zim, ore, oim, size); }) {
-            simd::multiply_add(xre, xim, yre, yim, zre, zim, ore, oim, size);
+        if constexpr (requires { simd::multiply_add(xre, xim, yre, yim, zre, zim, out_re, out_im, size); }) {
+            simd::multiply_add(xre, xim, yre, yim, zre, zim, out_re, out_im, size);
             return;
         }
 #endif

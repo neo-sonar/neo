@@ -40,7 +40,7 @@ inline auto ipp_check(int status) -> void
 
         auto const found = std::ranges::find(errors, ec, &std::pair<int, std::string_view>::first);
         if (found == std::ranges::end(errors)) {
-            return "ipp: unkown error" + std::to_string(ec);
+            return "ipp: unknown error code: " + std::to_string(ec);
         }
         return std::string{found->second};
     };

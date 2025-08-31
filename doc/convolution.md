@@ -1,10 +1,10 @@
-## Convolution
+# Convolution
 
-### upols_convolver
+## upols_convolver
 
 Uniformly partitioned overlap-save convolver.
 
-### sparse_upols_convolver
+## sparse_upols_convolver
 
 Uniformly partitioned overlap-save convolver with a sparse frequency delay line (FDL) on the filter.
 

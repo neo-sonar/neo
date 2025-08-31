@@ -132,12 +132,12 @@ struct cmulp
         auto const* NEO_RESTRICT lim = lhs_imag.data_handle();
         auto const* NEO_RESTRICT rre = rhs_real.data_handle();
         auto const* NEO_RESTRICT rim = rhs_imag.data_handle();
-        auto* NEO_RESTRICT ore       = out_real.data_handle();
-        auto* NEO_RESTRICT oim       = out_imag.data_handle();
+        auto* NEO_RESTRICT out_re    = out_real.data_handle();
+        auto* NEO_RESTRICT out_im    = out_imag.data_handle();
 
         for (auto i{0}; std::cmp_less(i, out_real.extent(0)); ++i) {
-            ore[i] = lre[i] * rre[i] - lim[i] * rim[i];
-            oim[i] = lre[i] * rim[i] + lim[i] * rre[i];
+            out_re[i] = lre[i] * rre[i] - lim[i] * rim[i];
+            out_im[i] = lre[i] * rim[i] + lim[i] * rre[i];
         }
 
         neo::do_not_optimize(out_real[0]);

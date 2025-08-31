@@ -42,7 +42,7 @@ struct compressed_fdl
         };
 
         auto const fdl = stdex::submdspan(_fdl.to_mdspan(), index, stdex::full_extent);
-        for (auto i{0U}; i < input.extent(0); ++i) {
+        for (auto i{0zu}; i < input.extent(0); ++i) {
             fdl[i] = IntComplex{compress(input[i].real()), compress(input[i].imag())};
         }
     }

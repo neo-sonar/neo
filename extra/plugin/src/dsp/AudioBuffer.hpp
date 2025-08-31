@@ -28,8 +28,8 @@ template<std::floating_point Float>
         static_cast<std::size_t>(buffer.getNumSamples()),
     };
 
-    for (auto ch{0ULL}; ch < result.extent(0); ++ch) {
-        for (auto i{0ULL}; i < result.extent(1); ++i) {
+    for (auto ch{0zu}; ch < result.extent(0); ++ch) {
+        for (auto i{0zu}; i < result.extent(1); ++i) {
             result(ch, i) = buffer.getSample(static_cast<int>(ch), static_cast<int>(i));
         }
     }
@@ -57,7 +57,7 @@ auto processBlocks(
         }
     );
 
-    for (std::size_t i{0}; i < output.getNumSamples(); i += blockSize) {
+    for (auto i{0zu}; i < output.getNumSamples(); i += blockSize) {
         auto const numSamples = std::min(output.getNumSamples() - i, blockSize);
 
         auto in  = input.getSubBlock(i, numSamples);

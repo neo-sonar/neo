@@ -82,7 +82,7 @@ template<inout_vector Vec>
 constexpr auto bitrevorder(Vec x) -> void
 {
     std::size_t j = 0;
-    for (std::size_t i = 0; i < x.size() - 1zu; ++i) {
+    for (auto i{0zu}; i < x.size() - 1zu; ++i) {
         if (i < j) {
             std::swap(x[i], x[j]);
         }

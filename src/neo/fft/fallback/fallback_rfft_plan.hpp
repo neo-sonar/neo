@@ -32,7 +32,7 @@ struct fallback_rfft_plan
 
         copy(in, buf);
         _fft(buf, direction::forward);
-        copy(stdex::submdspan(buf, std::tuple{0ULL, coeffs}), stdex::submdspan(out, std::tuple{0ULL, coeffs}));
+        copy(stdex::submdspan(buf, std::tuple{0zu, coeffs}), stdex::submdspan(out, std::tuple{0zu, coeffs}));
     }
 
     template<in_vector_of<Complex> InVec, out_vector_of<Float> OutVec>
@@ -49,7 +49,7 @@ struct fallback_rfft_plan
         }
 
         _fft(buf, direction::backward);
-        for (auto i{0UL}; i < size(); ++i) {
+        for (auto i{0zu}; i < size(); ++i) {
             out[i] = buf[i].real();
         }
     }

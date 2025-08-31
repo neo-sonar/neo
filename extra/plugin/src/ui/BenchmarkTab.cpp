@@ -61,7 +61,7 @@ struct FrequencySpectrumWeighting
     FrequencySpectrumWeighting(std::integral auto size, double sr)
     {
         _weights.resize(static_cast<size_t>(size));
-        for (auto i{0UL}; i < static_cast<size_t>(size); ++i) {
+        for (auto i{0zu}; i < static_cast<size_t>(size); ++i) {
             auto frequency = neo::rfftfreq<float>(size, i, 1.0 / sr);
             _weights[i]    = juce::exactlyEqual(frequency, 0.0F) ? 0.0F : neo::a_weighting(frequency);
         }
@@ -82,7 +82,7 @@ private:
     jassert(signal.extents() == reconstructed.extents());
 
     auto rmse = 0.0;
-    for (auto ch{0U}; ch < signal.extent(0); ++ch) {
+    for (auto ch{0zu}; ch < signal.extent(0); ++ch) {
         auto sig_channel = stdex::submdspan(signal.to_mdspan(), ch, stdex::full_extent, stdex::full_extent);
         auto rec_channel = stdex::submdspan(reconstructed.to_mdspan(), ch, stdex::full_extent, stdex::full_extent);
 
@@ -187,7 +187,7 @@ auto BenchmarkTab::setImpulseResponseFile(juce::File const& file) -> void
     auto impulse = to_mdarray(_impulse.buffer);
     neo::convolution::normalize_impulse(impulse.to_mdspan());
 
-    auto const blockSize = 512ULL;
+    auto const blockSize = 512zu;
     _partitions          = neo::convolution::uniform_partition(
         stdex::submdspan(impulse.to_mdspan(), stdex::full_extent, std::tuple{blockSize, impulse.extent(1)}),
         blockSize
@@ -317,9 +317,9 @@ auto BenchmarkTab::runWeightingTests() -> void
 {
     auto const scale = [filter = _partitions.to_mdspan()] {
         auto max = 0.0F;
-        for (auto ch{0U}; ch < filter.extent(0); ++ch) {
-            for (auto f{0U}; f < filter.extent(1); ++f) {
-                for (auto b{0U}; b < filter.extent(2); ++b) {
+        for (auto ch{0zu}; ch < filter.extent(0); ++ch) {
+            for (auto f{0zu}; f < filter.extent(1); ++f) {
+                for (auto b{0zu}; b < filter.extent(2); ++b) {
                     auto const bin   = std::abs(filter(ch, f, b));
                     auto const power = bin * bin;
 
@@ -337,10 +337,10 @@ auto BenchmarkTab::runWeightingTests() -> void
     auto count           = 0;
     auto const threshold = -static_cast<float>(_dynamicRange.getValue());
 
-    for (auto f{0U}; f < _partitions.extent(1); ++f) {
-        for (auto b{0U}; b < _partitions.extent(2); ++b) {
+    for (auto f{0zu}; f < _partitions.extent(1); ++f) {
+        for (auto b{0zu}; b < _partitions.extent(2); ++b) {
             auto const weight = weighting(b);
-            for (auto ch{0U}; ch < _partitions.extent(0); ++ch) {
+            for (auto ch{0zu}; ch < _partitions.extent(0); ++ch) {
                 auto const bin   = std::abs(_partitions(ch, f, b));
                 auto const power = bin * bin;
                 auto const dB    = neo::amplitude_to_db(power * scale, -144.0F) * 0.5F + weight;

@@ -19,7 +19,7 @@ template<std::integral T>
 constexpr auto bitrevorder(std::span<std::complex<double>> x) -> void
 {
     std::size_t j = 0;
-    for (std::size_t i = 0; i < x.size() - 1zu; ++i) {
+    for (auto i{0zu}; i < x.size() - 1zu; ++i) {
         if (i < j) {
             std::swap(x[i], x[j]);
         }
@@ -155,7 +155,7 @@ auto c2c_stockham(
 
     auto const n = ipow(std::size_t(2), order);
 
-    auto l = n / 2U;
+    auto l = n / 2zu;
     auto m = 1zu;
 
     for (auto t{1zu}; t <= order; ++t) {
@@ -171,8 +171,8 @@ auto c2c_stockham(
             }
         }
 
-        l = l / 2U;
-        m = m * 2U;
+        l = l / 2zu;
+        m = m * 2zu;
         std::swap(x, work);
     }
 
@@ -198,7 +198,7 @@ auto main() -> int
 
     auto w_fwd = std::array<std::complex<double>, Size / 4>{};
     auto w_bwd = std::array<std::complex<double>, Size / 4>{};
-    for (auto i{0U}; i < w_fwd.size(); ++i) {
+    for (auto i{0zu}; i < w_fwd.size(); ++i) {
         auto angle = TwoPi * static_cast<double>(i) / static_cast<double>(Size);
         w_fwd[i]   = std::polar(1.0, -angle);
         w_bwd[i]   = std::polar(1.0, +angle);

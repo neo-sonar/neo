@@ -444,7 +444,7 @@ struct intel_ipp_rfft_plan
             setup::forward_inplace(_buffer.data(), _handle, _work_buf.get());
 
             auto const coeffs = size() / 2 + 1;
-            for (auto i{0U}; i < coeffs; ++i) {
+            for (auto i{0zu}; i < coeffs; ++i) {
                 out[i] = complex_type{buf[i * 2], buf[i * 2 + 1]};
             }
         }
@@ -459,7 +459,7 @@ struct intel_ipp_rfft_plan
             setup::backward_copy(in_ptr, out.data_handle(), _handle, _work_buf.get());
         } else {
             auto buf = _buffer.to_mdspan();
-            for (auto i{0U}; i < in.size(); ++i) {
+            for (auto i{0zu}; i < in.size(); ++i) {
                 buf[i * 2]     = real(in[i]);
                 buf[i * 2 + 1] = imag(in[i]);
             }

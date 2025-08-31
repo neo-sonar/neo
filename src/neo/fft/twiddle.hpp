@@ -35,9 +35,9 @@ auto fill_twiddle_lut_radix2(OutVec lut, direction dir) noexcept -> void
     using Complex = typename OutVec::value_type;
 
     auto const lut_size = lut.size();
-    auto const size     = lut_size * 2ULL;
+    auto const size     = lut_size * 2zu;
 
-    for (std::size_t i = 0; i < lut_size; ++i) {
+    for (auto i{0zu}; i < lut_size; ++i) {
         lut[i] = twiddle<Complex>(size, i, dir);
     }
 }

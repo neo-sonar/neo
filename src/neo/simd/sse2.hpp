@@ -103,8 +103,8 @@ namespace simd {
 
 template<typename ScalarType>
 inline constexpr auto apply_kernel = [](auto lhs, auto rhs, auto out, auto scalar_kernel, auto vector_kernel) {
-    static constexpr auto value_size_bits = sizeof(ScalarType) * 8UL;
-    static constexpr auto vector_size     = static_cast<ptrdiff_t>(128 / value_size_bits);
+    static constexpr auto value_size_bits = sizeof(ScalarType) * 8zu;
+    static constexpr auto vector_size     = static_cast<ptrdiff_t>(128zu / value_size_bits);
     auto const remainder                  = static_cast<ptrdiff_t>(lhs.size()) % vector_size;
 
     for (auto i{0}; i < remainder; ++i) {

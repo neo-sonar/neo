@@ -53,7 +53,7 @@ private:
     void ifft(inout_vector_of<Complex> auto x)
     {
         auto conjugate = [n = size()](inout_vector_of<Complex> auto vec) {
-            for (std::size_t i = 0; i < n; ++i) {
+            for (auto i{0zu}; i < n; ++i) {
                 vec[i] = neo::math::conj(vec[i]);
             }
         };
@@ -86,7 +86,7 @@ private:
             return;
         }
 
-        auto const m = stage_len / 2U;
+        auto const m = stage_len / 2zu;
 
         for (std::size_t j = 0; j < m; j++) {
             auto const w1 = w[j * stride];
@@ -106,7 +106,7 @@ private:
     static auto make_twiddle_lut(size_t n) -> stdex::mdarray<Complex, stdex::dextents<std::size_t, 1>>
     {
         auto w = stdex::mdarray<Complex, stdex::dextents<std::size_t, 1>>(n / 2);
-        for (std::size_t i = 0; i < w.size(); i++) {
+        for (auto i{0zu}; i < w.size(); i++) {
             w(i) = twiddle<Complex>(n, i, fft::direction::backward);
         }
         return w;
@@ -193,7 +193,7 @@ private:
     static auto make_twiddle_lut(size_t n) -> stdex::mdarray<Complex, stdex::dextents<std::size_t, 2>>
     {
         auto w = stdex::mdarray<Complex, stdex::dextents<std::size_t, 2>>{2, n / 2};
-        for (std::size_t i = 0; i < w.extent(1); i++) {
+        for (auto i{0zu}; i < w.extent(1); i++) {
             w(0, i) = twiddle<Complex>(n, i, fft::direction::backward);
             w(1, i) = twiddle<Complex>(n, i, fft::direction::forward);
         }

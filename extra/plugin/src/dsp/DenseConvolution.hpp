@@ -48,7 +48,7 @@ dense_convolve(juce::AudioBuffer<float> const& signal, juce::AudioBuffer<float> 
     auto partitions = neo::convolution::uniform_partition(matrix.to_mdspan(), static_cast<std::size_t>(blockSize));
 
     auto convolvers = std::vector<Convolver>(static_cast<std::size_t>(signal.getNumChannels()));
-    for (auto ch{0U}; ch < static_cast<size_t>(signal.getNumChannels()); ++ch) {
+    for (auto ch{0zu}; ch < static_cast<size_t>(signal.getNumChannels()); ++ch) {
         auto channel = stdex::submdspan(partitions.to_mdspan(), ch, stdex::full_extent, stdex::full_extent);
         convolvers[ch].filter(channel);
     }

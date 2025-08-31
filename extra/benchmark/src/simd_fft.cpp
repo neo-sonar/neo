@@ -67,7 +67,7 @@ private:
         using scalar_type = neo::value_type_t<value_type>;
         auto const scalar = neo::fft::make_twiddle_lut_radix2<scalar_type>(n, neo::fft::direction::forward);
         auto vec          = stdex::mdarray<value_type, stdex::dextents<size_t, 1>>{scalar.extent(0)};
-        for (auto i{0U}; i < scalar.extent(0); ++i) {
+        for (auto i{0zu}; i < scalar.extent(0); ++i) {
             vec(i) = xsimd::broadcast(scalar(i));
         }
         return vec;
@@ -208,7 +208,7 @@ private:
         auto w_im    = stdex::submdspan(w_buf.to_mdspan(), 1, stdex::full_extent);
         auto split_w = neo::split_complex{w_re, w_im};
 
-        for (auto i{0U}; i < interleaved.extent(0); ++i) {
+        for (auto i{0zu}; i < interleaved.extent(0); ++i) {
             auto const w    = interleaved(i);
             split_w.real[i] = xsimd::broadcast(neo::math::real(w));
             split_w.imag[i] = xsimd::broadcast(neo::math::imag(w));
@@ -234,7 +234,7 @@ auto simd_c2c(benchmark::State& state) -> void
 
     auto const noise_s = neo::generate_noise_signal<ScalarComplex>(len, std::random_device{}());
     auto noise_v       = stdex::mdarray<SimdComplex, stdex::dextents<size_t, 1>>{noise_s.extent(0)};
-    for (auto i{0U}; i < noise_s.extent(0); ++i) {
+    for (auto i{0zu}; i < noise_s.extent(0); ++i) {
         noise_v(i) = xsimd::broadcast(noise_s(i));
     }
 
@@ -270,7 +270,7 @@ auto simd_split_c2c(benchmark::State& state) -> void
     auto const noise = neo::generate_noise_signal<Float>(len, std::random_device{}());
     auto noise_v     = stdex::mdarray<SimdFloat, stdex::dextents<size_t, 2>>{2, noise.extent(0)};
     auto noise_r     = stdex::submdspan(noise_v.to_mdspan(), 0, stdex::full_extent);
-    for (auto i{0U}; i < noise.extent(0); ++i) {
+    for (auto i{0zu}; i < noise.extent(0); ++i) {
         noise_r[i] = xsimd::broadcast(noise(i));
     }
 

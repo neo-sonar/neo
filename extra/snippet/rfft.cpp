@@ -121,17 +121,17 @@ void rfft(std::vector<float>& data, int isign)
 
 auto main(int argc, char** argv) -> int
 {
-    auto N = 1024UL;
+    auto N = 1024zu;
     if (argc == 2) {
         N = std::stoul(argv[1]);
     }
 
-    auto runs = std::vector(10000UL, std::pair{0, 0.0});
+    auto runs = std::vector(10000zu, std::pair{0, 0.0});
 
     auto buffer = std::vector(N, 0.0F);
     buffer[0]   = 1.0F;
 
-    for (auto i{0UL}; i < runs.size(); ++i) {
+    for (auto i{0zu}; i < runs.size(); ++i) {
 
         auto const start = std::chrono::system_clock::now();
         rfft(buffer, 1);
@@ -150,7 +150,7 @@ auto main(int argc, char** argv) -> int
         std::max_element(runs.begin(), runs.end(), [](auto l, auto r) { return l.first < r.first; })->first
     );
 
-    auto buf = std::vector(16UL, 0.0F);
+    auto buf = std::vector(16zu, 0.0F);
     buf[0]   = 1.0F;
 
     // rfft

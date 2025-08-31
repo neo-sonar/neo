@@ -66,14 +66,14 @@ auto biquad(benchmark::State& state) -> void
         if constexpr (xsimd::is_batch<Float>::value) {
             auto s = neo::generate_noise_signal<typename Float::value_type>(size, std::random_device{}());
             auto x = stdex::mdarray<Float, stdex::dextents<size_t, 1>>{size};
-            for (auto i{0U}; i < size; ++i) {
+            for (auto i{0zu}; i < size; ++i) {
                 x(i) = xsimd::broadcast(s(i));
             }
             return x;
         } else if constexpr (neo::is_multi_batch<Float>) {
             auto s = neo::generate_noise_signal<typename Float::real_type>(size, std::random_device{}());
             auto x = stdex::mdarray<Float, stdex::dextents<size_t, 1>>{size};
-            for (auto i{0U}; i < size; ++i) {
+            for (auto i{0zu}; i < size; ++i) {
                 x(i) = xsimd::broadcast(s(i));
             }
             return x;
@@ -86,7 +86,7 @@ auto biquad(benchmark::State& state) -> void
     auto out    = std::vector<Float>(size);
 
     for (auto _ : state) {
-        for (auto i{0U}; i < size; ++i) {
+        for (auto i{0zu}; i < size; ++i) {
             out[i] = filter(sig(i));
         }
         benchmark::DoNotOptimize(out[0]);

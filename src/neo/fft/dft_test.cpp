@@ -36,7 +36,7 @@ auto test_dft_plan()
 
         neo::fft::dft(plan, x);
 
-        for (auto i{0U}; i < size; ++i) {
+        for (auto i{0zu}; i < size; ++i) {
             CAPTURE(i);
             REQUIRE(x[i].real() == Catch::Approx(Float(1)));
         }
@@ -56,7 +56,7 @@ auto test_dft_plan()
         neo::fft::dft(plan, x);
         neo::fft::idft(plan, x);
 
-        for (auto i{0U}; i < x.extent(0); ++i) {
+        for (auto i{0zu}; i < x.extent(0); ++i) {
             CAPTURE(i);
 
             auto const n     = static_cast<double>(size);

@@ -50,7 +50,7 @@ struct multi_batch
     friend auto fms(multi_batch const& x, multi_batch const& y, multi_batch const& z) -> multi_batch
     {
         auto out = multi_batch{};
-        for (auto i{0U}; i < Size; ++i) {
+        for (auto i{0zu}; i < Size; ++i) {
             out.batches[i] = xsimd::fms(x.batches[i], y.batches[i], z.batches[i]);
         }
         return out;
@@ -59,7 +59,7 @@ struct multi_batch
     friend auto fma(multi_batch const& x, multi_batch const& y, multi_batch const& z) -> multi_batch
     {
         auto out = multi_batch{};
-        for (auto i{0U}; i < Size; ++i) {
+        for (auto i{0zu}; i < Size; ++i) {
             out.batches[i] = xsimd::fma(x.batches[i], y.batches[i], z.batches[i]);
         }
         return out;

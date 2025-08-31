@@ -73,7 +73,7 @@ private:
         auto const theta0 = 2.0 * M_PI / static_cast<double>(n);
 
         auto w = std::vector<std::complex<double>>(n / 2);
-        for (std::size_t i = 0; i < w.size(); i++) {
+        for (auto i{0zu}; i < w.size(); i++) {
             w[i] = std::polar(1.0, i * theta0);
         }
         return w;

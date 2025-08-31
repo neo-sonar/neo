@@ -44,7 +44,7 @@ template<typename FloatOrComplex, typename URNG = std::mt19937>
 
         auto dist = std::uniform_real_distribution<float>{-1.0F, 1.0F};
         auto buf  = stdex::mdarray<FxPoint, stdex::dextents<size_t, 1>>{length};
-        for (auto i{0U}; i < buf.extent(0); ++i) {
+        for (auto i{0zu}; i < buf.extent(0); ++i) {
             buf(i) = FxPoint{dist(rng)};
         }
 

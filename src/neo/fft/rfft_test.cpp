@@ -143,8 +143,8 @@ TEMPLATE_TEST_CASE("neo/fft: experimental::fft", "", float, double)
 
         // fft
         plan(signal.to_mdspan(), neo::fft::direction::forward);
-        for (auto i{0U}; i < size; ++i) {
-            auto const ire = i * 2U;
+        for (auto i{0zu}; i < size; ++i) {
+            auto const ire = i * 2zu;
             auto const iim = ire + 1;
 
             REQUIRE(signal(ire) == Catch::Approx(1.0));
@@ -177,7 +177,7 @@ TEMPLATE_TEST_CASE("neo/fft: experimental::fft", "", float, double)
         };
         plan(stdex::mdspan{x.data(), stdex::extents{x.size()}}, neo::fft::direction::forward);
 
-        for (auto i{0U}; i < expected.size(); ++i) {
+        for (auto i{0zu}; i < expected.size(); ++i) {
             CAPTURE(i);
             REQUIRE(x[i] == Catch::Approx(expected[i]));
         }
@@ -225,7 +225,7 @@ TEMPLATE_TEST_CASE("neo/fft: experimental::rfft_plan", "", float, double)
         plan(copy.to_mdspan(), neo::fft::direction::forward);
         plan(copy.to_mdspan(), neo::fft::direction::backward);
 
-        for (auto i{0U}; i < signal.extent(0); ++i) {
+        for (auto i{0zu}; i < signal.extent(0); ++i) {
             CAPTURE(i);
             REQUIRE(copy(i) == Catch::Approx(double(signal(i)) * double(size) / 2.0).scale(double(order)));
         }

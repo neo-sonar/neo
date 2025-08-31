@@ -30,8 +30,8 @@ auto timeit(std::string_view name, size_t size_of_t, size_t n, Func func)
     using microseconds = std::chrono::duration<double, std::micro>;
 
     auto const size       = n;
-    auto const iterations = 50'000U;
-    auto const margin     = iterations / 20U;
+    auto const iterations = 50'000zu;
+    auto const margin     = iterations / 20zu;
 
     auto all_runs = std::vector<double>(iterations);
 
@@ -39,7 +39,7 @@ auto timeit(std::string_view name, size_t size_of_t, size_t n, Func func)
     func();
     func();
 
-    for (auto i{0U}; i < iterations; ++i) {
+    for (auto i{0zu}; i < iterations; ++i) {
         auto start = std::chrono::system_clock::now();
         func();
         auto stop = std::chrono::system_clock::now();
@@ -389,7 +389,7 @@ private:
 
 auto main() -> int
 {
-    static constexpr auto n = 131072U;
+    static constexpr auto n = 131072zu;
 
     timeit("mul(q7):     ", 1, n, fixed_point_mul<neo::q7, n>{});
     timeit("mul(q15):    ", 2, n, fixed_point_mul<neo::q15, n>{});

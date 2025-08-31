@@ -20,8 +20,8 @@ auto timeit(std::string_view name, size_t N, Func func)
     using microseconds = std::chrono::duration<double, std::micro>;
 
     auto const size       = N;
-    auto const iterations = 50'000U;
-    auto const margin     = iterations / 30U;
+    auto const iterations = 50'000zu;
+    auto const margin     = iterations / 30zu;
 
     auto all_runs = std::vector<double>(iterations);
 
@@ -29,7 +29,7 @@ auto timeit(std::string_view name, size_t N, Func func)
     func();
     func();
 
-    for (auto i{0U}; i < iterations; ++i) {
+    for (auto i{0zu}; i < iterations; ++i) {
         auto start = std::chrono::system_clock::now();
         func();
         auto stop = std::chrono::system_clock::now();
@@ -105,11 +105,11 @@ template<typename Float>
 auto fill_twiddle_lut_radix2(std::span<std::complex<Float>> table, direction dir = direction::forward) noexcept -> void
 {
     auto const tableSize = table.size();
-    auto const fftSize   = tableSize * 2ULL;
+    auto const fftSize   = tableSize * 2zu;
     auto const sign      = dir == direction::forward ? Float(-1) : Float(1);
     auto const twoPi     = static_cast<Float>(std::numbers::pi * 2.0);
 
-    for (std::size_t i = 0; i < tableSize; ++i) {
+    for (auto i{0zu}; i < tableSize; ++i) {
         auto const angle = sign * twoPi * Float(i) / Float(fftSize);
         table[i]         = std::polar(Float(1), angle);
     }
@@ -126,7 +126,7 @@ auto make_twiddle_lut_radix2(std::size_t size, direction dir = direction::forwar
 template<typename ElementType, typename IndexTable>
 auto bitrevorder(std::span<ElementType> x, IndexTable const& index) -> void
 {
-    for (auto i{0U}; i < x.size(); ++i) {
+    for (auto i{0zu}; i < x.size(); ++i) {
         if (i < index[i]) {
             std::swap(x[i], x[index[i]]);
         }
@@ -136,7 +136,7 @@ auto bitrevorder(std::span<ElementType> x, IndexTable const& index) -> void
 template<typename ElementType, typename IndexTable>
 auto bitrevorder(std::span<ElementType> xre, std::span<ElementType> xim, IndexTable const& index) -> void
 {
-    for (auto i{0U}; i < xre.size(); ++i) {
+    for (auto i{0zu}; i < xre.size(); ++i) {
         if (i < index[i]) {
             std::swap(xre[i], xre[index[i]]);
             std::swap(xim[i], xim[index[i]]);
@@ -148,8 +148,8 @@ auto bitrevorder(std::span<ElementType> xre, std::span<ElementType> xim, IndexTa
 {
     auto const order = bit_log2(size);
     auto table       = std::vector<std::size_t>(size, 0);
-    for (auto i{0U}; i < size; ++i) {
-        for (auto j{0U}; j < order; ++j) {
+    for (auto i{0zu}; i < size; ++i) {
+        for (auto j{0zu}; j < order; ++j) {
             table[i] |= ((i >> j) & 1) << (order - 1 - j);
         }
     }
@@ -325,7 +325,7 @@ struct static_split_fft_plan
         _wfim.resize(tw.size());
         _wbre.resize(tw.size());
         _wbim.resize(tw.size());
-        for (auto i{0U}; i < tw.size(); ++i) {
+        for (auto i{0zu}; i < tw.size(); ++i) {
             _wfre[i] = tw[i].real();
             _wfim[i] = tw[i].imag();
             _wbre[i] = tw[i].real();
@@ -407,7 +407,7 @@ private:
 
 auto main() -> int
 {
-    static constexpr auto N = 4U;
+    static constexpr auto N = 4zu;
 
     auto x = std::vector(N, std::complex<double>{0, 0});
     x[0]   = {1.0F, 0.0F};

@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.26...3.30)
-project(neosonar-neo-dev VERSION 0.1.0)
+project(neosonar.neo-dev VERSION 0.1.0)
 
 option(NEO_ENABLE_BENCHMARKS "Build benchmarks" ON)
 option(NEO_ENABLE_PLUGIN "Build audio plugin" ON)

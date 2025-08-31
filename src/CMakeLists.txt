@@ -1,4 +1,3 @@
-cmake_minimum_required(VERSION 3.26...3.27)
 project(neosonar.neo VERSION ${CMAKE_PROJECT_VERSION})
 
 add_library(neosonar.neo INTERFACE)

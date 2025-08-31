@@ -1,4 +1,4 @@
-project(neosonar-neo-cli)
+project(neosonar.neo-cli)
 
 FetchContent_Declare(dr_libs GIT_REPOSITORY "https://github.com/mackron/dr_libs" GIT_TAG "master" GIT_SHALLOW TRUE)
 FetchContent_MakeAvailable(dr_libs)

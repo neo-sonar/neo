@@ -45,7 +45,6 @@ elseif(CMAKE_CXX_COMPILER_ID MATCHES "AppleClang|Clang")
             "-Wno-c++20-compat"
             "-Wno-c++98-compat-pedantic"
             "-Wno-ctad-maybe-unsupported"
-            "-Wno-disabled-macro-expansion"
             "-Wno-double-promotion"
             "-Wno-float-equal"
             "-Wno-padded"
@@ -58,19 +57,6 @@ elseif(CMAKE_CXX_COMPILER_ID MATCHES "AppleClang|Clang")
         target_compile_options(neosonar.compiler_warnings
             INTERFACE
                 "-Wno-unknown-attributes" # Warns for [[no_unique_address]] being ignored for ABI reasons
-        )
-    endif()
-    if(EMSCRIPTEN)
-        target_compile_options(neosonar.compiler_warnings
-            INTERFACE
-                "-Wno-implicit-int-conversion-on-negation" # xsimd
-        )
-    endif()
-    if(CMAKE_CXX_COMPILER_VERSION VERSION_GREATER_EQUAL "22.0.0")
-        target_compile_options(neosonar.compiler_warnings
-            INTERFACE
-                "-Wno-nrvo"
-                "-Wno-unique-object-duplication" # xsimd
         )
     endif()
 endif()

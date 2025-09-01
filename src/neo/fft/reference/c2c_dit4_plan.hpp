@@ -187,7 +187,7 @@ private:
         }
     }
 
-    [[nodiscard]] static auto make_twiddle_lut(size_type n)
+    [[nodiscard]] static auto make_twiddle_lut(size_type n) -> stdex::mdarray<Complex, stdex::dextents<std::size_t, 2>>
     {
         auto kmax  = 3zu * (n / 4zu - 1zu);
         auto w     = stdex::mdarray<Complex, stdex::dextents<std::size_t, 2>>{2zu, n};

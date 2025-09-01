@@ -119,7 +119,7 @@ private:
         }
     }
 
-    [[nodiscard]] static auto make_twiddles(size_type n)
+    [[nodiscard]] static auto make_twiddles(size_type n) -> stdex::mdarray<Float, stdex::dextents<size_t, 2>>
     {
         auto interleaved = make_twiddle_lut_radix2<std::complex<Float>>(n, direction::forward);
 

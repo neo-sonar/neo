@@ -1,4 +1,4 @@
-project(neosonar-neo-python LANGUAGES CXX VERSION ${CMAKE_PROJECT_VERSION})
+project(neosonar.neo-python LANGUAGES CXX VERSION ${CMAKE_PROJECT_VERSION})
 
 find_package(Python REQUIRED COMPONENTS Interpreter Development.Module)
 find_package(pybind11 CONFIG REQUIRED)

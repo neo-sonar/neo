@@ -56,7 +56,7 @@ TEMPLATE_PRODUCT_TEST_CASE(
     REQUIRE(filter.extent(0) == 3);
     REQUIRE(filter.extent(1) == block_size + 1);
 
-    auto const signal = neo::generate_noise_signal<Float>(block_size * 20UL, Catch::getSeed());
+    auto const signal = neo::generate_noise_signal<Float>(block_size * 20zu, Catch::getSeed());
     auto output       = signal;
 
     auto convolver = Convolver{};
@@ -66,7 +66,7 @@ TEMPLATE_PRODUCT_TEST_CASE(
         convolver.filter(filter.to_mdspan());
     }
 
-    for (std::size_t i{0}; i < output.size(); i += block_size) {
+    for (auto i{0zu}; i < output.size(); i += block_size) {
         auto const io_block = stdex::submdspan(output.to_mdspan(), std::tuple{i, i + block_size});
         convolver(io_block);
     }

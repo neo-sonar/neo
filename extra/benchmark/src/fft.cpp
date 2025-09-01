@@ -45,7 +45,7 @@ auto c2c_r4(benchmark::State& state) -> void
     using Float   = typename Complex::value_type;
 
     auto const len   = static_cast<std::size_t>(state.range(0));
-    auto const order = neo::bit_log2(len) / 2UL;
+    auto const order = neo::bit_log2(len) / 2zu;
     auto const noise = neo::generate_noise_signal<Complex>(len, std::random_device{}());
 
     auto plan = Plan{neo::fft::from_order, order};

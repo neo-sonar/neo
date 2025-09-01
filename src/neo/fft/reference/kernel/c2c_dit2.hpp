@@ -91,12 +91,12 @@ struct c2c_dit2_v2
             }
         }
 
-        auto stage_size = 4U;
+        auto stage_size = 4zu;
         while (stage_size <= size) {
             auto const half_stage = stage_size / 2;
             auto const k_step     = size / stage_size;
 
-            for (auto i{0U}; i < size; i += stage_size) {
+            for (auto i{0zu}; i < size; i += stage_size) {
                 for (auto k{i}; k < i + half_stage; ++k) {
                     auto const index = k - i;
                     auto const tw    = twiddles[index * k_step];
@@ -216,7 +216,7 @@ struct c2c_dit2_v4
 
         {
             // stage = order - 1
-            auto const stage_length = size / 2UL;
+            auto const stage_length = size / 2zu;
 
             for (auto pair{0zu}; pair < stage_length; ++pair) {
                 auto const tw = twiddles[pair];

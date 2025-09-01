@@ -34,7 +34,7 @@ static auto test_overlap() -> void
     auto output = signal;
     auto blocks = stdex::mdspan{output.data(), stdex::extents{output.size()}};
 
-    for (std::size_t i{0}; i < output.size(); i += block_size) {
+    for (auto i{0zu}; i < output.size(); i += block_size) {
         auto block = stdex::submdspan(blocks, std::tuple{i, i + block_size});
         overlap(block, [&](neo::inout_vector auto io) {
             REQUIRE(io.extent(0) == overlap.transform_size() / 2zu + 1zu);

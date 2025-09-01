@@ -14,7 +14,7 @@ TEMPLATE_TEST_CASE("neo/math: rectangular_window", "", float, double)
 
     auto const size   = GENERATE(as<std::size_t>{}, 128, 256, 512, 1024);
     auto const window = Window{};
-    for (auto i{0UL}; i < size; ++i) {
+    for (auto i{0zu}; i < size; ++i) {
         REQUIRE(window(i, size) == Catch::Approx(Float(1.0)));
     }
 }

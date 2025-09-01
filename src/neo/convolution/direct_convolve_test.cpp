@@ -20,7 +20,7 @@ TEMPLATE_TEST_CASE("neo/convolution: direct_convolve", "", float, double)
     auto const patch_size  = GENERATE(as<std::size_t>{}, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11);
 
     auto const signal = neo::generate_noise_signal<Float>(signal_size, Catch::getSeed());
-    auto const patch  = [patch_size] {
+    auto const patch  = [patch_size]() -> stdex::mdarray<Float, stdex::dextents<std::size_t, 1>> {
         auto buf = stdex::mdarray<Float, stdex::dextents<std::size_t, 1>>{patch_size};
         buf(0)   = Float(1);
         return buf;

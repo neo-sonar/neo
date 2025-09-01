@@ -20,7 +20,7 @@ struct digitrevorder_plan
         requires(complex<value_type_t<Vec>>)
     auto operator()(Vec x) noexcept -> void
     {
-        for (auto i{0U}; i < _lut.size(); ++i) {
+        for (auto i{0zu}; i < _lut.size(); ++i) {
             if (i < _lut[i]) {
                 std::ranges::swap(x[i], x[_lut[i]]);
             }

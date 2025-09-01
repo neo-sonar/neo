@@ -112,9 +112,9 @@ auto DenseConvolution::updateImpulseResponse() -> void
 normalization_factor(stdex::mdspan<std::complex<float> const, stdex::dextents<size_t, 2>> filter) -> float
 {
     auto maxPower = 0.0F;
-    for (auto p{0UL}; p < filter.extent(0); ++p) {
+    for (auto p{0zu}; p < filter.extent(0); ++p) {
         auto const partition = stdex::submdspan(filter, p, stdex::full_extent);
-        for (auto bin{0UL}; bin < filter.extent(1); ++bin) {
+        for (auto bin{0zu}; bin < filter.extent(1); ++bin) {
             auto const amplitude = std::abs(partition(bin));
             maxPower             = std::max(maxPower, amplitude * amplitude);
         }

@@ -12,7 +12,7 @@ namespace neo::simd {
 
 template<typename ScalarType>
 inline constexpr auto apply_kernel = [](auto lhs, auto rhs, auto out, auto scalar_kernel, auto vector_kernel) {
-    static constexpr auto valueSizeBits = sizeof(ScalarType) * 8UL;
+    static constexpr auto valueSizeBits = sizeof(ScalarType) * 8zu;
 
     auto load = [](auto* ptr) {
         if constexpr (valueSizeBits == 8) {

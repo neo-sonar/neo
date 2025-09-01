@@ -40,8 +40,8 @@ struct fallback_dct2_plan
         auto const buf = _buffer.to_mdspan();
         assert(len == size());
 
-        for (auto i{0U}; i < len / 2U; ++i) {
-            auto const src = i * 2U;
+        for (auto i{0zu}; i < len / 2zu; ++i) {
+            auto const src = i * 2zu;
             auto const top = len - i - 1;
 
             buf[i]   = x[src];
@@ -54,7 +54,7 @@ struct fallback_dct2_plan
         auto const n   = static_cast<Float>(len);
         auto const one = std::complex{Float(0), Float(-1)};
 
-        for (auto i{0U}; i < len; ++i) {
+        for (auto i{0zu}; i < len; ++i) {
             auto const scale = Float(2) * std::exp(one * pi * Float(i) / (2 * n));
             auto const v     = buf[i] * scale;
 

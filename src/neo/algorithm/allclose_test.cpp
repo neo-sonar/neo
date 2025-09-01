@@ -26,7 +26,7 @@ TEMPLATE_TEST_CASE(
 
     SECTION("vector")
     {
-        auto const make_vector = [size](Float val) {
+        auto const make_vector = [size](Float val) -> stdex::mdarray<Float, stdex::dextents<std::size_t, 1>> {
             auto vec = stdex::mdarray<Float, stdex::dextents<std::size_t, 1>>{size};
             neo::fill(vec.to_mdspan(), val);
             return vec;
@@ -46,8 +46,8 @@ TEMPLATE_TEST_CASE(
 
     SECTION("matrix")
     {
-        auto const make_matrix = [size](Float val) {
-            auto vec = stdex::mdarray<Float, stdex::dextents<std::size_t, 2>>{size, size * 2UL};
+        auto const make_matrix = [size](Float val) -> stdex::mdarray<Float, stdex::dextents<std::size_t, 2>> {
+            auto vec = stdex::mdarray<Float, stdex::dextents<std::size_t, 2>>{size, size * 2zu};
             neo::fill(vec.to_mdspan(), val);
             return vec;
         };

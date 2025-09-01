@@ -71,7 +71,7 @@ auto split_multiply_add(benchmark::State& state) -> void
     auto const noise_out_real = neo::generate_noise_signal<Real>(size, std::random_device{}());
     auto const noise_out_imag = neo::generate_noise_signal<Real>(size, std::random_device{}());
 
-    for (auto i{0U}; i < size; ++i) {
+    for (auto i{0zu}; i < size; ++i) {
         x.real[i] = noise_x_real(i);
         x.imag[i] = noise_x_imag(i);
         y.real[i] = noise_y_real(i);
@@ -80,7 +80,7 @@ auto split_multiply_add(benchmark::State& state) -> void
 
     for (auto _ : state) {
         state.PauseTiming();
-        for (auto i{0U}; i < size; ++i) {
+        for (auto i{0zu}; i < size; ++i) {
             out.real[i] = noise_out_real(i);
             out.imag[i] = noise_out_imag(i);
         }
@@ -129,7 +129,7 @@ auto batch_split_multiply_add(benchmark::State& state) -> void
     auto const noise_out_real = neo::generate_noise_signal<Real>(size, std::random_device{}());
     auto const noise_out_imag = neo::generate_noise_signal<Real>(size, std::random_device{}());
 
-    for (auto i{0U}; i < size; ++i) {
+    for (auto i{0zu}; i < size; ++i) {
         x.real[i] = Batch::broadcast(noise_x_real(i));
         x.imag[i] = Batch::broadcast(noise_x_imag(i));
         y.real[i] = Batch::broadcast(noise_y_real(i));
@@ -138,7 +138,7 @@ auto batch_split_multiply_add(benchmark::State& state) -> void
 
     for (auto _ : state) {
         state.PauseTiming();
-        for (auto i{0U}; i < size; ++i) {
+        for (auto i{0zu}; i < size; ++i) {
             out.real[i] = Batch::broadcast(noise_out_real(i));
             out.imag[i] = Batch::broadcast(noise_out_imag(i));
         }
@@ -188,7 +188,7 @@ auto multi_batch_split_multiply_add(benchmark::State& state) -> void
     auto const noise_out_real = neo::generate_noise_signal<Real>(size, std::random_device{}());
     auto const noise_out_imag = neo::generate_noise_signal<Real>(size, std::random_device{}());
 
-    for (auto i{0U}; i < size; ++i) {
+    for (auto i{0zu}; i < size; ++i) {
         x.real[i] = Batch::broadcast(noise_x_real(i));
         x.imag[i] = Batch::broadcast(noise_x_imag(i));
         y.real[i] = Batch::broadcast(noise_y_real(i));
@@ -197,7 +197,7 @@ auto multi_batch_split_multiply_add(benchmark::State& state) -> void
 
     for (auto _ : state) {
         state.PauseTiming();
-        for (auto i{0U}; i < size; ++i) {
+        for (auto i{0zu}; i < size; ++i) {
             out.real[i] = Batch::broadcast(noise_out_real(i));
             out.imag[i] = Batch::broadcast(noise_out_imag(i));
         }

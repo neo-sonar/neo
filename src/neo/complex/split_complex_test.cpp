@@ -16,6 +16,6 @@ TEMPLATE_TEST_CASE("neo/complex: split_complex", "", float, double)
         stdex::submdspan(buffer.to_mdspan(), 1, stdex::full_extent),
     };
 
-    REQUIRE(split.real.extent(0) == 42UL);
-    REQUIRE(split.imag.extent(0) == 42UL);
+    REQUIRE(split.real.extent(0) == 42zu);
+    REQUIRE(split.imag.extent(0) == 42zu);
 }

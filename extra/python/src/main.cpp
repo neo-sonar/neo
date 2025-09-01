@@ -37,7 +37,7 @@ template<typename T, int Flags>
 template<typename T, int Flags, typename Mapping>
 [[nodiscard]] auto strides_match(py::array_t<T, Flags> buf, Mapping map) -> bool
 {
-    for (auto i{0U}; i < map.extents().rank(); ++i) {
+    for (auto i{0zu}; i < map.extents().rank(); ++i) {
         if (map.stride(i) != static_cast<size_t>(buf.strides(i) / buf.itemsize())) {
             return false;
         }
@@ -49,7 +49,7 @@ template<size_t Dim, typename T, int Flags>
 [[nodiscard]] auto make_extents(py::array_t<T, Flags> buf) -> std::array<size_t, Dim>
 {
     auto ext = std::array<size_t, Dim>{};
-    for (auto i{0U}; i < Dim; ++i) {
+    for (auto i{0zu}; i < Dim; ++i) {
         ext[i] = static_cast<size_t>(buf.shape(i));
     }
     return ext;
@@ -59,7 +59,7 @@ template<size_t Dim, typename T, int Flags>
 [[nodiscard]] auto make_strides(py::array_t<T, Flags> buf) -> std::array<size_t, Dim>
 {
     auto strides = std::array<size_t, Dim>{};
-    for (auto i{0U}; i < Dim; ++i) {
+    for (auto i{0zu}; i < Dim; ++i) {
         strides[i] = static_cast<size_t>(buf.strides(i) / buf.itemsize());
     }
     return strides;

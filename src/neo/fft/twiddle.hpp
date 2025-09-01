@@ -35,9 +35,9 @@ auto fill_twiddle_lut_radix2(OutVec lut, direction dir) noexcept -> void
     using Complex = typename OutVec::value_type;
 
     auto const lut_size = lut.size();
-    auto const size     = lut_size * 2ULL;
+    auto const size     = lut_size * 2zu;
 
-    for (std::size_t i = 0; i < lut_size; ++i) {
+    for (auto i{0zu}; i < lut_size; ++i) {
         lut[i] = twiddle<Complex>(size, i, dir);
     }
 }
@@ -45,6 +45,7 @@ auto fill_twiddle_lut_radix2(OutVec lut, direction dir) noexcept -> void
 /// \ingroup neo-fft
 template<complex Complex>
 auto make_twiddle_lut_radix2(std::size_t size, direction dir)
+    -> stdex::mdarray<Complex, stdex::dextents<std::size_t, 1>>
 {
     auto lut = stdex::mdarray<Complex, stdex::dextents<std::size_t, 1>>{size / 2U};
     fill_twiddle_lut_radix2(lut.to_mdspan(), dir);

@@ -35,6 +35,7 @@ using real_or_complex_value_t = decltype(detail::real_or_complex_value<RealOrCom
 
 template<typename FloatOrComplex, typename URNG = std::mt19937>
 [[nodiscard]] auto generate_noise_signal(std::size_t length, typename URNG::result_type seed)
+    -> stdex::mdarray<FloatOrComplex, stdex::dextents<size_t, 1>>
 {
     auto rng = URNG{seed};
 
@@ -43,7 +44,7 @@ template<typename FloatOrComplex, typename URNG = std::mt19937>
 
         auto dist = std::uniform_real_distribution<float>{-1.0F, 1.0F};
         auto buf  = stdex::mdarray<FxPoint, stdex::dextents<size_t, 1>>{length};
-        for (auto i{0U}; i < buf.extent(0); ++i) {
+        for (auto i{0zu}; i < buf.extent(0); ++i) {
             buf(i) = FxPoint{dist(rng)};
         }
 

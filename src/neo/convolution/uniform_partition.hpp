@@ -18,7 +18,7 @@ template<in_matrix InMat>
         impulse_response,
         {
             .frame_size     = block_size,
-            .transform_size = block_size * 2UL,
+            .transform_size = block_size * 2zu,
             .overlap_size   = 0,
             .window         = rectangular_window<Float>{},
         }

@@ -93,7 +93,7 @@ private:
     static auto make_twiddle_lut(size_t n) -> stdex::mdarray<Complex, stdex::dextents<std::size_t, 3>>
     {
         auto w = stdex::mdarray<Complex, stdex::dextents<std::size_t, 3>>(2zu, n / 4zu, 3zu);
-        for (std::size_t i = 0; i < w.size(); i++) {
+        for (auto i{0zu}; i < w.size(); i++) {
             // w(0, i, 0) = twiddle<Complex>(n, 1 * i, fft::direction::forward);
             // w(0, i, 1) = twiddle<Complex>(n, 2 * i, fft::direction::forward);
             // w(0, i, 2) = twiddle<Complex>(n, 3 * i, fft::direction::forward);

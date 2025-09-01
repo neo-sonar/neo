@@ -39,7 +39,7 @@ auto apply_fixed_point_kernel(
     }
 #endif
 
-    for (auto i{0U}; i < lhs.size(); ++i) {
+    for (auto i{0zu}; i < lhs.size(); ++i) {
         out[i] = scalar_kernel(lhs[i], rhs[i]);
     }
 }
@@ -98,7 +98,7 @@ auto multiply(
     }
     // NOLINTEND(bugprone-branch-clone)
 
-    for (auto i{0U}; i < lhs.size(); ++i) {
+    for (auto i{0zu}; i < lhs.size(); ++i) {
         out[i] = std::multiplies{}(lhs[i], rhs[i]);
     }
 }

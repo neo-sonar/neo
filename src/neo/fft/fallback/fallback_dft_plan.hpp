@@ -35,7 +35,7 @@ struct fallback_dft_plan
         auto const coef_forward  = static_cast<Float>(std::numbers::pi) / n * Float(-1);
         auto const coef_backward = static_cast<Float>(std::numbers::pi) / n * Float(1);
 
-        for (std::size_t i{0}; i < size; ++i) {
+        for (auto i{0zu}; i < size; ++i) {
             auto const j = static_cast<Float>((i * i) % (size * 2));
 
             wf[i] = math::polar(Float(1), j * coef_forward);

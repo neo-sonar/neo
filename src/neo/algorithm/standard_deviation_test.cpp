@@ -17,7 +17,7 @@ TEMPLATE_TEST_CASE("neo/algorithm: standard_deviation", "", float, double)
 
     SECTION("vector")
     {
-        auto const make_vector = [size](Float val) {
+        auto const make_vector = [size](Float val) -> stdex::mdarray<Float, stdex::dextents<std::size_t, 1>> {
             auto vec = stdex::mdarray<Float, stdex::dextents<std::size_t, 1>>{size};
             neo::fill(vec.to_mdspan(), val);
             return vec;
@@ -45,7 +45,7 @@ TEMPLATE_TEST_CASE("neo/algorithm: standard_deviation", "", float, double)
 
     SECTION("matrix")
     {
-        auto const make_matrix = [size](Float val) {
+        auto const make_matrix = [size](Float val) -> stdex::mdarray<Float, stdex::dextents<std::size_t, 2>> {
             auto vec = stdex::mdarray<Float, stdex::dextents<std::size_t, 2>>{size, size * std::size_t(2)};
             neo::fill(vec.to_mdspan(), val);
             return vec;

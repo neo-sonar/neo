@@ -78,7 +78,7 @@ private:
 
 template<in_vector Signal, in_vector Patch>
     requires(std::floating_point<value_type_t<Signal>> and std::floating_point<value_type_t<Patch>>)
-auto fft_convolve(Signal signal, Patch patch)
+auto fft_convolve(Signal signal, Patch patch) -> stdex::mdarray<value_type_t<Signal>, stdex::dextents<size_t, 1>>
 {
     using Float = value_type_t<Signal>;
 

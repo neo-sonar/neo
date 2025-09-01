@@ -46,7 +46,7 @@ auto writeToWavFile(
     auto writer = std::unique_ptr<juce::AudioFormatWriter>{wav.createWriterFor(out.get(), sr, ch, bits, {}, 0)};
 
     auto channels = std::vector<float const*>(ch);
-    for (auto i{0U}; i < ch; ++i) {
+    for (auto i{0zu}; i < ch; ++i) {
         channels[i] = std::addressof(buffer(i, 0));
     }
 

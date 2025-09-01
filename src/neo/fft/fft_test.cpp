@@ -136,10 +136,11 @@ auto test_complex_batch_roundtrip_fft()
     using ScalarBatch   = typename ComplexBatch::real_batch;
     using ScalarFloat   = typename ScalarComplex::value_type;
 
-    auto make_noise_signal = [](auto size) {
+    static constexpr auto make_noise_signal
+        = [](auto size) -> stdex::mdarray<ComplexBatch, stdex::dextents<size_t, 1>> {
         auto noise = neo::generate_noise_signal<ScalarComplex>(size, Catch::getSeed());
         auto buf   = stdex::mdarray<ComplexBatch, stdex::dextents<size_t, 1>>{size};
-        for (auto i{0UL}; i < size; ++i) {
+        for (auto i{0zu}; i < size; ++i) {
             buf(i) = ComplexBatch{
                 ScalarBatch::broadcast(noise(i).real()),
                 ScalarBatch::broadcast(noise(i).imag()),
@@ -148,10 +149,11 @@ auto test_complex_batch_roundtrip_fft()
         return buf;
     };
 
-    auto make_twiddles = [](auto size, neo::fft::direction dir) {
+    static constexpr auto make_twiddles
+        = [](auto size, neo::fft::direction dir) -> stdex::mdarray<ComplexBatch, stdex::dextents<size_t, 1>> {
         auto tw  = neo::fft::make_twiddle_lut_radix2<ScalarComplex>(size, dir);
         auto buf = stdex::mdarray<ComplexBatch, stdex::dextents<size_t, 1>>{tw.extents()};
-        for (auto i{0UL}; i < buf.extent(0); ++i) {
+        for (auto i{0zu}; i < buf.extent(0); ++i) {
             buf(i) = ComplexBatch{
                 ScalarBatch::broadcast(tw(i).real()),
                 ScalarBatch::broadcast(tw(i).imag()),
@@ -172,7 +174,7 @@ auto test_complex_batch_roundtrip_fft()
     execute_dit2_kernel(Kernel{}, inout.to_mdspan(), forward_twiddles.to_mdspan());
     execute_dit2_kernel(Kernel{}, inout.to_mdspan(), backward_twiddles.to_mdspan());
 
-    for (auto i{0U}; i < inout.extent(0); ++i) {
+    for (auto i{0zu}; i < inout.extent(0); ++i) {
         auto const real_batch = inout(i).real();
         auto const imag_batch = inout(i).imag();
 

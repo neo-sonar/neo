@@ -14,27 +14,28 @@ enum direction
 template<std::floating_point Float>
 struct split_radix_fft_plan
 {
-    explicit split_radix_fft_plan(int n)
-        : _size{static_cast<size_t>(n)}
-        , _lut1_f(static_cast<size_t>(n / 4))
-        , _lut3_f(static_cast<size_t>(n / 4))
-        , _lut1_b(static_cast<size_t>(n / 4))
-        , _lut3_b(static_cast<size_t>(n / 4))
+    explicit split_radix_fft_plan(std::size_t n)
+        : _size{n}
+        , _lut1_f(n / 4)
+        , _lut3_f(n / 4)
+        , _lut1_b(n / 4)
+        , _lut3_b(n / 4)
     {
         auto const w = [n](auto i) {
-            auto const sign   = Float(-1);
-            auto const two_pi = static_cast<Float>(std::numbers::pi * 2.0);
-            auto const angle  = sign * two_pi * Float(i) / Float(n);
-            return std::polar(Float(1), angle);
+            static constexpr auto const sign   = Float(-1);
+            static constexpr auto const two_pi = static_cast<Float>(std::numbers::pi * 2.0);
+            return std::polar(Float(1), sign * two_pi * Float(i) / Float(n));
         };
 
-        for (auto i{0}; i < n / 4; i++) {
+        for (auto i{0zu}; i < n / 4zu; ++i) {
             _lut1_f[i] = w(i);
-            _lut3_f[i] = w(3 * i);
+            _lut3_f[i] = w(3zu * i);
             _lut1_b[i] = std::conj(_lut1_f[i]);
             _lut3_b[i] = std::conj(_lut3_f[i]);
         }
     }
+
+    [[nodiscard]] auto size() const -> std::size_t { return _size; }
 
     auto operator()(std::complex<Float> const* in, std::complex<Float>* out, direction dir) -> void
     {
@@ -67,9 +68,11 @@ private:
             return;
         }
 
-        splitfft(in, out, log2stride + 1, stride << 1, N >> 1, lut1, lut3);
-        splitfft(in + stride, out + N / 2, log2stride + 2, stride << 2, N >> 2, lut1, lut3);
+        // clang-format off
+        splitfft(in             , out            , log2stride + 1, stride << 1, N >> 1, lut1, lut3);
+        splitfft(in + stride    , out + N / 2    , log2stride + 2, stride << 2, N >> 2, lut1, lut3);
         splitfft(in + 3 * stride, out + 3 * N / 4, log2stride + 2, stride << 2, N >> 2, lut1, lut3);
+        // clang-format on
 
         auto const I = std::complex<Float>{Float(0), Float(1)};
 
@@ -109,21 +112,25 @@ private:
 
 auto main() -> int
 {
-    auto plan = split_radix_fft_plan<double>{4};
-    auto in   = std::vector<std::complex<double>>(4);
-    auto out  = std::vector<std::complex<double>>(4);
-    in[0]     = 1.0F;
+    for (auto size : {2zu, 4zu, 8zu, 16zu}) {
+        std::printf("-------------------------\n");
+        std::printf("plan(%zu):\n", size);
+        auto plan = split_radix_fft_plan<double>{size};
+        auto in   = std::vector<std::complex<double>>(plan.size());
+        auto out  = std::vector<std::complex<double>>(plan.size());
+        in[0]     = 1.0F;
 
-    std::printf("forward\n");
-    plan(in.data(), out.data(), direction::forward);
-    for (auto z : out) {
-        std::printf("%f,%f\n", z.real(), z.imag());
-    }
+        std::printf("forward\n");
+        plan(in.data(), out.data(), direction::forward);
+        for (auto z : out) {
+            std::printf("%f,%f\n", z.real(), z.imag());
+        }
 
-    std::printf("\nbackward\n");
-    plan(out.data(), in.data(), direction::backward);
-    for (auto z : in) {
-        std::printf("%f,%f\n", z.real(), z.imag());
+        std::printf("\nbackward\n");
+        plan(out.data(), in.data(), direction::backward);
+        for (auto z : in) {
+            std::printf("%f,%f\n", z.real(), z.imag());
+        }
     }
     return 0;
 }

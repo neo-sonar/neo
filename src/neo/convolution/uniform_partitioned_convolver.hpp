@@ -25,7 +25,7 @@ struct uniform_partitioned_convolver
     auto operator()(in_vector auto block) -> void;
 
 private:
-    Overlap _overlap{1, 1};
+    std::unique_ptr<Overlap> _overlap;
 
     Fdl _fdl;
     fdl_index<size_t> _indexer;
@@ -37,7 +37,7 @@ private:
 template<typename Overlap, typename Fdl, typename Filter>
 auto uniform_partitioned_convolver<Overlap, Fdl, Filter>::filter(in_matrix auto filter, auto... args) -> void
 {
-    _overlap     = Overlap{filter.extent(1) - 1, filter.extent(1) - 1};
+    _overlap     = std::make_unique<Overlap>(filter.extent(1) - 1, filter.extent(1) - 1);
     _indexer     = fdl_index<size_t>{filter.extent(0)};
     _fdl         = Fdl{filter.extents()};
     _accumulator = accumulator_type{filter.extent(1)};
@@ -47,7 +47,9 @@ auto uniform_partitioned_convolver<Overlap, Fdl, Filter>::filter(in_matrix auto 
 template<typename Overlap, typename Fdl, typename Filter>
 auto uniform_partitioned_convolver<Overlap, Fdl, Filter>::operator()(in_vector auto block) -> void
 {
-    _overlap(block, [this](inout_vector auto inout) {
+    assert(_overlap != nullptr);
+
+    (*_overlap)(block, [this](inout_vector auto inout) {
         fill(_accumulator.to_mdspan(), value_type_t<accumulator_type>{});
 
         auto insert   = [this, inout](auto index) { _fdl.insert(inout, index); };

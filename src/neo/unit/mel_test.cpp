@@ -116,8 +116,8 @@ TEMPLATE_TEST_CASE("neo/unit: mel_frequencies vs. librosa", "", float, double)
     auto buffer = stdex::mdarray<Float, stdex::dextents<size_t, 1>>{expected.size()};
     neo::mel_frequencies(buffer.to_mdspan(), Float(0), Float(11'025));
 
-    REQUIRE(buffer.extent(0) == 40UL);
-    for (auto i{0U}; i < expected.size(); ++i) {
+    REQUIRE(buffer.extent(0) == 40zu);
+    for (auto i{0zu}; i < expected.size(); ++i) {
         CAPTURE(i);
         REQUIRE(buffer(i) == Catch::Approx(expected[i]));
     }

@@ -1,4 +1,4 @@
-project(neosonar-neo-benchmark)
+project(neosonar.neo-benchmark)
 
 set(BENCHMARK_ENABLE_TESTING OFF CACHE BOOL "Enable Google benchmark tests")
 FetchContent_Declare(benchmark GIT_REPOSITORY "https://github.com/google/benchmark" GIT_TAG "v1.9.4" GIT_SHALLOW TRUE)

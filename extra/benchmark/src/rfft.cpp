@@ -46,8 +46,11 @@ BENCHMARK(r2c<neo::fft::intel_ipp_rfft_plan<float>>)->RangeMultiplier(2)->Range(
 BENCHMARK(r2c<neo::fft::intel_ipp_rfft_plan<double>>)->RangeMultiplier(2)->Range(1 << 8, 1 << 15);
 #endif
 
-BENCHMARK(r2c<neo::fft::fallback_rfft_plan<float>>)->RangeMultiplier(2)->Range(1 << 8, 1 << 15);
-BENCHMARK(r2c<neo::fft::fallback_rfft_plan<double>>)->RangeMultiplier(2)->Range(1 << 8, 1 << 15);
+BENCHMARK(r2c<neo::fft::fallback_rfft_plan_v1<float>>)->RangeMultiplier(2)->Range(1 << 8, 1 << 15);
+BENCHMARK(r2c<neo::fft::fallback_rfft_plan_v1<double>>)->RangeMultiplier(2)->Range(1 << 8, 1 << 15);
+
+BENCHMARK(r2c<neo::fft::fallback_rfft_plan_v2<float>>)->RangeMultiplier(2)->Range(1 << 8, 1 << 15);
+BENCHMARK(r2c<neo::fft::fallback_rfft_plan_v2<double>>)->RangeMultiplier(2)->Range(1 << 8, 1 << 15);
 
 BENCHMARK(r2c<neo::fft::rfft_plan<float>>)->RangeMultiplier(2)->Range(1 << 8, 1 << 15);
 BENCHMARK(r2c<neo::fft::rfft_plan<double>>)->RangeMultiplier(2)->Range(1 << 8, 1 << 15);

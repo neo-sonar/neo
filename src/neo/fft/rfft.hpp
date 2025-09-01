@@ -19,7 +19,7 @@ using rfft_plan = intel_ipp_rfft_plan<Float, Complex>;
 #else
 /// \ingroup neo-fft
 template<std::floating_point Float, typename Complex = std::complex<Float>>
-using rfft_plan = fallback_rfft_plan<Float, Complex>;
+using rfft_plan = fallback_rfft_plan_v2<Float, Complex>;
 #endif
 
 /// \ingroup neo-fft

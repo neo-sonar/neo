@@ -6,9 +6,7 @@
 #include <complex>
 #include <concepts>
 
-namespace neo::math {
-
-namespace detail {
+namespace neo_math_adl_check_real {
 
 using std::real;
 
@@ -20,7 +18,7 @@ concept has_member_real = requires(T const& t) { t.real(); };
 template<typename T>
 concept has_adl_real = not has_member_real<T> and requires(T const& t) { real(t); };
 
-struct real_fn
+struct fn
 {
     template<std::floating_point T>
     [[nodiscard]] constexpr auto operator()(T x) const noexcept
@@ -42,9 +40,11 @@ struct real_fn
     }
 };
 
-}  // namespace detail
+}  // namespace neo_math_adl_check_real
+
+namespace neo::math {
 
 /// \ingroup neo-math
-inline constexpr auto const real = detail::real_fn{};
+inline constexpr auto const real = neo_math_adl_check_real::fn{};
 
 }  // namespace neo::math

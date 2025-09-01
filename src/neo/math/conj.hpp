@@ -6,9 +6,7 @@
 #include <complex>
 #include <concepts>
 
-namespace neo::math {
-
-namespace detail {
+namespace neo_math_adl_check_conj {
 
 using std::conj;
 
@@ -20,7 +18,7 @@ concept has_member_conj = requires(T const& t) { t.conj(); };
 template<typename T>
 concept has_adl_conj = not has_member_conj<T> and requires(T const& t) { conj(t); };
 
-struct conj_fn
+struct fn
 {
     template<has_member_conj T>
     auto operator()(T x) const noexcept
@@ -35,9 +33,11 @@ struct conj_fn
     }
 };
 
-}  // namespace detail
+}  // namespace neo_math_adl_check_conj
+
+namespace neo::math {
 
 /// \ingroup neo-math
-inline constexpr auto const conj = detail::conj_fn{};
+inline constexpr auto const conj = neo_math_adl_check_conj::fn{};
 
 }  // namespace neo::math

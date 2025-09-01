@@ -5,9 +5,7 @@
 #include <cmath>
 #include <concepts>
 
-namespace neo::math {
-
-namespace detail {
+namespace neo_math_adl_check_log2 {
 
 using std::log2;
 
@@ -16,7 +14,7 @@ auto log2(auto const&) -> void = delete;
 template<typename T>
 concept has_adl_log2 = requires(T const& t) { log2(t); };
 
-struct log2_fn
+struct fn
 {
     template<std::integral T>
     [[nodiscard]] constexpr auto operator()(T x) const noexcept
@@ -32,9 +30,11 @@ struct log2_fn
     }
 };
 
-}  // namespace detail
+}  // namespace neo_math_adl_check_log2
+
+namespace neo::math {
 
 /// \ingroup neo-math
-inline constexpr auto const log2 = detail::log2_fn{};
+inline constexpr auto const log2 = neo_math_adl_check_log2::fn{};
 
 }  // namespace neo::math

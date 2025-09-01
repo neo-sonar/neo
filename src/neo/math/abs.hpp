@@ -5,9 +5,7 @@
 #include <cmath>
 #include <concepts>
 
-namespace neo::math {
-
-namespace detail {
+namespace neo_math_adl_check_abs {
 
 using std::abs;
 
@@ -19,7 +17,7 @@ concept has_member_abs = requires(T const& t) { t.abs(); };
 template<typename T>
 concept has_adl_abs = not has_member_abs<T> and requires(T const& t) { abs(t); };
 
-struct abs_fn
+struct fn
 {
     template<std::unsigned_integral UInt>
     [[nodiscard]] constexpr auto operator()(UInt x) const noexcept
@@ -47,9 +45,11 @@ struct abs_fn
     }
 };
 
-}  // namespace detail
+}  // namespace neo_math_adl_check_abs
+
+namespace neo::math {
 
 /// \ingroup neo-math
-inline constexpr auto const abs = detail::abs_fn{};
+inline constexpr auto const abs = neo_math_adl_check_abs::fn{};
 
 }  // namespace neo::math

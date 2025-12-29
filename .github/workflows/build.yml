@@ -157,7 +157,7 @@ jobs:
 
       - name: Install clang
         if: matrix.clang_version != ''
-        uses: egor-tensin/setup-clang@v1
+        uses: egor-tensin/setup-clang@v2
         with:
           version: ${{ matrix.clang_version }}
 
